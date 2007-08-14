@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.2b8 - Mon 21 May 2007
+Version 1.0.1g - Tue 3 Jul 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -202,6 +202,57 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+1.0.1g (3 Jul 2007):
+
+*	Fix for PHP 5 compiled without the mbstring module. Previous fix to 
+	calculate the length of UTF-8 strings in `detab` when `mb_strlen` is 
+	not available was only working with PHP 4.
+
+*	Fixed a problem with WordPress 2.x where full-content posts in RSS feeds 
+	were not processed correctly by Markdown.
+
+*	Now supports URLs containing literal parentheses for inline links 
+	and images, such as:
+
+		[WIMP](http://en.wikipedia.org/wiki/WIMP_(computing))
+
+	Such parentheses may be arbitrarily nested, but must be
+	balanced. Unbalenced parentheses are allowed however when the URL 
+	when escaped or when the URL is enclosed in angle brakets `<>`.
+
+*	Fixed a performance problem where the regular expression for strong 
+	emphasis introduced in version 1.0.1d could sometime be long to process, 
+	give slightly wrong results, and in some circumstances could remove 
+	entirely the content for a whole paragraph.
+
+*	Some change in version 1.0.1d made possible the incorrect nesting of 
+	anchors within each other. This is now fixed.
+
+*	Fixed a rare issue where certain MD5 hashes in the content could
+	be changed to their corresponding text. For instance, this:
+
+		The MD5 value for "+" is "26b17225b626fb9238849fd60eabdf60".
+	
+	was incorrectly changed to this in previous versions of PHP Markdown:
+
+		<p>The MD5 value for "+" is "+".</p>
+
+*	Now convert escaped characters to their numeric character 
+	references equivalent.
+	
+	This fix an integration issue with SmartyPants and backslash escapes. 
+	Since Markdown and SmartyPants have some escapable characters in common, 
+	it was sometime necessary to escape them twice. Previously, two 
+	backslashes were sometime required to prevent Markdown from "eating" the 
+	backslash before SmartyPants sees it:
+	
+		Here are two hyphens: \\--
+	
+	Now, only one backslash will do:
+	
+		Here are two hyphens: \--
+
 
 1.0.1f (7 Feb 2007):
 
