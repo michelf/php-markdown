@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.1 - Thu 28 Dec 2006
+Version 1.1.2 - Wed 7 Feb 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -155,7 +155,7 @@ perform the conversion to HTML. You can update PHP Markdown -- or
 replace it with PHP Markdown Extra -- in many of these programs by 
 swapping the old "markdown.php" file for the new one.
 
-Here is a short non-exaustive list of some programs and where they 
+Here is a short non-exhaustive list of some programs and where they 
 hide the "markdown.php" file.
 
 | Program   | Path to Markdown
@@ -206,6 +206,46 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1.2 (7 Feb 2007)
+
+*	Fixed an issue where headers preceded too closely by a paragraph 
+	(with no blank line separating them) where put inside the paragraph.
+
+*	Added the missing TextileRestricted method that was added to regular
+	PHP Markdown since 1.0.1d but which I forgot to add to Extra.
+
+
+1.0.1f (7 Feb 2007):
+
+*	Fixed an issue with WordPress where manually-entered excerpts, but 
+	not the auto-generated ones, would contain nested paragraphs.
+
+*	Fixed an issue introduced in 1.0.1d where headers and blockquotes 
+	preceded too closely by a paragraph (not separated by a blank line) 
+	where incorrectly put inside the paragraph.
+
+*	Fixed an issue introduced in 1.0.1d in the tokenizeHTML method where 
+	two consecutive code spans would be merged into one when together they 
+	form a valid tag in a multiline paragraph.
+
+*	Fixed an long-prevailing issue where blank lines in code blocks would 
+	be doubled when the code block is in a list item.
+	
+	This was due to the list processing functions relying on artificially 
+	doubled blank lines to correctly determine when list items should 
+	contain block-level content. The list item processing model was thus 
+	changed to avoid the need for double blank lines.
+
+*	Fixed an issue with `<% asp-style %>` instructions used as inline 
+	content where the opening `<` was encoded as `&lt;`.
+
+*	Fixed a parse error occuring when PHP is configured to accept 
+	ASP-style delimiters as boundaries for PHP scripts.
+
+*	Fixed a bug introduced in 1.0.1d where underscores in automatic links
+	got swapped with emphasis tags.
+
 
 Extra 1.1.1 (28 Dec 2006)
 
@@ -409,7 +449,7 @@ Extra 1.0b2 - 26 July 2005
 
 *   Added the pipe character to the backlash escape character lists.
 
-1.0b1 (25 Jun 2005)
+Extra 1.0b1 (25 Jun 2005)
 
 *   First public release of PHP Markdown Extra.
 
