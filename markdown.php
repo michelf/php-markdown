@@ -7,13 +7,13 @@
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
-# Copyright (c) 2004-2005 John Gruber  
+# Copyright (c) 2004-2006 John Gruber  
 # <http://daringfireball.net/projects/markdown/>
 #
 
 
-define( 'MARKDOWN_VERSION',       "1.0.2b7" ); # Sat 16 Sep 2006
-define( 'MARKDOWNEXTRA_VERSION',  "1.1b3" );   # Sat 11 Nov 2006
+define( 'MARKDOWN_VERSION',       "1.0.1d" ); # Fri 1 Dec 2006
+define( 'MARKDOWNEXTRA_VERSION',  "1.1" );    # Fri 1 Dec 2006
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1b3
+Version: 1.1
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -311,7 +311,7 @@ class Markdown_Parser {
 							(?:
 								(?<=\s)			# lookbehind for whitespace
 								["(]
-								(.+?)			# title = $3
+								(.*?)			# title = $3
 								[")]
 								[ \t]*
 							)?	# title is optional
@@ -701,14 +701,14 @@ class Markdown_Parser {
 		# These must come last in case you've also got [link test][1]
 		# or [link test](/foo)
 		#
-		$text = preg_replace_callback('{
-			(					# wrap whole match in $1
-			  \[
-				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
-			  \]
-			)
-			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+//		$text = preg_replace_callback('{
+//			(					# wrap whole match in $1
+//			  \[
+//				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
+//			  \]
+//			)
+//			}xs',
+//			array(&$this, '_doAnchors_reference_callback'), $text);
 
 		return $text;
 	}
@@ -850,15 +850,12 @@ class Markdown_Parser {
 		$whole_match	= $matches[1];
 		$alt_text		= $matches[2];
 		$url			= $matches[3];
-		$title			= '';
-		if (isset($matches[6])) {
-			$title		= $matches[6];
-		}
+		$title			=& $matches[6];
 
 		$alt_text = str_replace('"', '&quot;', $alt_text);
-		$title    = str_replace('"', '&quot;', $title);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
+			$title = str_replace('"', '&quot;', $title);
 			$result .=  " title=\"$title\""; # $title already quoted
 		}
 		$result .= $this->empty_element_suffix;
@@ -1157,22 +1154,23 @@ class Markdown_Parser {
 		# <strong> must go first:
 		$text = preg_replace_callback('{
 				(						# $1: Marker
-					(?<!\*\*) \*\* |	#     (not preceded by two chars of
-					(?<!__)   __		#      the same marker)
-				)						
+					(?<!\*\*) \* |		#     (not preceded by two chars of
+					(?<!__)   _			#      the same marker)
+				)
+				\1
 				(?=\S) 					# Not followed by whitespace 
-				(?!\1)					#   or two others marker chars.
+				(?!\1\1)				#   or two others marker chars.
 				(						# $2: Content
 					(?:
 						[^*_]+?			# Anthing not em markers.
 					|
 										# Balence any regular emphasis inside.
-						([*_]) (?=\S) .+? (?<=\S) \3	# $3: em char (* or _)
+						\1 (?=\S) .+? (?<=\S) \1
 					|
 						(?! \1 ) .		# Allow unbalenced * and _.
 					)+?
 				)
-				(?<=\S) \1				# End mark not preceded by whitespace.
+				(?<=\S) \1\1			# End mark not preceded by whitespace.
 			}sx',
 			array(&$this, '_doItalicAndBold_strong_callback'), $text);
 		# Then <em>:
@@ -1216,9 +1214,10 @@ class Markdown_Parser {
 		$bq = $this->runBlockGamut($bq);		# recurse
 
 		$bq = preg_replace('/^/m', "  ", $bq);
-		# These leading spaces screw with <pre> content, so we need to fix that:
+		# These leading spaces cause problem with <pre> content, 
+		# so we need to fix that:
 		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', 
-									array(&$this, '_DoBlockQuotes_callback2'), $bq);
+			array(&$this, '_DoBlockQuotes_callback2'), $bq);
 
 		return $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
 	}
@@ -1254,52 +1253,46 @@ class Markdown_Parser {
 		#
 		# Unhashify HTML blocks
 		#
-//		foreach ($grafs as $key => $value) {
-//			if (isset( $this->html_blocks[$value] )) {
-//				$grafs[$key] = $this->html_blocks[$value];
-//			}
-//		}
-
 		foreach ($grafs as $key => $graf) {
 			# Modify elements of @grafs in-place...
 			if (isset($this->html_blocks[$graf])) {
 				$block = $this->html_blocks[$graf];
 				$graf = $block;
-				if (preg_match('{
-					\A
-					(							# $1 = <div> tag
-					  <div  \s+
-					  [^>]*
-					  \b
-					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
-					  1
-					  \2
-					  [^>]*
-					  >
-					)
-					(							# $3 = contents
-					.*
-					)
-					(</div>)					# $4 = closing tag
-					\z
-					}xs', $block, $matches))
-				{
-					list(, $div_open, , $div_content, $div_close) = $matches;
-
-					# We can't call Markdown(), because that resets the hash;
-					# that initialization code should be pulled into its own sub, though.
-					$div_content = $this->hashHTMLBlocks($div_content);
-					
-					# Run document gamut methods on the content.
-					foreach ($this->document_gamut as $method => $priority) {
-						$div_content = $this->$method($div_content);
-					}
-
-					$div_open = preg_replace(
-						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
-
-					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
-				}
+//				if (preg_match('{
+//					\A
+//					(							# $1 = <div> tag
+//					  <div  \s+
+//					  [^>]*
+//					  \b
+//					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
+//					  1
+//					  \2
+//					  [^>]*
+//					  >
+//					)
+//					(							# $3 = contents
+//					.*
+//					)
+//					(</div>)					# $4 = closing tag
+//					\z
+//					}xs', $block, $matches))
+//				{
+//					list(, $div_open, , $div_content, $div_close) = $matches;
+//
+//					# We can't call Markdown(), because that resets the hash;
+//					# that initialization code should be pulled into its own sub, though.
+//					$div_content = $this->hashHTMLBlocks($div_content);
+//					
+//					# Run document gamut methods on the content.
+//					foreach ($this->document_gamut as $method => $priority) {
+//						$div_content = $this->$method($div_content);
+//					}
+//
+//					$div_open = preg_replace(
+//						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
+//
+//					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
+//				}
 				$grafs[$key] = $graf;
 			}
 		}
@@ -1412,21 +1405,23 @@ class Markdown_Parser {
 
 	function tokenizeHTML($str) {
 	#
-	#   Parameter:  String containing HTML markup.
+	#   Parameter:  String containing HTML + Markdown markup.
 	#   Returns:    An array of the tokens comprising the input
-	#               string. Each token is either a tag (possibly with nested,
-	#               tags contained therein, such as <a href="<MTFoo>">, or a
-	#               run of text between tags. Each element of the array is a
+	#               string. Each token is either a tag or a run of text 
+	#               between tags. Each element of the array is a
 	#               two-element array; the first is either 'tag' or 'text';
 	#               the second is the actual value.
-	#   Note:       Takes code spans into account and does not generate tag 
-	#               tokens inside code spans.
+	#   Note:       Markdown code spans are taken into account: no tag token is 
+	#               generated within a code span.
 	#
 		$tokens = array();
 
 		while ($str != "") {
 			#
-			# 
+			# Each loop iteration seach for either the next tag or the next 
+			# openning code span marker. If a code span marker is found, the 
+			# code span is extracted in entierty and will result in an extra
+			# text token.
 			#
 			$parts = preg_split('{
 				(
@@ -1505,7 +1500,8 @@ class Markdown_Parser {
 			unset($blocks[0]); # Do not add first block twice.
 			foreach ($blocks as $block) {
 				# Calculate amount of space, insert spaces, insert block.
-				$amount = $this->tab_width - strlen($line) % $this->tab_width;
+				$amount = $this->tab_width - 
+					mb_strlen($line, 'UTF-8') % $this->tab_width;
 				$line .= str_repeat(" ", $amount) . $block;
 			}
 			$text .= "$line\n";
@@ -1556,7 +1552,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->document_gamut += array(
 			"stripFootnotes"     => 15,
 			"stripAbbreviations" => 25,
-			"appendFootnotes"    => 40,
+			"appendFootnotes"    => 50,
 			);
 		$this->block_gamut += array(
 			"doTables"           => 15,
@@ -2323,22 +2319,26 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# <strong> must go first:
 		$text = preg_replace_callback(array(
 			'{
-				( (?<!\w) __ )			# $1: Marker (not preceded by alphanum)
+				(						# $1: Marker
+					(?<![a-zA-Z0-9])	# Not preceded by alphanum
+					(?<!__)				#	or by two marker chars.
+					__
+				)
 				(?=\S) 					# Not followed by whitespace 
 				(?!__)					#   or two others marker chars.
 				(						# $2: Content
-					(?>
+					(?:
 						[^_]+?			# Anthing not em markers.
 					|
 										# Balence any regular _ emphasis inside.
-						(?<![a-zA-Z0-9]) _ (?=\S) (?! _) (.+?) 
+						(?<![a-zA-Z0-9]) _ (?=\S) (.+?) 
 						(?<=\S) _ (?![a-zA-Z0-9])
 					|
 						___+
 					)+?
 				)
 				(?<=\S) __				# End mark not preceded by whitespace.
-				(?![a-zA-Z0-9])				# Not followed by alphanum
+				(?![a-zA-Z0-9])			# Not followed by alphanum
 				(?!__)					#   or two others marker chars.
 			}sx',
 			'{
@@ -2346,11 +2346,11 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(?=\S) 					# Not followed by whitespace 
 				(?!\1)					#   or two others marker chars.
 				(						# $2: Content
-					(?>
+					(?:
 						[^*]+?			# Anthing not em markers.
 					|
 										# Balence any regular * emphasis inside.
-						\* (?=\S) (?! \*) (.+?) (?<=\S) \*
+						\* (?=\S) (.+?) (?<=\S) \*
 					)+?
 				)
 				(?<=\S) \*\*			# End mark not preceded by whitespace.
@@ -2359,8 +2359,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			array(&$this, '_doItalicAndBold_strong_callback'), $text);
 		# Then <em>:
 		$text = preg_replace_callback(array(
-			'{ ( (?<!\w|_) _ ) (?![\s_]) (.+?) (?<![\s_]) _ (?!\w|_) }sx',
-			'{ ( (?<!  \*)\* ) (?![\s*]) (.+?) (?<![\s*])\* (?!  \*) }sx',
+			'{ ( (?<![a-zA-Z0-9])(?<!_)_ ) (?=\S) (?! \1) (.+?) (?<=\S) \1(?![a-zA-Z0-9]) }sx',
+			'{ ( (?<!\*)\* ) (?=\S) (?! \1) (.+?) (?<=\S) \1 }sx',
 			),
 			array(&$this, '_doItalicAndBold_em_callback'), $text);
 
@@ -2502,7 +2502,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}
 			
 			$text .= "</ol>\n";
-			$text .= "</div>\n";
+			$text .= "</div>";
 			
 			$text = preg_replace('{a\{fn:(.*?)\}z}', '[^\\1]', $text);
 		}
@@ -2536,7 +2536,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			
 			return
 				"<sup id=\"fnref:$node_id\">".
-				"<a href=\"#fn:$node_id\" $attr>$num</a>".
+				"<a href=\"#fn:$node_id\"$attr>$num</a>".
 				"</sup>";
 		}
 		
@@ -2646,131 +2646,11 @@ Version History
 
 See Readme file for details.
 
-1.1b3 (11 Nov 2006)
+Extra 1.1 (1 Dec 2006)
 
-*	Added configuration variables allowing custom class names and titles
-	on footnote links and backlinks.
+Extra 1.0.1 (9 Dec 2005)
 
-
-1.1b2 (21 Sep 2006)
-
-*	Changed the space before footnote backlinks to an unbrekable space
-	`&#160;` at the suggestion of John Gruber.
-
-*	Fixed the out-of-order footnote problems which were occuring when they 
-	were refered to by markers from various block-level constructs.
-
-*	Fixed a bug where footnotes definition were taking the text following 
-	them even though that text had no indentation.
-
-*	Footnotes are now prevented from containing a reference to another 
-	footnote.
-
-*	Small change to the syntax for abbreviation definitions. Abbreviations are 
-	now defined like this:
-	
-		*[SGML]: Standard Generalized Markup Language
-	
-	The asterisk was previously after the brakets, making it harder to 
-	distinguish from link references.
-
-*	Abbreviations are now correctly surrounded by `<abbr>` tags when found 
-	around punctuation marks.
-
-*	Arranged badly nested emphasis to produce mostly the same result as
-	PHP Markdown. Still not ideal, but better.
-
-
-1.1b1 (16 Sep 2006)
-
-*	Added a syntax for footnotes.
-
-*	Added an experimental syntax to define abbreviations.
-
-*	Changed span and block gamut methods so that they loop over a 
-	customizable list of methods. This makes subclassing the parser a more 
-	interesting option for creating syntax extensions.
-
-*	Also added a "document" gamut loop which can be used to hook document-level 
-	methods (like for striping link definitions).
-
-*	Changed all methods which were inserting HTML code so that they now return 
-	a hashed representation of the code. New methods `hashSpan` and `hashBlock`
-	are used to hash respectivly span- and block-level generated content. This 
-	has a couple of significant effects:
-	
-	1.	It prevents invalid nesting of Markdown-generated elements which 
-	    could occur occuring with constructs like `*something [link*][1]`.
-	2.	It prevents problems occuring with deeply nested lists on which 
-	    paragraphs were ill-formed.
-	3.	It removes the need to call `hashHTMLBlocks` twice during the the 
-		block gamut.
-	
-	Hashes are turned back to HTML prior output.
-
-*	Solved backtick issues in tag attributes by rewriting the HTML tokenizer to 
-	be aware of code spans. All these lines should work correctly now:
-	
-		<span attr='`ticks`'>bar</span>
-		<span attr='``double ticks``'>bar</span>
-		`<test a="` content of attribute `">`
-
-*	Changed the parsing of HTML comments to match simply from `<!--` to `-->` 
-	instead using of the more complicated SGML-style rule with paired `--`.
-	This is how most browsers parse comments and how XML defines them too.
-
-*	`<address>` has been added to the list of block-level elements and is no
-	being incorrectly wrapped within paragraph tags.
-
-*	Now only trim trailing newlines from code blocks, instead of trimming
-	all trailing whitespace characters.
-
-*	Fixed bug where this:
-
-		[text](http://m.com "title" )
-		
-	wasn't working as expected, because the parser wasn't allowing for spaces
-	before the closing paren.
-
-*	Filthy hack to support markdown='1' in div tags.
-
-*	_DoAutoLinks() now supports the 'dict://' URL scheme.
-
-*	PHP- and ASP-style processor instructions are now protected as
-	raw HTML blocks.
-
-		<? ... ?>
-		<% ... %>
-
-*	Experimental support for [this] as a synonym for [this][].
-
-*	Fix for escaped backticks still triggering code spans:
-
-		There are two raw backticks here: \` and here: \`, not a code span
-
-*	Fixed a bug where Markdown Extra outputs invalid HTML when a horizontal 
-	rule isn't preceded *and* followed by a blank like.
-
-*	Fixed a bug which would cause some block-level elements to appear inside a 
-	a tag with markdown="span" or markdown="1" defaulting to span content.
-
-
-1.0.1oo (19 May 2006)
-
-*   Converted PHP Markdown and PHP Markdown Extra to a object-oriented design.
-
-
-1.0.1 (9 December 2005)
-
-1.0 (5 September 2005)
-
-1.0b4 (1 August 2005)
-
-1.0b3 (29 July 2005)
-
-1.0b2 (26 July 2005)
-
-1.0b1 (25 July 2005)
+Extra 1.0 (5 Sep 2005)
 
 
 Author & Contributors
@@ -2791,7 +2671,7 @@ Copyright (c) 2004-2006 Michel Fortin
 All rights reserved.
 
 Based on Markdown  
-Copyright (c) 2003-2004 John Gruber   
+Copyright (c) 2003-2006 John Gruber   
 <http://daringfireball.net/>   
 All rights reserved.
 

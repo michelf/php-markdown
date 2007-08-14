@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1b3 - Sat 11 Nov 2006
+Version 1.1 - Fri 1 Dec 2006
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -60,54 +60,53 @@ version.
     same line than Markdown. Your entries will now be formatted by 
     PHP Markdown.
 
+3.  To post Markdown content, you'll first have to disable the 
+	"visual" editor in the User section of WordPress.
+
 You can configure PHP Markdown to not apply to the comments on your 
 WordPress weblog. See the "Configuration" section below.
 
-Note: It is not possible at this time to apply a different set of 
+It is not possible at this time to apply a different set of 
 filters to different entries. All your entries will be formated by 
-PHP Markdown. This is currently a limitation of WordPress. If your old 
-entries are written in HTML (as opposed to another formatting syntax), 
-your site should not suffer much from installing PHP Markdown.
+PHP Markdown. This is a limitation of WordPress. If your old entries 
+are written in HTML (as opposed to another formatting syntax, like 
+Textile), they'll probably stay fine after installing Markdown.
 
 
 ### bBlog ###
 
-PHP Markdown also works with the latest version of [bBlog][bb].
+PHP Markdown also works with [bBlog][bb].
 
  [bb]: http://www.bblog.com/
 
-1.  To use PHP Markdown with bBlog, rename "markdown.php" to 
-    "modifier.markdown.php" and place the file in the "bBlog_plugins" 
-    folder. This folder is located inside the "bblog" directory of 
-    your site, like this:
+To use PHP Markdown with bBlog, rename "markdown.php" to 
+"modifier.markdown.php" and place the file in the "bBlog_plugins" 
+folder. This folder is located inside the "bblog" directory of 
+your site, like this:
 
         (site home)/bblog/bBlog_plugins/modifier.markdown.php
 
-2.  Select "Markdown" as the "Entry Modifier" when you post a new 
-    entry. This setting will only apply to the entry you are editing.
+Select "Markdown" as the "Entry Modifier" when you post a new 
+entry. This setting will only apply to the entry you are editing.
 
 
-### Replacing Textile ###
+### Replacing Textile in TextPattern ###
 
-Many web programs written in PHP use [Textile][tx] to format your text. 
-To use PHP Markdown with these programs without having to change the 
-code, you can use PHP Markdown in "Textile Compatibility Mode."
+[TextPattern][tp] use [Textile][tx] to format your text. You can 
+replace Textile by Markdown in TextPattern without having to change
+any code by using the *Texitle Compatibility Mode*. This may work 
+with other software that expect Textile too.
 
  [tx]: http://www.textism.com/tools/textile/
+ [tp]: http://www.textpattern.com/
 
-1.  Rename the "markdown.php" file to "classTextile.php".
+1.  Rename the "markdown.php" file to "classTextile.php". This will
+	make PHP Markdown behave as if it was the actual Textile parser.
 
-2.  Locate the "classTextile.php" file hidden somewhere inside the 
-    installation of your program (see table below). Replace it with 
-    the PHP Markdown file you just renamed.
+2.  Replace the "classTextile.php" file TextPattern installed in your
+	web directory. It can be found in the "lib" directory:
 
-As an helper, here you can learn where is the "classTextile.php" file 
-in some web programs:
-
-    Program       Location
-    ----------------------------------------------------------------
-    TextPattern   (site home)/textpattern/lib/classTextile.php
-    Pivot         (site home)/pivot/includes/textile/classtextile.php
+		(site home)/textpattern/lib/
 
 Contrary to Textile, Markdown does not convert quotes to curly ones 
 and does not convert multiple hyphens (`--` and `---`) into en- and 
@@ -161,17 +160,17 @@ Markdown can be configured to produce HTML-style tags; e.g.:
 
     <br>
 
-To do this, you  must edit the "$md_empty_element_suffix" variable
-below the "Global default settings" header at the start of the
-"markdown.php" file.
+To do this, you  must edit the "MARKDOWN_EMPTY_ELEMENT_SUFFIX" 
+definition below the "Global default settings" header at the start of 
+the "markdown.php" file.
 
 
 ### WordPress-Specific Settings ###
 
 By default, the Markdown plugin applies to both posts and comments on 
 your WordPress weblog. To deactivate one or the other, edit the 
-`$md_wp_posts` or `$md_wp_comments` variable under the "WordPress 
-settings" header at the start of the "markdown.php" file.
+`MARKDOWN_WP_POSTS` or `MARKDOWN_WP_COMMENTS` definitions under the 
+"WordPress settings" header at the start of the "markdown.php" file.
 
 
 Bugs
@@ -186,6 +185,100 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1 (1 Dec 2006)
+
+*	Added a syntax for footnotes.
+
+*	Added an experimental syntax to define abbreviations.
+
+
+1.0.1d (1 Dec 2006)
+
+*   Fixed a bug where inline images always had an empty title attribute. The 
+	title attribute is now present only when explicitly defined.
+
+*	Link references definitions can now have an empty title, previously if the 
+	title was defined but left empty the link definition was ignored. This can 
+	be useful if you want an empty title attribute in images to hide the 
+	tooltip in Internet Explorer.
+
+*	Made `detab` aware of UTF-8 characters. UTF-8 multi-byte sequences are now 
+	correctly mapped to one character instead of the number of bytes.
+
+*	Fixed a small bug with WordPress where WordPress' default filter `wpautop`
+	was not properly deactivated on comment text, resulting in hard line breaks
+	where Markdown do not prescribes them.
+
+*	Added a `TextileRestrited` method to the textile compatibility mode. There
+	is no restriction however, as Markdown does not have a restricted mode at 
+	this point. This should make PHP Markdown work again in the latest 
+	versions of TextPattern.
+
+*   Converted PHP Markdown to a object-oriented design.
+
+*	Changed span and block gamut methods so that they loop over a 
+	customizable list of methods. This makes subclassing the parser a more 
+	interesting option for creating syntax extensions.
+
+*	Also added a "document" gamut loop which can be used to hook document-level 
+	methods (like for striping link definitions).
+
+*	Changed all methods which were inserting HTML code so that they now return 
+	a hashed representation of the code. New methods `hashSpan` and `hashBlock`
+	are used to hash respectivly span- and block-level generated content. This 
+	has a couple of significant effects:
+	
+	1.	It prevents invalid nesting of Markdown-generated elements which 
+	    could occur occuring with constructs like `*something [link*][1]`.
+	2.	It prevents problems occuring with deeply nested lists on which 
+	    paragraphs were ill-formed.
+	3.	It removes the need to call `hashHTMLBlocks` twice during the the 
+		block gamut.
+	
+	Hashes are turned back to HTML prior output.
+
+*	Made the block-level HTML parser smarter using a specially-crafted regular 
+	expression capable of handling nested tags.
+
+*	Solved backtick issues in tag attributes by rewriting the HTML tokenizer to 
+	be aware of code spans. All these lines should work correctly now:
+	
+		<span attr='`ticks`'>bar</span>
+		<span attr='``double ticks``'>bar</span>
+		`<test a="` content of attribute `">`
+
+*	Changed the parsing of HTML comments to match simply from `<!--` to `-->` 
+	instead using of the more complicated SGML-style rule with paired `--`.
+	This is how most browsers parse comments and how XML defines them too.
+
+*	`<address>` has been added to the list of block-level elements and is now
+	treated as an HTML block instead of being wrapped within paragraph tags.
+
+*	Now only trim trailing newlines from code blocks, instead of trimming
+	all trailing whitespace characters.
+
+*	Fixed bug where this:
+
+		[text](http://m.com "title" )
+		
+	wasn't working as expected, because the parser wasn't allowing for spaces
+	before the closing paren.
+
+*	Filthy hack to support markdown='1' in div tags.
+
+*	_DoAutoLinks() now supports the 'dict://' URL scheme.
+
+*	PHP- and ASP-style processor instructions are now protected as
+	raw HTML blocks.
+
+		<? ... ?>
+		<% ... %>
+
+*	Fix for escaped backticks still triggering code spans:
+
+		There are two raw backticks here: \` and here: \`, not a code span
+
 
 Extra 1.0 - 5 September 2005
 
