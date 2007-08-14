@@ -7,12 +7,12 @@
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
-# Copyright (c) 2004-2005 John Gruber  
+# Copyright (c) 2004-2006 John Gruber  
 # <http://daringfireball.net/projects/markdown/>
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.2b7" ); # Sat 16 Sep 2006
+define( 'MARKDOWN_VERSION',  "1.0.1d" ); # Fri 1 Dec 2006
 
 
 #
@@ -62,7 +62,7 @@ function Markdown($text) {
 Plugin Name: Markdown
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.0.2b7
+Version: 1.0.1d
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -96,7 +96,7 @@ if (isset($wp_version)) {
 	# - Scramble important tags before passing them to the kses filter.
 	# - Run Markdown on excerpt then remove paragraph tags.
 	if (MARKDOWN_WP_COMMENTS) {
-		remove_filter('comment_text', 'wpautop');
+		remove_filter('comment_text', 'wpautop', 30);
 		remove_filter('comment_text', 'make_clickable');
 		add_filter('pre_comment_content', 'Markdown', 6);
 		add_filter('pre_comment_content', 'mdwp_hide_tags', 8);
@@ -145,7 +145,7 @@ function identify_modifier_markdown() {
 		'nicename'		=> 'Markdown',
 		'description'	=> 'A text-to-HTML conversion tool for web writers',
 		'authors'		=> 'Michel Fortin and John Gruber',
-		'licence'		=> 'GPL',
+		'licence'		=> 'BSD-like',
 		'version'		=> MARKDOWN_VERSION,
 		'help'			=> '<a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>'
 	);
@@ -172,6 +172,10 @@ if (strcasecmp(substr(__FILE__, -16), "classTextile.php") == 0) {
 			if ($lite == '' && $encode == '')    $text = Markdown($text);
 			if (function_exists('SmartyPants'))  $text = SmartyPants($text);
 			return $text;
+		}
+		# Fake restricted version: restrictions are not supported for now.
+		function TextileRestricted($text, $lite='', $noimage='') {
+			return $this->TextileThis($text, $lite);
 		}
 		# Workaround to ensure compatibility with TextPattern 4.0.3.
 		function blockLite($text) { return $text; }
@@ -302,7 +306,7 @@ class Markdown_Parser {
 							(?:
 								(?<=\s)			# lookbehind for whitespace
 								["(]
-								(.+?)			# title = $3
+								(.*?)			# title = $3
 								[")]
 								[ \t]*
 							)?	# title is optional
@@ -692,14 +696,14 @@ class Markdown_Parser {
 		# These must come last in case you've also got [link test][1]
 		# or [link test](/foo)
 		#
-		$text = preg_replace_callback('{
-			(					# wrap whole match in $1
-			  \[
-				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
-			  \]
-			)
-			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+//		$text = preg_replace_callback('{
+//			(					# wrap whole match in $1
+//			  \[
+//				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
+//			  \]
+//			)
+//			}xs',
+//			array(&$this, '_doAnchors_reference_callback'), $text);
 
 		return $text;
 	}
@@ -841,15 +845,12 @@ class Markdown_Parser {
 		$whole_match	= $matches[1];
 		$alt_text		= $matches[2];
 		$url			= $matches[3];
-		$title			= '';
-		if (isset($matches[6])) {
-			$title		= $matches[6];
-		}
+		$title			=& $matches[6];
 
 		$alt_text = str_replace('"', '&quot;', $alt_text);
-		$title    = str_replace('"', '&quot;', $title);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
+			$title = str_replace('"', '&quot;', $title);
 			$result .=  " title=\"$title\""; # $title already quoted
 		}
 		$result .= $this->empty_element_suffix;
@@ -1148,22 +1149,23 @@ class Markdown_Parser {
 		# <strong> must go first:
 		$text = preg_replace_callback('{
 				(						# $1: Marker
-					(?<!\*\*) \*\* |	#     (not preceded by two chars of
-					(?<!__)   __		#      the same marker)
-				)						
+					(?<!\*\*) \* |		#     (not preceded by two chars of
+					(?<!__)   _			#      the same marker)
+				)
+				\1
 				(?=\S) 					# Not followed by whitespace 
-				(?!\1)					#   or two others marker chars.
+				(?!\1\1)				#   or two others marker chars.
 				(						# $2: Content
 					(?:
 						[^*_]+?			# Anthing not em markers.
 					|
 										# Balence any regular emphasis inside.
-						([*_]) (?=\S) .+? (?<=\S) \3	# $3: em char (* or _)
+						\1 (?=\S) .+? (?<=\S) \1
 					|
 						(?! \1 ) .		# Allow unbalenced * and _.
 					)+?
 				)
-				(?<=\S) \1				# End mark not preceded by whitespace.
+				(?<=\S) \1\1			# End mark not preceded by whitespace.
 			}sx',
 			array(&$this, '_doItalicAndBold_strong_callback'), $text);
 		# Then <em>:
@@ -1207,9 +1209,10 @@ class Markdown_Parser {
 		$bq = $this->runBlockGamut($bq);		# recurse
 
 		$bq = preg_replace('/^/m', "  ", $bq);
-		# These leading spaces screw with <pre> content, so we need to fix that:
+		# These leading spaces cause problem with <pre> content, 
+		# so we need to fix that:
 		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', 
-									array(&$this, '_DoBlockQuotes_callback2'), $bq);
+			array(&$this, '_DoBlockQuotes_callback2'), $bq);
 
 		return $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
 	}
@@ -1245,52 +1248,46 @@ class Markdown_Parser {
 		#
 		# Unhashify HTML blocks
 		#
-//		foreach ($grafs as $key => $value) {
-//			if (isset( $this->html_blocks[$value] )) {
-//				$grafs[$key] = $this->html_blocks[$value];
-//			}
-//		}
-
 		foreach ($grafs as $key => $graf) {
 			# Modify elements of @grafs in-place...
 			if (isset($this->html_blocks[$graf])) {
 				$block = $this->html_blocks[$graf];
 				$graf = $block;
-				if (preg_match('{
-					\A
-					(							# $1 = <div> tag
-					  <div  \s+
-					  [^>]*
-					  \b
-					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
-					  1
-					  \2
-					  [^>]*
-					  >
-					)
-					(							# $3 = contents
-					.*
-					)
-					(</div>)					# $4 = closing tag
-					\z
-					}xs', $block, $matches))
-				{
-					list(, $div_open, , $div_content, $div_close) = $matches;
-
-					# We can't call Markdown(), because that resets the hash;
-					# that initialization code should be pulled into its own sub, though.
-					$div_content = $this->hashHTMLBlocks($div_content);
-					
-					# Run document gamut methods on the content.
-					foreach ($this->document_gamut as $method => $priority) {
-						$div_content = $this->$method($div_content);
-					}
-
-					$div_open = preg_replace(
-						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
-
-					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
-				}
+//				if (preg_match('{
+//					\A
+//					(							# $1 = <div> tag
+//					  <div  \s+
+//					  [^>]*
+//					  \b
+//					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
+//					  1
+//					  \2
+//					  [^>]*
+//					  >
+//					)
+//					(							# $3 = contents
+//					.*
+//					)
+//					(</div>)					# $4 = closing tag
+//					\z
+//					}xs', $block, $matches))
+//				{
+//					list(, $div_open, , $div_content, $div_close) = $matches;
+//
+//					# We can't call Markdown(), because that resets the hash;
+//					# that initialization code should be pulled into its own sub, though.
+//					$div_content = $this->hashHTMLBlocks($div_content);
+//					
+//					# Run document gamut methods on the content.
+//					foreach ($this->document_gamut as $method => $priority) {
+//						$div_content = $this->$method($div_content);
+//					}
+//
+//					$div_open = preg_replace(
+//						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
+//
+//					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
+//				}
 				$grafs[$key] = $graf;
 			}
 		}
@@ -1403,21 +1400,23 @@ class Markdown_Parser {
 
 	function tokenizeHTML($str) {
 	#
-	#   Parameter:  String containing HTML markup.
+	#   Parameter:  String containing HTML + Markdown markup.
 	#   Returns:    An array of the tokens comprising the input
-	#               string. Each token is either a tag (possibly with nested,
-	#               tags contained therein, such as <a href="<MTFoo>">, or a
-	#               run of text between tags. Each element of the array is a
+	#               string. Each token is either a tag or a run of text 
+	#               between tags. Each element of the array is a
 	#               two-element array; the first is either 'tag' or 'text';
 	#               the second is the actual value.
-	#   Note:       Takes code spans into account and does not generate tag 
-	#               tokens inside code spans.
+	#   Note:       Markdown code spans are taken into account: no tag token is 
+	#               generated within a code span.
 	#
 		$tokens = array();
 
 		while ($str != "") {
 			#
-			# 
+			# Each loop iteration seach for either the next tag or the next 
+			# openning code span marker. If a code span marker is found, the 
+			# code span is extracted in entierty and will result in an extra
+			# text token.
 			#
 			$parts = preg_split('{
 				(
@@ -1496,7 +1495,8 @@ class Markdown_Parser {
 			unset($blocks[0]); # Do not add first block twice.
 			foreach ($blocks as $block) {
 				# Calculate amount of space, insert spaces, insert block.
-				$amount = $this->tab_width - strlen($line) % $this->tab_width;
+				$amount = $this->tab_width - 
+					mb_strlen($line, 'UTF-8') % $this->tab_width;
 				$line .= str_repeat(" ", $amount) . $block;
 			}
 			$text .= "$line\n";
@@ -1558,73 +1558,7 @@ Version History
 
 See the readme file for detailed release notes for this version.
 
-1.0.2b7 (16 Sep 2006)
-
-*	Changed span and block gamut methods so that they loop over a 
-	customizable list of methods. This makes subclassing the parser a more 
-	interesting option for creating syntax extensions.
-
-*	Also added a "document" gamut loop which can be used to hook document-level 
-	methods (like for striping link definitions).
-
-*	Changed all methods which were inserting HTML code so that they now return 
-	a hashed representation of the code. New methods `hashSpan` and `hashBlock`
-	are used to hash respectivly span- and block-level generated content. This 
-	has a couple of significant effects:
-	
-	1.	It prevents invalid nesting of Markdown-generated elements which 
-	    could occur occuring with constructs like `*something [link*][1]`.
-	2.	It prevents problems occuring with deeply nested lists on which 
-	    paragraphs were ill-formed.
-	3.	It removes the need to call `hashHTMLBlocks` twice during the the 
-		block gamut.
-	
-	Hashes are turned back to HTML prior output.
-
-*	Made the block-level HTML parser smarter using a specially-crafted regular 
-	expression capable of handling nested tags.
-
-*	Solved backtick issues in tag attributes by rewriting the HTML tokenizer to 
-	be aware of code spans. All these lines should work correctly now:
-	
-		<span attr='`ticks`'>bar</span>
-		<span attr='``double ticks``'>bar</span>
-		`<test a="` content of attribute `">`
-
-*	`<address>` has been added to the list of block-level elements and is now
-	treated as an HTML block instead of being wrapped within paragraph tags.
-
-*	Now only trim trailing newlines from code blocks, instead of trimming
-	all trailing whitespace characters.
-
-*	Fixed bug where this:
-
-		[text](http://m.com "title" )
-		
-	wasn't working as expected, because the parser wasn't allowing for spaces
-	before the closing paren.
-
-*	Filthy hack to support markdown='1' in div tags.
-
-*	_DoAutoLinks() now supports the 'dict://' URL scheme.
-
-*	PHP- and ASP-style processor instructions are now protected as
-	raw HTML blocks.
-
-		<? ... ?>
-		<% ... %>
-
-*	Experimental support for [this] as a synonym for [this][].
-
-*	Fix for escaped backticks still triggering code spans:
-
-		There are two raw backticks here: \` and here: \`, not a code span
-
-
-1.0.1oo (19 May 2006)
-
-*   Converted PHP Markdown to a object-oriented design.
-
+1.0.1d (1 Dec 2006)
 
 1.0.1c (9 Dec 2005)
 
@@ -1654,7 +1588,7 @@ Copyright (c) 2004-2006 Michel Fortin
 <http://www.michelf.com/>  
 All rights reserved.
 
-Copyright (c) 2003-2004 John Gruber   
+Copyright (c) 2003-2006 John Gruber   
 <http://daringfireball.net/>   
 All rights reserved.
 
