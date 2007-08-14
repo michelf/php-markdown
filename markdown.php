@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',       "1.0.2b8" ); # Mon 21 May 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.3b1" ); # Mon 21 May 2007
+define( 'MARKDOWN_VERSION',       "1.0.1g" ); # Tue 3 Jul 2007
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.3" );  # Tue 3 Jul 2007
 
 
 #
@@ -119,7 +119,7 @@ if (isset($wp_version)) {
 		global $wp_markdown_hidden;
 		$wp_markdown_hidden[1] =
 			'<p> </p> <pre> </pre> <ol> </ol> <ul> </ul> <li> </li>';
-		$wp_markdown_hidden[2] = explode(str_rot13(
+		$wp_markdown_hidden[2] = explode(' ', str_rot13(
 			'pEj07ZbbBZ U1kqgh4w4p pre2zmeN6K QTi31t9pre ol0MP1jzJR '.
 			'ML5IjmbRol ulANi1NsGY J7zRLJqPul liA8ctl16T K9nhooUHli'));
 	}
@@ -419,7 +419,7 @@ class Markdown_Parser {
 						[ ]*				# trailing spaces/tabs
 						(?=\n+|\Z)	# followed by a newline or end of document
 					)
-			}xm',
+			}xmi',
 			array(&$this, '_hashHTMLBlocks_callback'),
 			$text);
 
@@ -436,7 +436,7 @@ class Markdown_Parser {
 						[ ]*				# trailing spaces/tabs
 						(?=\n+|\Z)	# followed by a newline or end of document
 					)
-			}xm',
+			}xmi',
 			array(&$this, '_hashHTMLBlocks_callback'),
 			$text);
 
@@ -457,7 +457,7 @@ class Markdown_Parser {
 						[ ]*
 						(?=\n{2,}|\Z)		# followed by a blank line or end of document
 					)
-			}x',
+			}xi',
 			array(&$this, '_hashHTMLBlocks_callback'),
 			$text);
 
@@ -728,14 +728,14 @@ class Markdown_Parser {
 		# These must come last in case you've also got [link test][1]
 		# or [link test](/foo)
 		#
-		$text = preg_replace_callback('{
-			(					# wrap whole match in $1
-			  \[
-				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
-			  \]
-			)
-			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+//		$text = preg_replace_callback('{
+//			(					# wrap whole match in $1
+//			  \[
+//				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
+//			  \]
+//			)
+//			}xs',
+//			array(&$this, '_doAnchors_reference_callback'), $text);
 
 		$this->in_anchor = false;
 		return $text;
@@ -1294,41 +1294,41 @@ class Markdown_Parser {
 			if (isset($this->html_blocks[$graf])) {
 				$block = $this->html_blocks[$graf];
 				$graf = $block;
-				if (preg_match('{
-					\A
-					(							# $1 = <div> tag
-					  <div  \s+
-					  [^>]*
-					  \b
-					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
-					  1
-					  \2
-					  [^>]*
-					  >
-					)
-					(							# $3 = contents
-					.*
-					)
-					(</div>)					# $4 = closing tag
-					\z
-					}xs', $block, $matches))
-				{
-					list(, $div_open, , $div_content, $div_close) = $matches;
-
-					# We can't call Markdown(), because that resets the hash;
-					# that initialization code should be pulled into its own sub, though.
-					$div_content = $this->hashHTMLBlocks($div_content);
-					
-					# Run document gamut methods on the content.
-					foreach ($this->document_gamut as $method => $priority) {
-						$div_content = $this->$method($div_content);
-					}
-
-					$div_open = preg_replace(
-						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
-
-					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
-				}
+//				if (preg_match('{
+//					\A
+//					(							# $1 = <div> tag
+//					  <div  \s+
+//					  [^>]*
+//					  \b
+//					  markdown\s*=\s*  ([\'"])	#	$2 = attr quote char
+//					  1
+//					  \2
+//					  [^>]*
+//					  >
+//					)
+//					(							# $3 = contents
+//					.*
+//					)
+//					(</div>)					# $4 = closing tag
+//					\z
+//					}xs', $block, $matches))
+//				{
+//					list(, $div_open, , $div_content, $div_close) = $matches;
+//
+//					# We can't call Markdown(), because that resets the hash;
+//					# that initialization code should be pulled into its own sub, though.
+//					$div_content = $this->hashHTMLBlocks($div_content);
+//					
+//					# Run document gamut methods on the content.
+//					foreach ($this->document_gamut as $method => $priority) {
+//						$div_content = $this->$method($div_content);
+//					}
+//
+//					$div_open = preg_replace(
+//						'{\smarkdown\s*=\s*([\'"]).+?\1}', '', $div_open);
+//
+//					$graf = $div_open . "\n" . $div_content . "\n" . $div_close;
+//				}
 				$grafs[$key] = $graf;
 			}
 		}
@@ -1526,7 +1526,7 @@ class Markdown_Parser {
 		# tab characters. Then we reconstruct every line by adding the 
 		# appropriate number of space between each blocks.
 		
-		$strlen = $this->utf8_strlen; # best strlen function for UTF-8.
+		$strlen = $this->utf8_strlen; # strlen function for UTF-8.
 		$lines = explode("\n", $text);
 		$text = "";
 		
@@ -1549,18 +1549,14 @@ class Markdown_Parser {
 	function _initDetab() {
 	#
 	# Check for the availability of the function in the `utf8_strlen` property
-	# (probably `mb_strlen`). If the function is not available, create a 
+	# (initially `mb_strlen`). If the function is not available, create a 
 	# function that will loosely count the number of UTF-8 characters with a
 	# regular expression.
 	#
 		if (function_exists($this->utf8_strlen)) return;
-		$this->utf8_strlen = 'Markdown_UTF8_strlen';
-		
-		if (function_exists($this->utf8_strlen)) return;
-		function Markdown_UTF8_strlen($text) {
-			return preg_match_all('/[\x00-\xBF]|[\xC0-\xFF][\x80-\xBF]*/', 
-				$text, $m);
-		}
+		$this->utf8_strlen = create_function('$text', 'return preg_match_all(
+			"/[\\\\x00-\\\\xBF]|[\\\\xC0-\\\\xFF][\\\\x80-\\\\xBF]*/", 
+			$text, $m);');
 	}
 
 
@@ -1744,7 +1740,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 							(?!\s)'.$enclosing_tag.'
 						)
 						\s*				# Whitespace.
-						(?:
+						(?>
 							".*?"		|	# Double quotes (can contain `>`)
 							\'.*?\'   	|	# Single quotes (can contain `>`)
 							.+?				# Anything but quotes and `>`.
@@ -1913,7 +1909,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					</?					# Any opening or closing tag.
 						[\w:$]+			# Tag name.
 						\s*				# Whitespace.
-						(?:
+						(?>
 							".*?"		|	# Double quotes (can contain `>`)
 							\'.*?\'   	|	# Single quotes (can contain `>`)
 							.+?				# Anything but quotes and `>`.
@@ -2719,33 +2715,7 @@ Version History
 
 See Readme file for details.
 
-Extra 1.1.3b1 (21 May 2007):
-
-*	The markdown="" attribute now accepts unquoted values.
-
-*	Fixed an issue where underscore-emphasis didn't work when applied on the 
-	first or the last word of an element having the markdown="1" or 
-	markdown="span" attribute set unless there was some surrounding whitespace.
-	This didn't work:
-	
-		<p markdown="1">_Hello_ _world_</p>
-	
-	Now it does produce emphasis as expected.
-
-*	Fixed an issue preventing footnotes from working when the parser's 
-	footnote id prefix variable (fn_id_prefix) is not empty.
-
-*	Fixed a performance problem with the regular expression for strong 
-	emphasis introduced in version 1.1 could sometime be long to process, 
-	give slightly wrong results, and in some circumstances could remove 
-	entirely the content for a whole paragraph.
-
-*	Fixed an issue were abbreviations tags could be incorrectly added 
-	inside URLs and title of links.
-
-*	Placing footnote markers inside a link, resulting in two nested links, is 
-	no longer allowed.
-
+Extra 1.1.3 (3 Jul 2007):
 
 Extra 1.1.2 (7 Feb 2007)
 
