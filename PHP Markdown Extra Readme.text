@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.0.1oo - Fri 19 May 2006
+Version 1.1b1 - Sat 16 Sep 2006
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -187,19 +187,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-1.0.1oo (19 May 2006)
-
-*   Converted PHP Markdown and PHP Markdown Extra to a object-oriented design.
-
-
-1.0.1 (9 December 2005)
-
-*	Fixed a problem occurring with PHP 5.1.1 due to a small 
-	change to strings variable replacement behaviour in 
-	this version.
-
-
-1.0 (5 September 2005)
+Extra 1.0 - 5 September 2005
 
 *   Added support for setting the id attributes for headers like this:
 	
@@ -226,7 +214,7 @@ Version History
     placed between `<p>` tags.
 
 
-1.0b4 (1 August 2005)
+Extra 1.0b4 - 1 August 2005
 
 *   Fixed some issues where whitespace around HTML blocks were trigging
     empty paragraph tags.
@@ -239,7 +227,7 @@ Version History
     lists and tables with PHP notice reporting flag set.
 
 
-1.0b3 (29 July 2005)
+Extra 1.0b3 - 29 July 2005
 
 *   Definition lists now require a blank line before each term. Solves
     an ambiguity where the last line of lazy-indented definitions could 
@@ -253,7 +241,7 @@ Version History
         ## Header <?php echo $number ?> ##
 
 
-1.0b2 (26 July 2005)
+Extra 1.0b2 - 26 July 2005
 
 *   Definition lists can now take two or more definitions for one term.
     This should have been the case before, but a bug prevented this 
@@ -278,7 +266,6 @@ Version History
 
 *   Added the pipe character to the backlash escape character lists.
 
-
 1.0b1 (25 Jun 2005)
 
 *   First public release of PHP Markdown Extra.
@@ -287,7 +274,7 @@ Version History
 Copyright and License
 ---------------------
 
-Copyright (c) 2004-2006 Michel Fortin  
+Copyright (c) 2004-2005 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
