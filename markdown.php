@@ -13,7 +13,7 @@
 
 
 define( 'MARKDOWN_VERSION',       "1.0.2b7" ); # Sat 16 Sep 2006
-define( 'MARKDOWNEXTRA_VERSION',  "1.1b1" );   # Sat 16 Sep 2006
+define( 'MARKDOWNEXTRA_VERSION',  "1.1b2" );   # Sat 16 Sep 2006
 
 
 #
@@ -63,7 +63,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1b1
+Version: 1.1b2
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -2373,12 +2373,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						[^_]+?			# Anthing not em markers.
 					|
 										# Balence any regular _ emphasis inside.
-						(?<![a-zA-Z0-9])_ (?=\S) (?! _) (.+?) 
+						(?<![a-zA-Z0-9]) _ (?=\S) (?! _) (.+?) 
 						(?<=\S) _ (?![a-zA-Z0-9])
+					|
+						___+
 					)+?
 				)
 				(?<=\S) __				# End mark not preceded by whitespace.
-				(?!\w)					# Not followed by alphanum.
+				(?![a-zA-Z0-9])				# Not followed by alphanum
+				(?!__)					#   or two others marker chars.
 			}sx',
 			'{
 				( (?<!\*\*) \*\* )		# $1: Marker (not preceded by two *)
@@ -2398,8 +2401,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			array(&$this, '_doItalicAndBold_strong_callback'), $text);
 		# Then <em>:
 		$text = preg_replace_callback(array(
-			'{ ( (?<!\w) _ ) (?=\S) (?! _)  (.+?) (?<=\S) _ (?!\w) }sx',
-			'{ ( (?<!\*)\* ) (?=\S) (?! \*) (.+?) (?<=\S) \* }sx',
+			'{ ( (?<!\w|_) _ ) (?![\s_]) (.+?) (?<![\s_]) _ (?!\w|_) }sx',
+			'{ ( (?<!  \*)\* ) (?![\s*]) (.+?) (?<![\s*])\* (?!  \*) }sx',
 			),
 			array(&$this, '_doItalicAndBold_em_callback'), $text);
 
@@ -2449,36 +2452,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	
 	### Footnotes
 	
-	function doFootnotes($text) {
-	#
-	# Replace footnote references in $text [^id] with a link to the footnote.
-	#
-		$text = preg_replace_callback('{\[\^(.+?)\]}', 
-			array(&$this, '_doFootnotes_callback'), $text);
-
-		return $text;
-	}
-	function _doFootnotes_callback($matches) {
-		$node_id = $this->footnote_prefix . $matches[1];
-		
-		# Create footnote marker only if it has a corresponding footnote *and*
-		# the footnote hasn't been used by another marker.
-		if (isset($this->footnotes[$node_id])) {
-			# Transfert footnote content to the ordered list.
-			$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
-			unset($this->footnotes[$node_id]);
-			
-			$num = count($this->footnotes_ordered);
-			$result = 
-				"<sup id=\"fnref:$node_id\">".
-				"<a href=\"#fn:$node_id\" rel=\"footnote\">$num</a>".
-				"</sup>";
-		} else {
-			$result = $matches[0];
-		}
-		return $this->hashSpan($result);
-	}
-	
 	function stripFootnotes($text) {
 	#
 	# Strips link definitions from text, stores the URLs and titles in
@@ -2488,7 +2461,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		# Link defs are in the form: [^id]: url "optional title"
 		$text = preg_replace_callback('{
-			^[ ]{0,'.$less_than_tab.'}\[\^(.+?)\]:	# note_id = $1
+			^[ ]{0,'.$less_than_tab.'}\[\^(.+?)\][ ]?:	# note_id = $1
 			  [ \t]*
 			  \n?					# maybe *one* newline
 			(						# text = $2 (no blank lines allowed)
@@ -2497,7 +2470,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					\n				# newlines but 
 					(?!\[\^.+?\]:\s)# negative lookahead for footnote marker.
-					(?!\n+\S{4})	# ensure line is not blank and followed 
+					(?!\n+[ ]{0,3}\S)# ensure line is not blank and followed 
 									# by non-indented content
 				)*
 			)		
@@ -2513,10 +2486,23 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 
 
+	function doFootnotes($text) {
+	#
+	# Replace footnote references in $text [^id] with a special text-token 
+	# which will be can be
+	#
+		$text = preg_replace('{\[\^(.+?)\]}', "a\0fn:\\1\0z", $text);
+		return $text;
+	}
+
+	
 	function appendFootnotes($text) {
 	#
 	# Append footnote list to text.
 	#
+		$text = preg_replace_callback('{a\0fn:(.*?)\0z}', 
+			array(&$this, '_appendFootnotes_callback'), $text);
+	
 		if (!empty($this->footnotes_ordered)) {
 			$text .= "\n\n";
 			$text .= "<div class=\"footnotes\">\n";
@@ -2530,7 +2516,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Add backlink to last paragraph; create new paragraph if needed.
 				$backlink = "<a href=\"#fnref:$note_id\" rev=\"footnote\">&#8617;</a>";
 				if (preg_match('{</p>$}', $footnote)) {
-					$footnote = substr($footnote, 0, -4) . " $backlink</p>";
+					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
 					$footnote .= "\n\n<p>$backlink</p>";
 				}
@@ -2542,10 +2528,31 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			
 			$text .= "</ol>\n";
 			$text .= "</div>\n";
+			
+			$text = preg_replace('{a\{fn:(.*?)\}z}', '[^\\1]', $text);
 		}
 		return $text;
 	}
-	
+	function _appendFootnotes_callback($matches) {
+		$node_id = $this->footnote_prefix . $matches[1];
+		
+		# Create footnote marker only if it has a corresponding footnote *and*
+		# the footnote hasn't been used by another marker.
+		if (isset($this->footnotes[$node_id])) {
+			# Transfert footnote content to the ordered list.
+			$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
+			unset($this->footnotes[$node_id]);
+			
+			$num = count($this->footnotes_ordered);
+			return
+				"<sup id=\"fnref:$node_id\">".
+				"<a href=\"#fn:$node_id\" rel=\"footnote\">$num</a>".
+				"</sup>";
+		}
+		
+		return "[^".$matches[1]."]";
+	}
+		
 	
 	### Abbreviations ###
 	
@@ -2558,7 +2565,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		# Link defs are in the form: [id]*: url "optional title"
 		$text = preg_replace_callback('{
-			^[ ]{0,'.$less_than_tab.'}\[(.+?)\]\*:	# abbr_id = $1
+			^[ ]{0,'.$less_than_tab.'}\*\[(.+?)\][ ]?:	# abbr_id = $1
 			  [ \t]* \n?			# maybe *one* newline
 			(.*)					# text = $2 (no blank lines allowed)	
 			}xm',
@@ -2580,7 +2587,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Replace footnote references in $text [^id] with a link to the footnote.
 	#
 		if ($this->abbr_matches) {
-			$regex = '{\b(?:'. implode('|', $this->abbr_matches) .')\b}';
+			$regex = '{(?<!\w)(?:'. implode('|', $this->abbr_matches) .')(?!\w)}';
 	
 			$text = preg_replace_callback($regex, 
 				array(&$this, '_doAbbreviations_callback'), $text);
@@ -2648,6 +2655,35 @@ Version History
 --------------- 
 
 See Readme file for details.
+
+1.1b2 (21 Sep 2006)
+
+*	Changed the space before footnote backlinks to an unbrekable space
+	`&#160;` at the suggestion of John Gruber.
+
+*	Fixed the out-of-order footnote problems which were occuring when they 
+	were refered to by markers from various block-level constructs.
+
+*	Fixed a bug where footnotes definition were taking the text following 
+	them even though that text had no indentation.
+
+*	Footnotes are now prevented from containing a reference to another 
+	footnote.
+
+*	Small change to the syntax for abbreviation definitions. Abbreviations are 
+	now defined like this:
+	
+		*[SGML]: Standard Generalized Markup Language
+	
+	The asterisk was previously after the brakets, making it harder to 
+	distinguish from link references.
+
+*	Abbreviations are now correctly surrounded by `<abbr>` tags when found 
+	around punctuation marks.
+
+*	Arranged badly nested emphasis to produce mostly the same result as
+	PHP Markdown. Still not ideal, but better.
+
 
 1.1b1 (16 Sep 2006)
 
