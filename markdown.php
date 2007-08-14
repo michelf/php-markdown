@@ -3,7 +3,7 @@
 # Markdown  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown
-# Copyright (c) 2004-2006 Michel Fortin  
+# Copyright (c) 2004-2007 Michel Fortin  
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1e" ); # Thu 28 Dec 2006
+define( 'MARKDOWN_VERSION',  "1.0.1f" ); # Wed 7 Feb 2007
 
 
 #
@@ -62,7 +62,7 @@ function Markdown($text) {
 Plugin Name: Markdown
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.0.1e
+Version: 1.0.1f
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -116,12 +116,14 @@ if (isset($wp_version)) {
 	}
 	
 	function mdwp_add_p($text) {
-		if (strlen($text) == 0) return;
-		if (strcasecmp(substr($text, -3), '<p>') == 0) return $text;
-		return '<p>'.$text.'</p>';
+		if (!preg_match('{^$|^<(p|ul|ol|dl|pre|blockquote)>}i', $text)) {
+			$text = '<p>'.$text.'</p>';
+			$text = preg_replace('{\n{2,}}', "</p>\n\n<p>", $text);
+		}
+		return $text;
 	}
 	
-	function mdwp_strip_p($t) { return preg_replace('{</?[pP]>}', '', $t); }
+	function mdwp_strip_p($t) { return preg_replace('{</?p>}i', '', $t); }
 
 	function mdwp_hide_tags($text) {
 		global $markdown_hidden_tags;
@@ -460,7 +462,7 @@ class Markdown_Parser {
 			array(&$this, '_hashHTMLBlocks_callback'),
 			$text);
 
-		# PHP and ASP-style processor instructions (<? and <%...%>)
+		# PHP and ASP-style processor instructions (<? and <%)
 		$text = preg_replace_callback('{
 				(?:
 					(?<=\n\n)		# Starting after a blank line
@@ -894,14 +896,17 @@ class Markdown_Parser {
 		return $text;
 	}
 	function _doHeaders_callback_setext_h1($matches) {
-		return $this->hashBlock("<h1>".$this->runSpanGamut($matches[1])."</h1>")."\n\n";
+		$block = "<h1>".$this->runSpanGamut($matches[1])."</h1>";
+		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_setext_h2($matches) {
-		return $this->hashBlock("<h2>".$this->runSpanGamut($matches[1])."</h2>")."\n\n";
+		$block = "<h2>".$this->runSpanGamut($matches[1])."</h2>";
+		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		return $this->hashBlock("<h$level>".$this->runSpanGamut($matches[2])."</h$level>")."\n\n";
+		$block = "<h$level>".$this->runSpanGamut($matches[2])."</h$level>";
+		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
 
@@ -973,9 +978,7 @@ class Markdown_Parser {
 		
 		$marker_any = ( $list_type == "ul" ? $marker_ul : $marker_ol );
 		
-		# Turn double returns into triple returns, so that we can make a
-		# paragraph for the last item in a list, if necessary:
-		$list = preg_replace("/\n{2,}/", "\n\n\n", $list);
+		$list .= "\n";
 		$result = $this->processListItems($list, $marker_any);
 		
 		$result = $this->hashBlock("<$list_type>\n" . $result . "</$list_type>");
@@ -1019,8 +1022,8 @@ class Markdown_Parser {
 			(\n)?							# leading line = $1
 			(^[ \t]*)						# leading whitespace = $2
 			('.$marker_any.') [ \t]+		# list marker = $3
-			((?s:.+?)						# list item text   = $4
-			(\n{1,2}))
+			((?s:.+?))						# list item text   = $4
+			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
 			(?= \n* (\z | \2 ('.$marker_any.') [ \t]+))
 			}xm',
 			array(&$this, '_processListItems_callback'), $list_str);
@@ -1032,9 +1035,12 @@ class Markdown_Parser {
 		$item = $matches[4];
 		$leading_line =& $matches[1];
 		$leading_space =& $matches[2];
+		$tailing_blank_line =& $matches[5];
 
-		if ($leading_line || preg_match('/\n{2,}/', $item)) {
-			$item = $this->runBlockGamut($this->outdent($item));
+		if ($leading_line || $tailing_blank_line || 
+			preg_match('/\n{2,}/', $item))
+		{
+			$item = $this->runBlockGamut($this->outdent($item)."\n");
 		}
 		else {
 			# Recursion for sub-lists:
@@ -1216,7 +1222,7 @@ class Markdown_Parser {
 		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', 
 			array(&$this, '_DoBlockQuotes_callback2'), $bq);
 
-		return $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
+		return "\n". $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
 	}
 	function _doBlockQuotes_callback2($matches) {
 		$pre = $matches[1];
@@ -1307,7 +1313,7 @@ class Markdown_Parser {
 							 '&amp;', $text);;
 
 		# Encode naked <'s
-		$text = preg_replace('{<(?![a-z/?\$!])}i', '&lt;', $text);
+		$text = preg_replace('{<(?![a-z/?\$!%])}i', '&lt;', $text);
 
 		return $text;
 	}
@@ -1326,8 +1332,8 @@ class Markdown_Parser {
 
 
 	function doAutoLinks($text) {
-		$text = preg_replace('{<((https?|ftp|dict):[^\'">\s]+)>}', 
-							 '<a href="\1">\1</a>', $text);
+		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}', 
+			array(&$this, '_doAutoLinks_url_callback'), $text);
 
 		# Email addresses: <address@domain.foo>
 		$text = preg_replace_callback('{
@@ -1340,15 +1346,20 @@ class Markdown_Parser {
 			)
 			>
 			}xi',
-			array(&$this, '_doAutoLinks_callback'), $text);
+			array(&$this, '_doAutoLinks_email_callback'), $text);
 
 		return $text;
 	}
-	function _doAutoLinks_callback($matches) {
+	function _doAutoLinks_url_callback($matches) {
+		$url = $this->encodeAmpsAndAngles($matches[1]);
+		$link = "<a href=\"$url\">$url</a>";
+		return $this->hashSpan($link);
+	}
+	function _doAutoLinks_email_callback($matches) {
 		$address = $matches[1];
 		$address = $this->unescapeSpecialChars($address);
-		$address = $this->encodeEmailAddress($address);
-		return $this->hashSpan($address);
+		$link = $this->encodeEmailAddress($address);
+		return $this->hashSpan($link);
 	}
 
 
@@ -1456,7 +1467,7 @@ class Markdown_Parser {
 				$str = $parts[2];
 				
 				# Skip the whole code span, pass as text token.
-				if (preg_match('/^(.*(?<!`\\\\)'.$parts[1].'(?!`))(.*)$/', 
+				if (preg_match('/^(.*(?<!`\\\\)'.$parts[1].'(?!`))(.*)$/sm', 
 					$str, $matches))
 				{
 					$tokens[] = array('text', $matches[1]);
@@ -1583,7 +1594,9 @@ Version History
 
 See the readme file for detailed release notes for this version.
 
-1.0.1e (21 Dec 2006)
+1.0.1f (7 Feb 2007):
+
+1.0.1e (28 Dec 2006)
 
 1.0.1d (1 Dec 2006)
 
@@ -1598,23 +1611,15 @@ See the readme file for detailed release notes for this version.
 1.0 (21 Aug 2004)
 
 
-Author & Contributors
----------------------
-
-Original Markdown by John Gruber  
-<http://daringfireball.net/>
-
-PHP port and extras by Michel Fortin  
-<http://www.michelf.com/>
-
-
 Copyright and License
 ---------------------
 
-Copyright (c) 2004-2006 Michel Fortin  
+PHP Markdown
+Copyright (c) 2004-2007 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
+Based on Markdown
 Copyright (c) 2003-2006 John Gruber   
 <http://daringfireball.net/>   
 All rights reserved.
