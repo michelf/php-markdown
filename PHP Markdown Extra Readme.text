@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.3b1 - Mon 21 May 2007
+Version 1.1.4 - Fri 3 Aug 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -206,6 +206,18 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1.4 (3 Aug 2007):
+
+1.0.1h (3 Aug 2007):
+
+*	Added two properties (`no_markup` and `no_entities`) to the parser 
+	allowing HTML tags and entities to be disabled.
+
+*	Fix for a problem introduced in 1.0.1g where posting comments in 
+	WordPress would trigger PHP warnings and cause some markup to be 
+	incorrectly filtered by the kses filter in WordPress.
+
 
 Extra 1.1.3 (3 Jul 2007):
 

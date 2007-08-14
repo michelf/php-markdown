@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',       "1.0.1g" ); # Tue 3 Jul 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.3" );  # Tue 3 Jul 2007
+define( 'MARKDOWN_VERSION',       "1.0.1h" ); # Fri 3 Aug 2007
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.4" );  # Fri 3 Aug 2007
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1.3
+Version: 1.1.4
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -116,10 +116,10 @@ if (isset($wp_version)) {
 		add_filter('get_comment_excerpt', 'Markdown', 6);
 		add_filter('get_comment_excerpt', 'mdwp_strip_p', 7);
 	
-		global $wp_markdown_hidden;
-		$wp_markdown_hidden[1] =
-			'<p> </p> <pre> </pre> <ol> </ol> <ul> </ul> <li> </li>';
-		$wp_markdown_hidden[2] = explode(' ', str_rot13(
+		global $mdwp_hidden_tags, $mdwp_placeholders;
+		$mdwp_hidden_tags = explode(' ',
+			'<p> </p> <pre> </pre> <ol> </ol> <ul> </ul> <li> </li>');
+		$mdwp_placeholders = explode(' ', str_rot13(
 			'pEj07ZbbBZ U1kqgh4w4p pre2zmeN6K QTi31t9pre ol0MP1jzJR '.
 			'ML5IjmbRol ulANi1NsGY J7zRLJqPul liA8ctl16T K9nhooUHli'));
 	}
@@ -135,14 +135,12 @@ if (isset($wp_version)) {
 	function mdwp_strip_p($t) { return preg_replace('{</?p>}i', '', $t); }
 
 	function mdwp_hide_tags($text) {
-		global $wp_markdown_hidden;
-		return str_replace(explode($wp_markdown_hidden), 
-							explode($wp_markdown_hidden), $text);
+		global $mdwp_hidden_tags, $mdwp_placeholders;
+		return str_replace($mdwp_hidden_tags, $mdwp_placeholders, $text);
 	}
 	function mdwp_show_tags($text) {
-		global $markdown_hidden_tags;
-		return str_replace(array_values($markdown_hidden_tags), 
-							array_keys($markdown_hidden_tags), $text);
+		global $mdwp_hidden_tags, $mdwp_placeholders;
+		return str_replace($mdwp_placeholders, $mdwp_hidden_tags, $text);
 	}
 }
 
@@ -211,12 +209,16 @@ class Markdown_Parser {
 
 	# Table of hash values for escaped characters:
 	var $escape_chars = '\`*_{}[]()>#+-.!';
-	var $escape_table = array();
+//	var $escape_table = array();
 	var $backslash_escape_table = array();
 
 	# Change to ">" for HTML output.
 	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
 	var $tab_width = MARKDOWN_TAB_WIDTH;
+	
+	# Change to `true` to disallow markup or entities.
+	var $no_markup = false;
+	var $no_entities = false;
 
 
 	function Markdown_Parser() {
@@ -236,7 +238,7 @@ class Markdown_Parser {
 		# Create an identical table but for escaped characters.
 		foreach (preg_split('/(?!^|$)/', $this->escape_chars) as $char) {
 			$entity = "&#". ord($char). ";";
-			$this->escape_table[$char] = $entity;
+//			$this->escape_table[$char] = $entity;
 			$this->backslash_escape_table["\\$char"] = $entity;
 		}
 		
@@ -348,6 +350,8 @@ class Markdown_Parser {
 
 
 	function hashHTMLBlocks($text) {
+		if ($this->no_markup)  return $text;
+	
 		$less_than_tab = $this->tab_width - 1;
 
 		# Hashify HTML blocks:
@@ -654,15 +658,18 @@ class Markdown_Parser {
 	# value; this is likely overkill, but it should prevent us from colliding
 	# with the escape values by accident.
 	#
+		if ($this->no_markup)  return $text;
+	
 		$tokens = $this->tokenizeHTML($text);
 		$text = '';   # rebuild $text from the tokens
 
 		foreach ($tokens as $cur_token) {
 			if ($cur_token[0] == 'tag') {
-				$cur_token[1] = str_replace('\\', $this->escape_table['\\'], $cur_token[1]);
-				$cur_token[1] = str_replace('`', $this->escape_table['`'], $cur_token[1]);
-				$cur_token[1] = str_replace('*', $this->escape_table['*'], $cur_token[1]);
-				$cur_token[1] = str_replace('_', $this->escape_table['_'], $cur_token[1]);
+//				$cur_token[1] = str_replace('\\', $this->escape_table['\\'], $cur_token[1]);
+//				$cur_token[1] = str_replace('`', $this->escape_table['`'], $cur_token[1]);
+//				$cur_token[1] = str_replace('*', $this->escape_table['*'], $cur_token[1]);
+//				$cur_token[1] = str_replace('_', $this->escape_table['_'], $cur_token[1]);
+				$cur_token[1] = $this->hashSpan($cur_token[1]);
 			}
 			$text .= $cur_token[1];
 		}
@@ -1339,6 +1346,11 @@ class Markdown_Parser {
 
 	function encodeAmpsAndAngles($text) {
 	# Smart processing for ampersands and angle brackets that need to be encoded.
+		if ($this->no_entities) {
+			$text = str_replace('&', '&amp;', $text);
+			$text = str_replace('<', '&lt;', $text);
+			return $text;
+		}
 
 		# Ampersand-encoding based entirely on Nat Irons's Amputator MT plugin:
 		#   http://bumppo.net/projects/amputator/
@@ -1358,9 +1370,11 @@ class Markdown_Parser {
 	#	Returns:    The string, with after processing the following backslash
 	#				escape sequences.
 	#
-		# Must process escaped backslashes first.
-		return str_replace(array_keys($this->backslash_escape_table),
-						   array_values($this->backslash_escape_table), $text);
+		# Must process escaped backslashes first (should be first in list).
+		foreach ($this->backslash_escape_table as $search => $replacement) {
+			$text = str_replace($search, $this->hashSpan($replacement), $text);
+		}
+		return $text;
 	}
 
 
@@ -2714,6 +2728,8 @@ Version History
 ---------------
 
 See Readme file for details.
+
+Extra 1.1.4 (3 Aug 2007):
 
 Extra 1.1.3 (3 Jul 2007):
 
