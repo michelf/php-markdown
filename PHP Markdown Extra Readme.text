@@ -1,0 +1,325 @@
+PHP Markdown Extra
+==================
+
+Version 1.0.1oo - Fri 19 May 2006
+
+by Michel Fortin
+<http://www.michelf.com/>
+
+based on Markdown by John Gruber  
+<http://daringfireball.net/>
+
+
+Introduction
+------------
+
+This is a special version of PHP Markdown with extra features. See
+<http://www.michelf.com/projects/php-markdown/extra/> for details.
+
+Markdown is a text-to-HTML conversion tool for web writers. Markdown
+allows you to write using an easy-to-read, easy-to-write plain text
+format, then convert it to structurally valid XHTML (or HTML).
+
+"Markdown" is two things: a plain text markup syntax, and a software 
+tool, written in Perl, that converts the plain text markup to HTML. 
+PHP Markdown is a port to PHP of the original Markdown program by 
+John Gruber.
+
+PHP Markdown can work as a plug-in for WordPress and bBlog, as a 
+modifier for the Smarty templating engine, or as a remplacement for
+textile formatting in any software that support textile.
+
+Full documentation of Markdown's syntax is available on John's 
+Markdown page: <http://daringfireball.net/projects/markdown/>
+
+
+Installation and Requirement
+----------------------------
+
+PHP Markdown requires PHP version 4.0.5 or later.
+
+
+### WordPress ###
+
+PHP Markdown works with [WordPress][wp], version 1.2 or later. 
+PHP Markdown is already bundled with WordPress. Still, you can find 
+here the latest version that may be newer than the latest WordPress 
+version.
+
+ [wp]: http://wordpress.org/
+
+1.  To use PHP Markdown with WordPress, place the "makrdown.php" file 
+    in the "plugins" folder. This folder is located inside 
+    "wp-content" at the root of your site:
+
+        (site home)/wp-content/plugins/
+
+2.  Activate the plugin with the administrative interface of 
+    WordPress. In the "Plugins" section you will now find Markdown. 
+    To activate the plugin, click on the "Activate" button on the 
+    same line than Markdown. Your entries will now be formatted by 
+    PHP Markdown.
+
+You can configure PHP Markdown to not apply to the comments on your 
+WordPress weblog. See the "Configuration" section below.
+
+Note: It is not possible at this time to apply a different set of 
+filters to different entries. All your entries will be formated by 
+PHP Markdown. This is currently a limitation of WordPress. If your old 
+entries are written in HTML (as opposed to another formatting syntax), 
+your site should not suffer much from installing PHP Markdown.
+
+
+### bBlog ###
+
+PHP Markdown also works with the latest version of [bBlog][bb].
+
+ [bb]: http://www.bblog.com/
+
+1.  To use PHP Markdown with bBlog, rename "markdown.php" to 
+    "modifier.markdown.php" and place the file in the "bBlog_plugins" 
+    folder. This folder is located inside the "bblog" directory of 
+    your site, like this:
+
+        (site home)/bblog/bBlog_plugins/modifier.markdown.php
+
+2.  Select "Markdown" as the "Entry Modifier" when you post a new 
+    entry. This setting will only apply to the entry you are editing.
+
+
+### Replacing Textile ###
+
+Many web programs written in PHP use [Textile][tx] to format your text. 
+To use PHP Markdown with these programs without having to change the 
+code, you can use PHP Markdown in "Textile Compatibility Mode."
+
+ [tx]: http://www.textism.com/tools/textile/
+
+1.  Rename the "markdown.php" file to "classTextile.php".
+
+2.  Locate the "classTextile.php" file hidden somewhere inside the 
+    installation of your program (see table below). Replace it with 
+    the PHP Markdown file you just renamed.
+
+As an helper, here you can learn where is the "classTextile.php" file 
+in some web programs:
+
+    Program       Location
+    ----------------------------------------------------------------
+    TextPattern   (site home)/textpattern/lib/classTextile.php
+    Pivot         (site home)/pivot/includes/textile/classtextile.php
+
+Contrary to Textile, Markdown does not convert quotes to curly ones 
+and does not convert multiple hyphens (`--` and `---`) into en- and 
+em-dashes. If you use PHP Markdown in Textile Compatibility Mode, you 
+can solve this problem by installing the "smartypants.php" file from 
+[PHP SmartyPants][psp] beside the "classTextile.php" file. The Textile 
+Compatibility Mode function will use SmartyPants automatically without 
+further modification.
+
+ [psp]: http://www.michelf.com/projects/php-smartypants/
+
+
+### In Your Own Programs ###
+
+You can use PHP Markdown easily in your current PHP program. Simply 
+include the file and then call the Markdown function on the text you 
+want to convert:
+
+    include_once "markdown.php";
+    $my_html = Markdown($my_text);
+
+If you wish to use PHP Markdown with another text filter function 
+built to parse HTML, you should filter the text *after* the Markdown
+function call. This is an example with [PHP SmartyPants][psp]:
+
+    $my_html = SmartyPants(Markdown($my_text));
+
+
+### With Smarty ###
+
+If your program use the [Smarty][sm] template engine, PHP Markdown 
+can now be used as a modifier for your templates. Rename "markdown.php" 
+to "modifier.markdown.php" and put it in your smarty plugins folder.
+
+  [sm]: http://smarty.php.net/
+
+If you are using MovableType 3.1 or later, the Smarty plugin folder is 
+located at `(MT CGI root)/php/extlib/smarty/plugins`. This will allow 
+Markdown to work on dynamic pages.
+
+
+Configuration
+-------------
+
+By default, PHP Markdown produces XHTML output for tags with empty 
+elements. E.g.:
+
+    <br />
+
+Markdown can be configured to produce HTML-style tags; e.g.:
+
+    <br>
+
+To do this, you  must edit the "$md_empty_element_suffix" variable
+below the "Global default settings" header at the start of the
+"markdown.php" file.
+
+
+### WordPress-Specific Settings ###
+
+By default, the Markdown plugin applies to both posts and comments on 
+your WordPress weblog. To deactivate one or the other, edit the 
+`$md_wp_posts` or `$md_wp_comments` variable under the "WordPress 
+settings" header at the start of the "markdown.php" file.
+
+
+Bugs
+----
+
+To file bug reports please send email to:
+<michel.fortin@michelf.com>
+
+Please include with your report: (1) the example input; (2) the output you
+expected; (3) the output PHP Markdown actually produced.
+
+
+Version History
+---------------
+
+1.0.1oo (19 May 2006)
+
+*   Converted PHP Markdown and PHP Markdown Extra to a object-oriented design.
+
+
+1.0.1 (9 December 2005)
+
+*	Fixed a problem occurring with PHP 5.1.1 due to a small 
+	change to strings variable replacement behaviour in 
+	this version.
+
+
+1.0 (5 September 2005)
+
+*   Added support for setting the id attributes for headers like this:
+	
+        Header 1            {#header1}
+        ========
+	
+        ## Header 2 ##      {#header2}
+	
+    This only work only for headers for now.
+
+*   Tables will now work correctly as the first element of a definition 
+    list. For example, this input:
+
+        Term
+
+        :   Header  | Header
+            ------- | -------
+            Cell    | Cell
+		    
+    used to produce no definition list and a table where the first 
+    header was named ": Header". This is now fixed.
+
+*   Fix for a problem where a paragraph following a table was not 
+    placed between `<p>` tags.
+
+
+1.0b4 (1 August 2005)
+
+*   Fixed some issues where whitespace around HTML blocks were trigging
+    empty paragraph tags.
+
+*   Fixed an HTML block parsing issue that would cause a block element 
+    following a code span or block with unmatched opening bracket to be
+    placed inside a paragraph.
+
+*   Removed some PHP notices that could appear when parsing definition
+    lists and tables with PHP notice reporting flag set.
+
+
+1.0b3 (29 July 2005)
+
+*   Definition lists now require a blank line before each term. Solves
+    an ambiguity where the last line of lazy-indented definitions could 
+    be mistaken by PHP Markdown as a new term in the list.
+
+*   Definition lists now support multiple terms per definition.
+
+*   Some special tags were replaced in the output by their md5 hash 
+    key. Things such as this now work as expected:
+	
+        ## Header <?php echo $number ?> ##
+
+
+1.0b2 (26 July 2005)
+
+*   Definition lists can now take two or more definitions for one term.
+    This should have been the case before, but a bug prevented this 
+    from working right.
+
+*   Fixed a problem where single column table with a pipe only at the
+    end where not parsed as table. Here is such a table:
+	
+        | header
+        | ------
+        | cell
+
+*   Fixed problems with empty cells in the first column of a table with 
+    no leading pipe, like this one:
+	
+        header | header
+        ------ | ------
+               | cell
+
+*   Code spans containing pipes did not within a table. This is now 
+    fixed by parsing code spans before splitting rows into cells.
+
+*   Added the pipe character to the backlash escape character lists.
+
+
+1.0b1 (25 Jun 2005)
+
+*   First public release of PHP Markdown Extra.
+
+
+Copyright and License
+---------------------
+
+Copyright (c) 2004-2006 Michel Fortin  
+<http://www.michelf.com/>  
+All rights reserved.
+
+Based on Markdown  
+Copyright (c) 2003-2005 John Gruber   
+<http://daringfireball.net/>   
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+*   Redistributions of source code must retain the above copyright 
+    notice, this list of conditions and the following disclaimer.
+
+*   Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the 
+    distribution.
+
+*   Neither the name "Markdown" nor the names of its contributors may
+    be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+This software is provided by the copyright holders and contributors "as
+is" and any express or implied warranties, including, but not limited
+to, the implied warranties of merchantability and fitness for a
+particular purpose are disclaimed. In no event shall the copyright owner
+or contributors be liable for any direct, indirect, incidental, special,
+exemplary, or consequential damages (including, but not limited to,
+procurement of substitute goods or services; loss of use, data, or
+profits; or business interruption) however caused and on any theory of
+liability, whether in contract, strict liability, or tort (including
+negligence or otherwise) arising in any way out of the use of this
+software, even if advised of the possibility of such damage.
