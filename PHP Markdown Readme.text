@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1oo - Fri 19 May 2006
+Version 1.0.2b7 - Sat 16 Sep 2006
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -184,17 +184,6 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-1.0.1oo (19 May 2006)
-
-*   Converted PHP Markdown to a object-oriented design.
-
-
-1.0.1c (9 Dec 2005)
-
-*	Fixed a problem occurring with PHP 5.1.1 due to a small 
-	change to strings variable replacement behaviour in 
-	this version.
-
 
 1.0.1b (6 Jun 2005)
 
@@ -237,9 +226,6 @@ Version History
 	tampering with Markdown-formatted text. More details here:
 	<http://www.michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
 
-*	Added a configuration variable for WordPress that can disable the 
-	Markdown filter on comments.
-
 
 1.0.1a (15 Apr 2005)
 
@@ -262,7 +248,7 @@ Version History
 	filter so that it runs after Markdown.
 
 
-1.0.2b1 (5 Mar 2005)
+1.0.2b1 - 5 Mar 2005
 
 *	Fix for backticks within HTML tag:
 
@@ -441,7 +427,7 @@ Version History
 Copyright and License
 ---------------------
 
-Copyright (c) 2004-2006 Michel Fortin  
+Copyright (c) 2004-2005 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
