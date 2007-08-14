@@ -13,7 +13,7 @@
 
 
 define( 'MARKDOWN_VERSION',       "1.0.2b7" ); # Sat 16 Sep 2006
-define( 'MARKDOWNEXTRA_VERSION',  "1.1b2" );   # Sat 16 Sep 2006
+define( 'MARKDOWNEXTRA_VERSION',  "1.1b3" );   # Sat 11 Nov 2006
 
 
 #
@@ -25,6 +25,14 @@ define( 'MARKDOWN_EMPTY_ELEMENT_SUFFIX',  " />");
 
 # Define the width of a tab for code blocks.
 define( 'MARKDOWN_TAB_WIDTH',     4 );
+
+# Optional title attribute for footnote links and backlinks.
+define( 'MARKDOWN_FN_LINK_TITLE',         "" );
+define( 'MARKDOWN_FN_BACKLINK_TITLE',     "" );
+
+# Optional class attribute for footnote links and backlinks.
+define( 'MARKDOWN_FN_LINK_CLASS',         "" );
+define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
 
 
 #
@@ -63,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1b2
+Version: 1.1b3
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -1523,8 +1531,16 @@ class Markdown_Parser {
 
 class MarkdownExtra_Parser extends Markdown_Parser {
 
-	# Prefix text for footnote ids.
-	var $footnote_prefix = "";
+	# Prefix for footnote ids.
+	var $fn_id_prefix = "";
+	
+	# Optional title attribute for footnote links and backlinks.
+	var $fn_link_title = MARKDOWN_FN_LINK_TITLE;
+	var $fn_backlink_title = MARKDOWN_FN_BACKLINK_TITLE;
+	
+	# Optional class attribute for footnote links and backlinks.
+	var $fn_link_class = MARKDOWN_FN_LINK_CLASS;
+	var $fn_backlink_class = MARKDOWN_FN_BACKLINK_CLASS;
 
 
 	function MarkdownExtra_Parser() {
@@ -1988,39 +2004,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 
 
-//	function runBlockGamut($text, $hash_html_blocks = true) {
-//	#
-//	# Redefined to add definition lists and move HTML block hashing at the start.
-//	#
-//		if ($hash_html_blocks) {
-//			# We need to escape raw HTML in Markdown source before doing anything 
-//			# else. This need to be done for each block, and not only at the 
-//			# begining in the Markdown function since hashed blocks can be part of
-//			# a list item and could have been indented. Indented blocks would have 
-//			# been seen as a code block in previous pass of _HashHTMLBlocks.
-//			$text = $this->hashHTMLBlocks($text);
-//		}
-//
-//		$text = $this->doHeaders($text);
-//		$text = $this->doTables($text);
-//
-//		# Do Horizontal Rules:
-//		$text = preg_replace(
-//			array('{^[ ]{0,2}([ ]?\*[ ]?){3,}[ \t]*$}mx',
-//				  '{^[ ]{0,2}([ ]? -[ ]?){3,}[ \t]*$}mx',
-//				  '{^[ ]{0,2}([ ]? _[ ]?){3,}[ \t]*$}mx'),
-//			$this->hashBlock("\n<hr$this->empty_element_suffix\n"), $text);
-//
-//		$text = $this->doLists($text);
-//		$text = $this->doDefLists($text);
-//		$text = $this->doCodeBlocks($text);
-//		$text = $this->doBlockQuotes($text);
-//		$text = $this->formParagraphs($text);
-//
-//		return $text;
-//	}
-
-
 	function doHeaders($text) {
 	#
 	# Redefined to add id attribute support.
@@ -2211,31 +2194,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 
 	
-	#
-	# Redefined callbacks that should now return hashed output.
-	#
-//	function _doLists_callback_top($matches) {
-//		# Calling the nested variant as there is no point in trimming 
-//		# whitespace when hashing output blocks.
-//		return $this->_doLists_callback_nested($matches);
-//	}
-//	function _doLists_callback_nested($matches) {
-//		$block = parent::_doLists_callback_nested($matches);
-//		return "\n" . $this->hashBlock(trim($block)) . "\n\n";
-//	}
-//
-//	function _doCodeBlocks_callback($matches) {
-//		$result = parent::_doCodeBlocks_callback($matches);
-//		return "\n\n" . $this->hashBlock(trim($result)) . "\n\n";
-//	}
-//
-//	function _doBlockQuotes_callback($matches) {
-//		$result = parent::_doBlockQuotes_callback($matches);
-//		return $this->hashBlock(trim($result)) . "\n\n";
-//	}
-
-
-
 	function doDefLists($text) {
 	#
 	# Form HTML definition lists.
@@ -2509,12 +2467,29 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$text .= "<hr". MARKDOWN_EMPTY_ELEMENT_SUFFIX ."\n";
 			$text .= "<ol>\n\n";
 			
+			$attr = " rev=\"footnote\"";
+			if ($this->fn_backlink_class != "") {
+				$class = $this->fn_backlink_class;
+				$class = $this->encodeAmpsAndAngles($class);
+				$class = str_replace('"', '&quot;', $class);
+				$attr .= " class=\"$class\"";
+			}
+			if ($this->fn_backlink_title != "") {
+				$title = $this->fn_backlink_title;
+				$title = $this->encodeAmpsAndAngles($title);
+				$title = str_replace('"', '&quot;', $title);
+				$attr .= " title=\"$title\"";
+			}
+			$num = 0;
+			
 			foreach ($this->footnotes_ordered as $note_id => $footnote) {
 				$footnote .= "\n"; # Need to append newline before parsing.
 				$footnote = $this->runBlockGamut("$footnote\n");
 				
+				$attr2 = str_replace("%%", ++$num, $attr);
+				
 				# Add backlink to last paragraph; create new paragraph if needed.
-				$backlink = "<a href=\"#fnref:$note_id\" rev=\"footnote\">&#8617;</a>";
+				$backlink = "<a href=\"#fnref:$note_id\"$attr2>&#8617;</a>";
 				if (preg_match('{</p>$}', $footnote)) {
 					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
@@ -2534,7 +2509,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _appendFootnotes_callback($matches) {
-		$node_id = $this->footnote_prefix . $matches[1];
+		$node_id = $this->fn_id_prefix . $matches[1];
 		
 		# Create footnote marker only if it has a corresponding footnote *and*
 		# the footnote hasn't been used by another marker.
@@ -2544,9 +2519,24 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			unset($this->footnotes[$node_id]);
 			
 			$num = count($this->footnotes_ordered);
+			$attr = " rel=\"footnote\"";
+			if ($this->fn_link_class != "") {
+				$class = $this->fn_link_class;
+				$class = $this->encodeAmpsAndAngles($class);
+				$class = str_replace('"', '&quot;', $class);
+				$attr .= " class=\"$class\"";
+			}
+			if ($this->fn_link_title != "") {
+				$title = $this->fn_link_title;
+				$title = $this->encodeAmpsAndAngles($title);
+				$title = str_replace('"', '&quot;', $title);
+				$attr .= " title=\"$title\"";
+			}
+			$attr = str_replace("%%", $num, $attr);
+			
 			return
 				"<sup id=\"fnref:$node_id\">".
-				"<a href=\"#fn:$node_id\" rel=\"footnote\">$num</a>".
+				"<a href=\"#fn:$node_id\" $attr>$num</a>".
 				"</sup>";
 		}
 		
@@ -2655,6 +2645,12 @@ Version History
 --------------- 
 
 See Readme file for details.
+
+1.1b3 (11 Nov 2006)
+
+*	Added configuration variables allowing custom class names and titles
+	on footnote links and backlinks.
+
 
 1.1b2 (21 Sep 2006)
 
