@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',       "1.0.1d" ); # Fri 1 Dec 2006
-define( 'MARKDOWNEXTRA_VERSION',  "1.1" );    # Fri 1 Dec 2006
+define( 'MARKDOWN_VERSION',       "1.0.1e" ); # Thu 28 Dec 2006
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.1" );  # Thu 28 Dec 2006
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1
+Version: 1.1.1
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -214,6 +214,8 @@ class Markdown_Parser {
 	#
 	# Constructor function. Initialize appropriate member variables.
 	#
+		$this->_initDetab();
+	
 		$this->nested_brackets = 
 			str_repeat('(?>[^\[\]]+|\[', $this->nested_brackets_depth).
 			str_repeat('\])*', $this->nested_brackets_depth);
@@ -1337,9 +1339,9 @@ class Markdown_Parser {
 			<
 			(?:mailto:)?
 			(
-				[-.\w]+
+				[-.\w\x80-\xFF]+
 				\@
-				[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+
+				[-a-z0-9\x80-\xFF]+(\.[-a-z0-9\x80-\xFF]+)*\.[a-z]+
 			)
 			>
 			}xi',
@@ -1363,34 +1365,36 @@ class Markdown_Parser {
 	#		of the address encoded as either a decimal or hex entity, in
 	#		the hopes of foiling most address harvesting spam bots. E.g.:
 	#
-	#	  <a href="&#x6D;&#97;&#105;&#108;&#x74;&#111;:&#102;&#111;&#111;&#64;&#101;
-	#		x&#x61;&#109;&#x70;&#108;&#x65;&#x2E;&#99;&#111;&#109;">&#102;&#111;&#111;
-	#		&#64;&#101;x&#x61;&#109;&#x70;&#108;&#x65;&#x2E;&#99;&#111;&#109;</a>
+	#	  <p><a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x66;o&#111;
+	#        &#x40;&#101;&#x78;&#97;&#x6d;&#112;&#x6c;&#101;&#46;&#x63;&#111;
+	#        &#x6d;">&#x66;o&#111;&#x40;&#101;&#x78;&#97;&#x6d;&#112;&#x6c;
+	#        &#101;&#46;&#x63;&#111;&#x6d;</a></p>
 	#
-	#	Based by a filter by Matthew Wickline, posted to the BBEdit-Talk
-	#	mailing list: <http://tinyurl.com/yu7ue>
+	#	Based by a filter by Matthew Wickline, posted to BBEdit-Talk.
+	#   With some optimizations by Milian Wolff.
 	#
 		$addr = "mailto:" . $addr;
-		$length = strlen($addr);
-
-		# leave ':' alone (to spot mailto: later)
-		$addr = preg_replace_callback('/([^\:])/', 
-									  array(&$this, '_encodeEmailAddress_callback'), $addr);
-
-		$addr = "<a href=\"$addr\">$addr</a>";
-		# strip the mailto: from the visible part
-		$addr = preg_replace('/">.+?:/', '">', $addr);
+		$chars = preg_split('/(?<!^)(?!$)/', $addr);
+		$seed = (int)abs(crc32($addr) / strlen($addr)); # Deterministic seed.
+		
+		foreach ($chars as $key => $char) {
+			$ord = ord($char);
+			# Ignore non-ascii chars.
+			if ($ord < 128) {
+				$r = ($seed * (1 + $key)) % 100; # Pseudo-random function.
+				# roughly 10% raw, 45% hex, 45% dec
+				# '@' *must* be encoded. I insist.
+				if ($r > 90 && $char != '@') /* do nothing */;
+				else if ($r < 45) $chars[$key] = '&#x'.dechex($ord).';';
+				else              $chars[$key] = '&#'.$ord.';';
+			}
+		}
+		
+		$addr = implode('', $chars);
+		$text = implode('', array_slice($chars, 7)); # text without `mailto:`
+		$addr = "<a href=\"$addr\">$text</a>";
 
 		return $addr;
-	}
-	function _encodeEmailAddress_callback($matches) {
-		$char = $matches[1];
-		$r = rand(0, 100);
-		# roughly 10% raw, 45% hex, 45% dec
-		# '@' *must* be encoded. I insist.
-		if ($r > 90 && $char != '@') return $char;
-		if ($r < 45) return '&#x'.dechex(ord($char)).';';
-		return '&#'.ord($char).';';
 	}
 
 
@@ -1481,6 +1485,10 @@ class Markdown_Parser {
 	}
 
 
+	# Strlen function that will be used by detab. _initDetab will create a 
+	# function to hanlde UTF-8 if the default function does not exist.
+	var $utf8_strlen = 'mb_strlen';
+	
 	function detab($text) {
 	#
 	# Replace tabs with the appropriate amount of space.
@@ -1489,6 +1497,7 @@ class Markdown_Parser {
 		# tab characters. Then we reconstruct every line by adding the 
 		# appropriate number of space between each blocks.
 		
+		$strlen = $this->utf8_strlen; # best strlen function for UTF-8.
 		$lines = explode("\n", $text);
 		$text = "";
 		
@@ -1501,12 +1510,28 @@ class Markdown_Parser {
 			foreach ($blocks as $block) {
 				# Calculate amount of space, insert spaces, insert block.
 				$amount = $this->tab_width - 
-					mb_strlen($line, 'UTF-8') % $this->tab_width;
+					$strlen($line, 'UTF-8') % $this->tab_width;
 				$line .= str_repeat(" ", $amount) . $block;
 			}
 			$text .= "$line\n";
 		}
 		return $text;
+	}
+	function _initDetab() {
+	#
+	# Check for the availability of the function in the `utf8_strlen` property
+	# (probably `mb_strlen`). If the function is not available, create a 
+	# function that will loosely count the number of UTF-8 characters with a
+	# regular expression.
+	#
+		if (function_exists($this->utf8_strlen)) return;
+		$this->utf8_strlen = 'Markdown_UTF8_strlen';
+		
+		if (function_exists($this->utf8_strlen)) return;
+		function Markdown_UTF8_strlen($text) {
+			return preg_match_all('/[\x00-\xBF]|[\xC0-\xFF][\x80-\xBF]*/', 
+				$text, $m);
+		}
 	}
 
 
@@ -1584,8 +1609,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# from other articles when generating a page which contains more than
 		# one article (e.g. an index page that shows the N most recent
 		# articles):
-		$this->footnote_content = array();
-		$this->footnote_numbers = array();
+		$this->footnotes = array();
+		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_matches = array();
 		$this->html_cleans = array();
@@ -2031,7 +2056,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ \t]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\}[ ]*)? # id attribute
+				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})? # id attribute
+				[ \t]*
 				\n+
 			}xm',
 			array(&$this, '_doHeaders_callback_atx'), $text);
@@ -2556,7 +2582,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# Link defs are in the form: [id]*: url "optional title"
 		$text = preg_replace_callback('{
 			^[ ]{0,'.$less_than_tab.'}\*\[(.+?)\][ ]?:	# abbr_id = $1
-			  [ \t]* \n?			# maybe *one* newline
 			(.*)					# text = $2 (no blank lines allowed)	
 			}xm',
 			array(&$this, '_stripAbbreviations_callback'),
@@ -2642,9 +2667,11 @@ expected; (3) the output Markdown actually produced.
 
 
 Version History
---------------- 
+---------------
 
 See Readme file for details.
+
+Extra 1.1.1 (21 Dec 2006)
 
 Extra 1.1 (1 Dec 2006)
 
@@ -2666,6 +2693,7 @@ PHP port and extras by Michel Fortin
 Copyright and License
 ---------------------
 
+PHP Markdown & Extra
 Copyright (c) 2004-2006 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.

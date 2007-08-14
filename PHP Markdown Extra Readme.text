@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1 - Fri 1 Dec 2006
+Version 1.1.1 - Thu 28 Dec 2006
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -148,6 +148,27 @@ located at `(MT CGI root)/php/extlib/smarty/plugins`. This will allow
 Markdown to work on dynamic pages.
 
 
+### Updating Markdown in Other Programs ###
+
+Many web applications now ship with PHP Markdown, or have plugins to 
+perform the conversion to HTML. You can update PHP Markdown -- or 
+replace it with PHP Markdown Extra -- in many of these programs by 
+swapping the old "markdown.php" file for the new one.
+
+Here is a short non-exaustive list of some programs and where they 
+hide the "markdown.php" file.
+
+| Program   | Path to Markdown
+| -------   | ----------------
+| [Pivot][] | `(site home)/pivot/includes/markdown/`
+
+If you're unsure if you can do this with your application, ask the 
+developer, or wait for the developer to update his application or 
+plugin with the new version of PHP Markdown.
+
+ [Pivot]: http://pivotlog.net/
+
+
 Configuration
 -------------
 
@@ -185,6 +206,35 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1.1 (28 Dec 2006)
+
+*	Fixed a problem where whitespace at the end of the line of an atx-style
+	header would cause tailing `#` to appear as part of the header's content.
+	This was caused by a small error in the regex that handles the definition
+	for the id attribute in PHP Markdown Extra.
+
+*	Fixed a problem where empty abbreviations definitions would eat the 
+	following line as its definition.
+
+*	Fixed an issue with calling the Markdown parser repetitivly with text 
+	containing footnotes. The footnote hashes were not reinitialized properly.
+
+
+1.0.1e (28 Dec 2006)
+
+*	Added support for internationalized domain names for email addresses in 
+	automatic link. Improved the speed at which email addresses are converted 
+	to entities. Thanks to Milian Wolff for his optimisations.
+
+*	Made deterministic the conversion to entities of email addresses in 
+	automatic links. This means that a given email address will always be 
+	encoded the same way.
+
+*	PHP Markdown will now use its own function to calculate the length of an 
+	UTF-8 string in `detab` when `mb_strlen` is not available instead of 
+	giving a fatal error.
+
 
 Extra 1.1 (1 Dec 2006)
 
