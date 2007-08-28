@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1h - Fri 3 Aug 2007
+Version 1.0.1i - Tue 28 Aug 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -202,6 +202,17 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+1.0.1i (28 Aug 2007):
+
+*	Fixed a problem where an escaped backslash before a code span 
+	would prevent the code span from being created. This should now
+	work as expected:
+	
+		Litteral backslash: \\`code span`
+
+*	Overall speed improvements, especially with long documents.
+
 
 1.0.1h (3 Aug 2007):
 
