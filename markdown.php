@@ -1416,25 +1416,7 @@ class Markdown_Parser {
 		
 		$text = preg_replace_callback('/^.*\t.*$/m',
 			array(&$this, '_detab_callback'), $text);
-		
-//		$strlen = $this->utf8_strlen; # strlen function for UTF-8.
-//		$lines = explode("\n", $text);
-//		$text = "";
-//		
-//		foreach ($lines as $line) {
-//			# Split in blocks.
-//			$blocks = explode("\t", $line);
-//			# Add each blocks to the line.
-//			$line = $blocks[0];
-//			unset($blocks[0]); # Do not add first block twice.
-//			foreach ($blocks as $block) {
-//				# Calculate amount of space, insert spaces, insert block.
-//				$amount = $this->tab_width - 
-//					$strlen($line, 'UTF-8') % $this->tab_width;
-//				$line .= str_repeat(" ", $amount) . $block;
-//			}
-//			$text .= "$line\n";
-//		}
+
 		return $text;
 	}
 	function _detab_callback($matches) {
