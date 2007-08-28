@@ -340,7 +340,7 @@ class Markdown_Parser {
 
 	function hashHTMLBlocks($text) {
 		if ($this->no_markup)  return $text;
-	
+
 		$less_than_tab = $this->tab_width - 1;
 
 		# Hashify HTML blocks:
@@ -383,7 +383,7 @@ class Markdown_Parser {
 				|
 				  <\2			# nested opening tag
 					'.$attr.'	# attributes
-					(?:
+					(?>
 					  />
 					|
 					  >', $nested_tags_level).	# end of opening tag
@@ -1460,8 +1460,6 @@ class Markdown_Parser {
 	function _unhash_callback($matches) {
 		return $this->html_hashes[$matches[0]];
 	}
-
-}
 
 }
 
