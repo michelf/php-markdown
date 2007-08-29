@@ -2316,7 +2316,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#		$text - string to process with html <p> tags
 	#
 		# Strip leading and trailing lines:
-		$text = preg_replace(array('/\A\n+/', '/\n+\z/'), '', $text);
+		$text = preg_replace('/\A\n+/|/\n+\z/', '', $text);
 		
 		$grafs = preg_split('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY);
 
