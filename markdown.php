@@ -1049,7 +1049,7 @@ class Markdown_Parser {
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 
 		# trim leading newlines and trailing newlines
-		$codeblock = preg_replace(array('/\A\n+/', '/\n+\z/'), '', $codeblock);
+		$codeblock = preg_replace('/\A\n+|\n+\z/', '', $codeblock);
 
 		$codeblock = "<pre><code>$codeblock\n</pre></code>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
@@ -1125,7 +1125,7 @@ class Markdown_Parser {
 	function _doBlockQuotes_callback($matches) {
 		$bq = $matches[1];
 		# trim one level of quoting - trim whitespace-only lines
-		$bq = preg_replace(array('/^[ ]*>[ ]?/m', '/^[ ]+$/m'), '', $bq);
+		$bq = preg_replace('/^[ ]*>[ ]?|^[ ]+$/m', '', $bq);
 		$bq = $this->runBlockGamut($bq);		# recurse
 
 		$bq = preg_replace('/^/m', "  ", $bq);
@@ -1149,7 +1149,7 @@ class Markdown_Parser {
 	#		$text - string to process with html <p> tags
 	#
 		# Strip leading and trailing lines:
-		$text = preg_replace(array('/\A\n+/', '/\n+\z/'), '', $text);
+		$text = preg_replace('/\A\n+|\n+\z/', '', $text);
 
 		$grafs = preg_split('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY);
 
