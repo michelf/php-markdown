@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1i" ); # Tue 28 Aug 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.5" );  # Tue 28 Aug 2007
+define( 'MARKDOWN_VERSION',  "1.0.1i" ); # Fri 31 Aug 2007
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.5" ); # Fri 31 Aug 2007
 
 
 #
@@ -2587,11 +2587,11 @@ expected; (3) the output Markdown actually produced.
 
 
 Version History
----------------
+--------------- 
 
-See Readme file for details.
+See the readme file for detailed release notes for this version.
 
-Extra 1.1.5 (28 Aug 2007)
+Extra 1.1.5 (31 Aug 2007)
 
 Extra 1.1.4 (3 Aug 2007)
 
