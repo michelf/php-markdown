@@ -203,6 +203,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+1.0.1j (4 Sep 2007):
+
+*	Fixed a problem introduced in 1.0.1i where the closing `code` and 
+	`pre` tags at the end of a code block were appearing in the wrong 
+	order.
+
+
 1.0.1i (31 Aug 2007):
 
 *	Fixed a problem where an escaped backslash before a code span 

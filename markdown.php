@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1i" ); # Fri 31 Aug 2007
+define( 'MARKDOWN_VERSION',  "1.0.1j" ); # Tue 4 Sep 2007
 
 
 #
@@ -1495,28 +1495,6 @@ Version History
 --------------- 
 
 See the readme file for detailed release notes for this version.
-
-1.0.1i (31 Aug 2007)
-
-1.0.1h (3 Aug 2007)
-
-1.0.1g (3 Jul 2007)
-
-1.0.1f (7 Feb 2007)
-
-1.0.1e (28 Dec 2006)
-
-1.0.1d (1 Dec 2006)
-
-1.0.1c (9 Dec 2005)
-
-1.0.1b (6 Jun 2005)
-
-1.0.1a (15 Apr 2005)
-
-1.0.1 (16 Dec 2004)
-
-1.0 (21 Aug 2004)
 
 
 Copyright and License
