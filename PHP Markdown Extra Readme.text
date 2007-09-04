@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.5 - Fri 31 Aug 2007
+Version 1.1.6 - Tue 4 Sep 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -206,6 +206,19 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1.6 (4 Sep 2007):
+
+1.0.1j (4 Sep 2007):
+
+*	Fixed a problem introduced in 1.0.1i where the closing `code` and 
+	`pre` tags at the end of a code block were appearing in the wrong 
+	order.
+
+*	Overriding configuration settings by defining constants from an 
+	external before markdown.php is included is now possible without 
+	producing a PHP warning.
+
 
 Extra 1.1.5 (31 Aug 2007):
 

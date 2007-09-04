@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1i" ); # Fri 31 Aug 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.5" ); # Fri 31 Aug 2007
+define( 'MARKDOWN_VERSION',  "1.0.1j" ); # Tue 4 Sep 2007
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.6" ); # Tue 4 Sep 2007
 
 
 #
@@ -21,18 +21,18 @@ define( 'MARKDOWNEXTRA_VERSION',  "1.1.5" ); # Fri 31 Aug 2007
 #
 
 # Change to ">" for HTML output
-define( 'MARKDOWN_EMPTY_ELEMENT_SUFFIX',  " />");
+@define( 'MARKDOWN_EMPTY_ELEMENT_SUFFIX',  " />");
 
 # Define the width of a tab for code blocks.
-define( 'MARKDOWN_TAB_WIDTH',     4 );
+@define( 'MARKDOWN_TAB_WIDTH',     4 );
 
 # Optional title attribute for footnote links and backlinks.
-define( 'MARKDOWN_FN_LINK_TITLE',         "" );
-define( 'MARKDOWN_FN_BACKLINK_TITLE',     "" );
+@define( 'MARKDOWN_FN_LINK_TITLE',         "" );
+@define( 'MARKDOWN_FN_BACKLINK_TITLE',     "" );
 
 # Optional class attribute for footnote links and backlinks.
-define( 'MARKDOWN_FN_LINK_CLASS',         "" );
-define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
+@define( 'MARKDOWN_FN_LINK_CLASS',         "" );
+@define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
 
 
 #
@@ -40,14 +40,14 @@ define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
 #
 
 # Change to false to remove Markdown from posts and/or comments.
-define( 'MARKDOWN_WP_POSTS',      true );
-define( 'MARKDOWN_WP_COMMENTS',   true );
+@define( 'MARKDOWN_WP_POSTS',      true );
+@define( 'MARKDOWN_WP_COMMENTS',   true );
 
 
 
 ### Standard Function Interface ###
 
-define( 'MARKDOWN_PARSER_CLASS',  'MarkdownExtra_Parser' );
+@define( 'MARKDOWN_PARSER_CLASS',  'MarkdownExtra_Parser' );
 
 function Markdown($text) {
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1.5
+Version: 1.1.6
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -2590,22 +2590,6 @@ Version History
 --------------- 
 
 See the readme file for detailed release notes for this version.
-
-Extra 1.1.5 (31 Aug 2007)
-
-Extra 1.1.4 (3 Aug 2007)
-
-Extra 1.1.3 (3 Jul 2007):
-
-Extra 1.1.2 (7 Feb 2007)
-
-Extra 1.1.1 (28 Dec 2006)
-
-Extra 1.1 (1 Dec 2006)
-
-Extra 1.0.1 (9 Dec 2005)
-
-Extra 1.0 (5 Sep 2005)
 
 
 Copyright and License
