@@ -209,6 +209,10 @@ Version History
 	`pre` tags at the end of a code block were appearing in the wrong 
 	order.
 
+*	Overriding configuration settings by defining constants from an 
+	external before markdown.php is included is now possible without 
+	producing a PHP warning.
+
 
 1.0.1i (31 Aug 2007):
 
