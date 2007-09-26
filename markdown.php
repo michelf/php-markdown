@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Unreleased
+define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Wed 26 Sep 2007
 
 
 #

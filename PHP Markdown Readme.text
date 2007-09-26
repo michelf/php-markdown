@@ -203,6 +203,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+1.0.1k (26 Sep 2007):
+
+*	Fixed a problem introduced in 1.0.1i where three or more identical
+	uppercase letters, as well as a few other symbols, would trigger
+	a horizontal line.
+
+
 1.0.1j (4 Sep 2007):
 
 *	Fixed a problem introduced in 1.0.1i where the closing `code` and 
