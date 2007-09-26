@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1j" ); # Tue 4 Sep 2007
+define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Unreleased
 
 
 #
@@ -554,7 +554,7 @@ class Markdown_Parser {
 		return preg_replace(
 			'{
 				^[ ]{0,3}	# Leading space
-				([*-_])		# $1: First marker
+				([-*_])		# $1: First marker
 				(?>			# Repeated marker group
 					[ ]{0,2}	# Zero, one, or two spaces.
 					\1			# Marker character
