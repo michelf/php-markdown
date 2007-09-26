@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1j" ); # Tue 4 Sep 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.6" ); # Tue 4 Sep 2007
+define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Wed 26 Sep 2007
+define( 'MARKDOWNEXTRA_VERSION',  "1.1.7" ); # Wed 26 Sep 2007
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1.6
+Version: 1.1.7
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -563,7 +563,7 @@ class Markdown_Parser {
 		return preg_replace(
 			'{
 				^[ ]{0,3}	# Leading space
-				([*-_])		# $1: First marker
+				([-*_])		# $1: First marker
 				(?>			# Repeated marker group
 					[ ]{0,2}	# Zero, one, or two spaces.
 					\1			# Marker character
