@@ -38,10 +38,7 @@ PHP Markdown requires PHP version 4.0.5 or later.
 
 ### WordPress ###
 
-PHP Markdown works with [WordPress][wp], version 1.2 or later. 
-PHP Markdown is already bundled with WordPress. Still, you can find 
-here the latest version that may be newer than the latest WordPress 
-version.
+PHP Markdown works with [WordPress][wp], version 1.2 or later.
 
  [wp]: http://wordpress.org/
 
