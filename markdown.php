@@ -1615,7 +1615,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$newline_match_after = 
 			'{
 				^						# Start of text following the tag.
-				(?:[ ]*<!--.*?-->)?		# Optional comment.
+				(?>[ ]*<!--.*?-->)?		# Optional comment.
 				[ ]*\n					# Must be followed by newline.
 			}xs';
 		
@@ -1624,7 +1624,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			'{
 				(					# $2: Capture hole tag.
 					</?					# Any opening or closing tag.
-						(?:				# Tag name.
+						(?>				# Tag name.
 							'.$this->block_tags.'			|
 							'.$this->context_block_tags.'	|
 							'.$this->clean_tags.'        	|
@@ -1643,6 +1643,22 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					<\?.*?\?> | <%.*?%>	# Processing instruction
 				|
 					<!\[CDATA\[.*?\]\]>	# CData Block
+				|
+					# Code span marker
+					`+
+				'. ( !$span ? ' # If not in span.
+				|
+					# Indented code block
+					(?> ^\n? | \n\n )
+					[ ]{'.($indent+4).'}[^\n]* \n
+					(?>
+						(?: [ ]{'.($indent+4).'}[^\n]* | [ ]* ) \n
+					)*
+				|
+					# Flat code block marker
+					(?> ^ | \n )
+					[ ]{'.($indent).'}~~~+[ ]*\n
+				' : '' ). ' # End (if not is span).
 				)
 			}xs';
 
@@ -1684,23 +1700,45 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$text = $parts[2]; # Remaining text after current tag.
 			
 			#
-			# Check for: Tag inside code block or span
+			# Check for: Code span marker
 			#
-			if (# Find current paragraph
-				preg_match('/(?>^\n?|\n\n)((?>.+\n?)*?)$/', $parsed, $matches) &&
-				(
-				# Then match in it either a code block...
-				preg_match('/^ {'.($indent+4).'}.*(?>\n {'.($indent+4).'}.*)*'.
-							'(?!\n)$/', $matches[1], $x) ||
-				# ...or unbalenced code span markers. (the regex matches balenced)
-				!preg_match('/^(?>[^`]+|(`+)(?>[^`]+|(?!\1[^`])`)*?\1(?!`))*$/s',
-							 $matches[1])
-				))
-			{
-				# Tag is in code block or span and may not be a tag at all. So we
-				# simply skip the first char (should be a `<`).
-				$parsed .= $tag{0};
-				$text = substr($tag, 1) . $text; # Put back $tag minus first char.
+			if ($tag{0} == "`") {
+				# Find corresponding end marker.
+				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)'.$tag.'(?!`)}', 
+					$text, $matches))
+				{
+					# End marker found: pass text unchanged until marker.
+					$parsed .= $tag . $matches[0];
+					$text = substr($text, strlen($matches[0]));
+				}
+				else {
+					# Unmatched marker: just skip it.
+					$parsed .= $tag;
+				}
+			}
+			#
+			# Check for: Indented code block or flat code block marker.
+			#
+			else if ($tag{0} == "\n" || $tag{0} == "~") {
+				if ($tag{1} == "\n" || $tag{1} == " ") {
+					# Indented code block: pass it unchanged, will be handled 
+					# later.
+					$parsed .= $tag;
+				}
+				else {
+					# Flat code block marker: find matching end marker.
+					if (preg_match('{^(?>.*\n)+?'.trim($tag).' *\n}', $text, 
+						$matches)) 
+					{
+						# End marker found: pass text unchanged until marker.
+						$parsed .= $tag . $matches[0];
+						$text = substr($text, strlen($matches[0]));
+					}
+					else {
+						# No end marker: just skip it.
+						$parsed .= $tag;
+					}
+				}
 			}
 			#
 			# Check for: Opening Block level tag or
@@ -1784,7 +1822,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				\s*			# Eat whitespace before the `markdown` attribute
 				markdown
 				\s*=\s*
-				(?:
+				(?>
 					(["\'])		# $1: quote delimiter		
 					(.*?)		# $2: attribute value
 					\1			# matching delimiter	
@@ -1889,8 +1927,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						preg_match("{^<(?:$this->contain_span_tags)\b}", $tag);
 					
 					# Calculate indent before tag.
-					preg_match('/(?:^|\n)( *?)(?! ).*?$/', $block_text, $matches);
-					$indent = strlen($matches[1]);
+					if (preg_match('/(?:^|\n)( *?)(?! ).*?$/', $block_text, $matches)) {
+						$strlen = $this->utf8_strlen;
+						$indent = $strlen($matches[1], 'UTF-8');
+					} else {
+						$indent = 0;
+					}
 					
 					# End preceding block with this tag.
 					$block_text .= $tag;
@@ -2248,6 +2290,49 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		}
 
 		return "\n<dd>" . $def . "</dd>\n";
+	}
+
+
+	function doCodeBlocks($text) {
+	#
+	# Adding the flat code block syntax to regular Markdown:
+	#
+	# ~~~
+	# Code block
+	# ~~~
+	#
+		$less_than_tab = $this->tab_width;
+		
+		$text = preg_replace_callback('{
+				(?:\n|\A)
+				# 1: Opening marker
+				(
+					~{3,} # Marker: three tilde or more.
+				)
+				[ ]* \n # Whitespace and newline following marker.
+				
+				# 2: Content
+				(
+					(?>
+						(?!\1 [ ]* \n)	# Not a closing marker.
+						.*\n+
+					)+
+				)
+				
+				# Closing marker.
+				\1 [ ]* \n
+			}xm',
+			array(&$this, '_doCodeBlocks_flat_callback'), $text);
+
+		$text = parent::doCodeBlocks($text);
+
+		return $text;
+	}
+	function _doCodeBlocks_flat_callback($matches) {
+		$codeblock = $matches[2];
+		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+		$codeblock = "<pre><code>$codeblock</code></pre>";
+		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 
 
