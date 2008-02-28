@@ -1233,7 +1233,7 @@ class Markdown_Parser {
 
 
 	function doAutoLinks($text) {
-		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}', 
+		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
 			array(&$this, '_doAutoLinks_url_callback'), $text);
 
 		# Email addresses: <address@domain.foo>
