@@ -209,6 +209,9 @@ class Markdown_Parser {
 
 	# Table of hash values for escaped characters:
 	var $escape_chars = '\`*_{}[]()>#+-.!';
+	
+	# Regular expression to catch extra attributes.
+	var $attr_regex;
 
 	# Change to ">" for HTML output.
 	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
@@ -1516,8 +1519,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	var $abbr_desciptions = array();
 	var $abbr_matches = array();
 	
-	# Status flag to avoid invalid nesting.
-	var $in_footnote = false;
+	# Give the current footnote number.
+	var $footnote_counter = 1;
 	
 	
 	function transform($text) {
@@ -1533,6 +1536,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_matches = array();
+		$this->footnote_counter = 1;
 
 		return parent::transform($text);
 	}
@@ -2470,9 +2474,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function doFootnotes($text) {
 	#
 	# Replace footnote references in $text [^id] with a special text-token 
-	# which will be can be
+	# which will be replaced by the actual footnote marker in appendFootnotes.
 	#
-		if (!$this->in_footnote && !$this->in_anchor) {
+		if (!$this->in_anchor) {
 			$text = preg_replace('{\[\^(.+?)\]}', "F\x1Afn:\\1\x1A:", $text);
 		}
 		return $text;
@@ -2483,7 +2487,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 	# Append footnote list to text.
 	#
-	
 		$text = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
 			array(&$this, '_appendFootnotes_callback'), $text);
 	
@@ -2508,11 +2511,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}
 			$num = 0;
 			
-			$this->in_footnote = true;
-			
-			foreach ($this->footnotes_ordered as $note_id => $footnote) {
+			while (!empty($this->footnotes_ordered)) {
+				$footnote = reset($this->footnotes_ordered);
+				$note_id = key($this->footnotes_ordered);
+				unset($this->footnotes_ordered[$note_id]);
+				
 				$footnote .= "\n"; # Need to append newline before parsing.
-				$footnote = $this->runBlockGamut("$footnote\n");
+				$footnote = $this->runBlockGamut("$footnote\n");				
+				$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
+					array(&$this, '_appendFootnotes_callback'), $footnote);
 				
 				$attr2 = str_replace("%%", ++$num, $attr);
 				
@@ -2529,8 +2536,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$text .= "</li>\n\n";
 			}
 			
-			$this->in_footnote = false;
-			
 			$text .= "</ol>\n";
 			$text .= "</div>";
 		}
@@ -2546,7 +2551,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
 			unset($this->footnotes[$node_id]);
 			
-			$num = count($this->footnotes_ordered);
+			$num = $this->footnote_counter++;
 			$attr = " rel=\"footnote\"";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
