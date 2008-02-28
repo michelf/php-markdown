@@ -1028,7 +1028,7 @@ class Markdown_Parser {
 	#	Process Markdown `<pre><code>` blocks.
 	#
 		$text = preg_replace_callback('{
-				(?:\n\n|\A)
+				(?:\n\n|\A\n?)
 				(	            # $1 = the code block -- one or more lines, starting with a space/tab
 				  (?>
 					[ ]{'.$this->tab_width.'}  # Lines must start with a tab or a tab-width of spaces
