@@ -1634,12 +1634,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 							'.$this->clean_tags.'        	|
 							(?!\s)'.$enclosing_tag.'
 						)
-						\s*				# Whitespace.
-						(?>
-							".*?"		|	# Double quotes (can contain `>`)
-							\'.*?\'   	|	# Single quotes (can contain `>`)
-							.+?				# Anything but quotes and `>`.
-						)*?
+						(?:
+							(?=[\s"\'/])		# Allowed characters after tag name.
+							(?>
+								".*?"		|	# Double quotes (can contain `>`)
+								\'.*?\'   	|	# Single quotes (can contain `>`)
+								.+?				# Anything but quotes and `>`.
+							)*?
+						)?
 					>					# End of tag.
 				|
 					<!--    .*?     -->	# HTML Comment
@@ -1841,12 +1843,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(					# $2: Capture hole tag.
 					</?					# Any opening or closing tag.
 						[\w:$]+			# Tag name.
-						\s*				# Whitespace.
-						(?>
-							".*?"		|	# Double quotes (can contain `>`)
-							\'.*?\'   	|	# Single quotes (can contain `>`)
-							.+?				# Anything but quotes and `>`.
-						)*?
+						(?:
+							(?=[\s"\'/])		# Allowed characters after tag name.
+							(?>
+								".*?"		|	# Double quotes (can contain `>`)
+								\'.*?\'   	|	# Single quotes (can contain `>`)
+								.+?				# Anything but quotes and `>`.
+							)*?
+						)?
 					>					# End of tag.
 				|
 					<!--    .*?     -->	# HTML Comment
