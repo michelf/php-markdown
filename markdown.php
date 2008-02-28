@@ -266,6 +266,9 @@ class Markdown_Parser {
 		$this->urls = array();
 		$this->titles = array();
 		$this->html_hashes = array();
+		
+		# Remove UTF-8 BOM, if present.
+		$text = preg_replace('{^\xEF\xBB\xBF}', '', $text);
 
 		# Standardize line endings:
 		#   DOS to Unix and Mac to Unix
@@ -446,8 +449,7 @@ class Markdown_Parser {
 			
 						[ ]{0,'.$less_than_tab.'}
 						<(hr)				# start tag = $2
-						\b					# word break
-						([^<>])*?			# 
+						'.$attr.'			# attributes
 						/?>					# the matching end tag
 						[ ]*
 						(?=\n{2,}|\Z)		# followed by a blank line or end of document
@@ -1041,7 +1043,7 @@ class Markdown_Parser {
 	#	Process Markdown `<pre><code>` blocks.
 	#
 		$text = preg_replace_callback('{
-				(?:\n\n|\A)
+				(?:\n\n|\A\n?)
 				(	            # $1 = the code block -- one or more lines, starting with a space/tab
 				  (?>
 					[ ]{'.$this->tab_width.'}  # Lines must start with a tab or a tab-width of spaces
@@ -1246,7 +1248,7 @@ class Markdown_Parser {
 
 
 	function doAutoLinks($text) {
-		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}', 
+		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
 			array(&$this, '_doAutoLinks_url_callback'), $text);
 
 		# Email addresses: <address@domain.foo>
