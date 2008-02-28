@@ -254,6 +254,9 @@ class Markdown_Parser {
 		$this->urls = array();
 		$this->titles = array();
 		$this->html_hashes = array();
+		
+		# Remove UTF-8 BOM, if present.
+		$text = preg_replace('{^\xEF\xBB\xBF}', '', $text);
 
 		# Standardize line endings:
 		#   DOS to Unix and Mac to Unix
