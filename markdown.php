@@ -434,8 +434,7 @@ class Markdown_Parser {
 			
 						[ ]{0,'.$less_than_tab.'}
 						<(hr)				# start tag = $2
-						\b					# word break
-						([^<>])*?			# 
+						'.$attr.'			# attributes
 						/?>					# the matching end tag
 						[ ]*
 						(?=\n{2,}|\Z)		# followed by a blank line or end of document
