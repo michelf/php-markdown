@@ -2217,7 +2217,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		)'; // mx
 
 		$text = preg_replace_callback('{
-				(?:(?<=\n\n)|\A\n?)
+				(?>\A\n?|(?<=\n\n))
 				'.$whole_list.'
 			}mx',
 			array(&$this, '_doDefLists_callback'), $text);
@@ -2248,12 +2248,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		# Process definition terms.
 		$list_str = preg_replace_callback('{
-			(?:\n\n+|\A\n?)					# leading line
+			(?>\A\n?|\n\n+)					# leading line
 			(								# definition terms = $1
 				[ ]{0,'.$less_than_tab.'}	# leading whitespace
 				(?![:][ ]|[ ])				# negative lookahead for a definition 
 											#   mark (colon) or more whitespace.
-				(?: \S.* \n)+?				# actual term (not whitespace).	
+				(?> \S.* \n)+?				# actual term (not whitespace).	
 			)			
 			(?=\n?[ ]{0,3}:[ ])				# lookahead for following line feed 
 											#   with a definition mark.
@@ -2263,9 +2263,11 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# Process actual definitions.
 		$list_str = preg_replace_callback('{
 			\n(\n+)?						# leading line = $1
-			[ ]{0,'.$less_than_tab.'}		# whitespace before colon
-			[:][ ]+							# definition mark (colon)
-			((?s:.+?))						# definition text = $2
+			(								# marker space = $2
+				[ ]{0,'.$less_than_tab.'}	# whitespace before colon
+				[:][ ]+						# definition mark (colon)
+			)
+			((?s:.+?))						# definition text = $3
 			(?= \n+ 						# stop at next definition mark,
 				(?:							# next term or end of text
 					[ ]{0,'.$less_than_tab.'} [:][ ]	|
@@ -2288,9 +2290,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 	function _processDefListItems_callback_dd($matches) {
 		$leading_line	= $matches[1];
-		$def			= $matches[2];
+		$marker_space	= $matches[2];
+		$def			= $matches[3];
 
 		if ($leading_line || preg_match('/\n{2,}/', $def)) {
+			# Replace marker with the appropriate whitespace indentation
+			$def = str_repeat(' ', strlen($marker_space)) . $def;
 			$def = $this->runBlockGamut($this->outdent($def . "\n\n"));
 			$def = "\n". $def ."\n";
 		}
