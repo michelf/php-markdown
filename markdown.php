@@ -2523,14 +2523,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$attr = " rev=\"footnote\"";
 			if ($this->fn_backlink_class != "") {
 				$class = $this->fn_backlink_class;
-				$class = $this->encodeAmpsAndAngles($class);
-				$class = str_replace('"', '&quot;', $class);
+				$class = $this->encodeAttribute($class);
 				$attr .= " class=\"$class\"";
 			}
 			if ($this->fn_backlink_title != "") {
 				$title = $this->fn_backlink_title;
-				$title = $this->encodeAmpsAndAngles($title);
-				$title = str_replace('"', '&quot;', $title);
+				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
 			$num = 0;
@@ -2579,14 +2577,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$attr = " rel=\"footnote\"";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
-				$class = $this->encodeAmpsAndAngles($class);
-				$class = str_replace('"', '&quot;', $class);
+				$class = $this->encodeAttribute($class);
 				$attr .= " class=\"$class\"";
 			}
 			if ($this->fn_link_title != "") {
 				$title = $this->fn_link_title;
-				$title = $this->encodeAmpsAndAngles($title);
-				$title = str_replace('"', '&quot;', $title);
+				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
 			$attr = str_replace("%%", $num, $attr);
