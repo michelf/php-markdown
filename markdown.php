@@ -325,9 +325,9 @@ class Markdown_Parser {
 	}
 	function _stripLinkDefinitions_callback($matches) {
 		$link_id = strtolower($matches[1]);
-		$this->urls[$link_id] = $this->encodeAmpsAndAngles($matches[2]);
+		$this->urls[$link_id] = $this->encodeAttribute($matches[2]);
 		if (isset($matches[3]))
-			$this->titles[$link_id] = str_replace('"', '&quot;', $matches[3]);
+			$this->titles[$link_id] = $this->encodeAttribute($matches[3]);
 		return ''; # String that will replace the block
 	}
 
@@ -701,12 +701,12 @@ class Markdown_Parser {
 
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
-			$url = $this->encodeAmpsAndAngles($url);
+			$url = $this->encodeAttribute($url);
 			
 			$result = "<a href=\"$url\"";
 			if ( isset( $this->titles[$link_id] ) ) {
 				$title = $this->titles[$link_id];
-				$title = $this->encodeAmpsAndAngles($title);
+				$title = $this->encodeAttribute($title);
 				$result .=  " title=\"$title\"";
 			}
 		
@@ -725,12 +725,11 @@ class Markdown_Parser {
 		$url			=  $matches[3] == '' ? $matches[4] : $matches[3];
 		$title			=& $matches[7];
 
-		$url = $this->encodeAmpsAndAngles($url);
+		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
-			$title = str_replace('"', '&quot;', $title);
-			$title = $this->encodeAmpsAndAngles($title);
+			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\"";
 		}
 		
@@ -805,7 +804,7 @@ class Markdown_Parser {
 			$link_id = strtolower($alt_text); # for shortcut links like ![this][].
 		}
 
-		$alt_text = str_replace('"', '&quot;', $alt_text);
+		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
@@ -829,10 +828,11 @@ class Markdown_Parser {
 		$url			= $matches[3] == '' ? $matches[4] : $matches[3];
 		$title			=& $matches[7];
 
-		$alt_text = str_replace('"', '&quot;', $alt_text);
+		$alt_text = $this->encodeAttribute($alt_text);
+		$url = $this->encodeAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
-			$title = str_replace('"', '&quot;', $title);
+			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\""; # $title already quoted
 		}
 		$result .= $this->empty_element_suffix;
@@ -1218,6 +1218,16 @@ class Markdown_Parser {
 	}
 
 
+	function encodeAttribute($text) {
+	#
+	# Encode text for a double-quoted HTML attribute.
+	#
+		$text = $this->encodeAmpsAndAngles($text);
+		$text = str_replace('"', '&quot;', $text);
+		return $text;
+	}
+	
+	
 	function encodeAmpsAndAngles($text) {
 	# Smart processing for ampersands and angle brackets that need to be encoded.
 		if ($this->no_entities) {
@@ -1258,7 +1268,7 @@ class Markdown_Parser {
 		return $text;
 	}
 	function _doAutoLinks_url_callback($matches) {
-		$url = $this->encodeAmpsAndAngles($matches[1]);
+		$url = $this->encodeAttribute($matches[1]);
 		$link = "<a href=\"$url\">$url</a>";
 		return $this->hashPart($link);
 	}
