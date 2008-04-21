@@ -220,6 +220,10 @@ class Markdown_Parser {
 	# Change to `true` to disallow markup or entities.
 	var $no_markup = false;
 	var $no_entities = false;
+	
+	# Predefined urls and titles for reference links and images.
+	var $predef_urls = array();
+	var $predef_titles = array();
 
 
 	function Markdown_Parser() {
@@ -251,14 +255,15 @@ class Markdown_Parser {
 	# Status flag to avoid invalid nesting.
 	var $in_anchor = false;
 	
+	
 	function setup() {
 	#
 	# Called before the transformation process starts to setup parser 
 	# states.
 	#
 		# Clear global hashes.
-		$this->urls = array();
-		$this->titles = array();
+		$this->urls = $predef_urls;
+		$this->titles = $predef_titles;
 		$this->html_hashes = array();
 		
 		$in_anchor = false;
