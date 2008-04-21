@@ -239,6 +239,7 @@ class Markdown_Parser {
 	# Status flag to avoid invalid nesting.
 	var $in_anchor = false;
 	
+	
 	function setup() {
 	#
 	# Called before the transformation process starts to setup parser 
