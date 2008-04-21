@@ -250,23 +250,38 @@ class Markdown_Parser {
 	
 	# Status flag to avoid invalid nesting.
 	var $in_anchor = false;
-
-
-	function transform($text) {
+	
+	function setup() {
 	#
-	# Main function. The order in which other subs are called here is
-	# essential. Link and image substitutions need to happen before
-	# _EscapeSpecialCharsWithinTagAttributes(), so that any *'s or _'s in the <a>
-	# and <img> tags get encoded.
+	# Called before the transformation process starts to setup parser 
+	# states.
 	#
-		# Clear the global hashes. If we don't clear these, you get conflicts
-		# from other articles when generating a page which contains more than
-		# one article (e.g. an index page that shows the N most recent
-		# articles):
+		# Clear global hashes.
 		$this->urls = array();
 		$this->titles = array();
 		$this->html_hashes = array();
 		
+		$in_anchor = false;
+	}
+	
+	function teardown() {
+	#
+	# Called after the transformation process to clear any variable 
+	# which may be taking up memory unnecessarly.
+	#
+		$this->urls = array();
+		$this->titles = array();
+		$this->html_hashes = array();
+	}
+
+
+	function transform($text) {
+	#
+	# Main function. Performs some preprocessing on the input text
+	# and pass it through the document gamut.
+	#
+		$this->setup();
+	
 		# Remove UTF-8 BOM, if present.
 		$text = preg_replace('{^\xEF\xBB\xBF}', '', $text);
 
@@ -293,6 +308,8 @@ class Markdown_Parser {
 		foreach ($this->document_gamut as $method => $priority) {
 			$text = $this->$method($text);
 		}
+		
+		$this->teardown();
 
 		return $text . "\n";
 	}
