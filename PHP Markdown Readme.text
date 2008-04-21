@@ -200,6 +200,30 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Current:
+
+*	Now removing the UTF-8 BOM at the start of a document, if present.
+
+*	Now accepting capitalized URI schemes (such as HTTP:) in automatic
+	links, such as `<HTTP://EXAMPLE.COM/>`.
+
+*	Fixed a problem where `<hr@example.com>` was seen as a horizontal
+	rule instead of an automatic link.
+
+*	Fixed an issue where some characters in Markdown-generated HTML
+	attributes weren't properly escaped with entities.
+
+*	Fix for code blocks as first element of a list item. Previously,
+	this didn't create any code block for item 2:
+	
+		*   Item 1 (regular paragraph)
+		
+		*       Item 2 (code block)
+
+*	A code blocks starting on the second line of a document wasn't seen
+	as a code block. This has been fixed.
+
+
 1.0.1k (26 Sep 2007):
 
 *	Fixed a problem introduced in 1.0.1i where three or more identical
