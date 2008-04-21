@@ -204,6 +204,24 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Extra Current:
+
+*	Added flat code block syntax which don't require indentation
+	and can start and end with blank lines. A flat code blocks are
+	starts with a line of consecutive tilde (~) and ends on the
+	next line with the same number of consecutive tilde. Here's an
+	example:
+	
+	    ~~~~~~~~~~~~
+		Hello World!
+		~~~~~~~~~~~~
+
+*	Rewrote parts of the HTML block parser to better accomodate flat
+	code blocks.
+
+*	Footnotes may now be referenced from within another footnote.
+
+
 Current:
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
