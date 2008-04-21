@@ -1555,22 +1555,29 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	var $footnote_counter = 1;
 	
 	
-	function transform($text) {
+	function setup() {
 	#
-	# Added clear to the new $html_hashes, reordered `hashHTMLBlocks` before 
-	# blank line stripping and added extra parameter to `runBlockGamut`.
+	# Setting up Extra-specific variables.
 	#
-		# Clear the global hashes. If we don't clear these, you get conflicts
-		# from other articles when generating a page which contains more than
-		# one article (e.g. an index page that shows the N most recent
-		# articles):
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_matches = array();
 		$this->footnote_counter = 1;
 
-		return parent::transform($text);
+		return parent::setup();
+	}
+	
+	function teardown($text) {
+	#
+	# Clearing Extra-specific variables.
+	#
+		return parent::teardown();
+		
+		$this->footnotes = array();
+		$this->footnotes_ordered = array();
+		$this->abbr_desciptions = array();
+		$this->abbr_matches = array();
 	}
 	
 	
