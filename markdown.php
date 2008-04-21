@@ -1520,6 +1520,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Optional class attribute for footnote links and backlinks.
 	var $fn_link_class = MARKDOWN_FN_LINK_CLASS;
 	var $fn_backlink_class = MARKDOWN_FN_BACKLINK_CLASS;
+	
+	# Predefined abbreviations.
+	var $predef_abbr = array();
 
 
 	function MarkdownExtra_Parser() {
@@ -1564,25 +1567,30 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 	# Setting up Extra-specific variables.
 	#
-		$this->footnotes = array();
-		$this->footnotes_ordered = array();
-		$this->abbr_desciptions = array();
-		$this->abbr_matches = array();
-		$this->footnote_counter = 1;
-
-		return parent::setup();
-	}
-	
-	function teardown($text) {
-	#
-	# Clearing Extra-specific variables.
-	#
-		return parent::teardown();
+		parent::setup();
 		
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_matches = array();
+		$this->footnote_counter = 1;
+		
+		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
+			$this->abbr_matches[] = preg_quote($abbr_word);
+			$this->abbr_desciptions[$abbr_word] = trim($abbr_desc);
+		}
+	}
+	
+	function teardown() {
+	#
+	# Clearing Extra-specific variables.
+	#
+		$this->footnotes = array();
+		$this->footnotes_ordered = array();
+		$this->abbr_desciptions = array();
+		$this->abbr_matches = array();
+		
+		parent::teardown();
 	}
 	
 	
