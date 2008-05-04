@@ -2396,8 +2396,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function _doCodeBlocks_flat_callback($matches) {
 		$codeblock = $matches[2];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+		$codeblock = preg_replace_callback('/^\n+/',
+			array(&$this, '_doCodeBlocks_flat_newlines'), $codeblock);
 		$codeblock = "<pre><code>$codeblock</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
+	}
+	function _doCodeBlocks_flat_newlines($matches) {
+		return str_repeat("<br$this->empty_element_suffix", 
+			strlen($matches[0]));
 	}
 
 
