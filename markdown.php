@@ -250,8 +250,8 @@ class Markdown_Parser {
 	# states.
 	#
 		# Clear global hashes.
-		$this->urls = $predef_urls;
-		$this->titles = $predef_titles;
+		$this->urls = $this->predef_urls;
+		$this->titles = $this->predef_titles;
 		$this->html_hashes = array();
 		
 		$in_anchor = false;
