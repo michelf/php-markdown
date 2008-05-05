@@ -221,6 +221,14 @@ Extra Current:
 
 *	Footnotes may now be referenced from within another footnote.
 
+*	Added programatically-settable parser property `predef_attr` for 
+	predefined attribute definitions.
+
+*	Fixed an issue where an indented code block preceded by a blank
+	line containing some other whitespace would confuse the HTML 
+	block parser into creating an HTML block when it should have 
+	been code.
+
 
 Current:
 
