@@ -220,7 +220,7 @@ Current:
 		
 		*       Item 2 (code block)
 
-*	A code blocks starting on the second line of a document wasn't seen
+*	A code block starting on the second line of a document wasn't seen
 	as a code block. This has been fixed.
 	
 *	Added programatically-settable parser properties `predef_urls` and 
