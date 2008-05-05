@@ -244,6 +244,18 @@ Current:
 
 *	A code blocks starting on the second line of a document wasn't seen
 	as a code block. This has been fixed.
+	
+*	Added programatically-settable parser properties `predef_urls` and 
+	`predef_titles` for predefined URLs and link titles. To use this, 
+	your PHP code must call the parser this way:
+	
+		$parser = new Markdwon_Parser;
+		$parser->predef_urls['my_url_ref'] = 'http://example.com';
+		$html = $parser->transform($text);
+
+*	Added `setup` and `teardown` methods which can be used by subclassers
+	as hook points to arrange the state of some parser variables before and 
+	after parsing.
 
 
 Extra 1.1.7 (26 Sep 2007):
