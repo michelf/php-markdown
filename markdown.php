@@ -3,7 +3,7 @@
 # Markdown  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown
-# Copyright (c) 2004-2007 Michel Fortin  
+# Copyright (c) 2004-2008 Michel Fortin  
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Wed 26 Sep 2007
+define( 'MARKDOWN_VERSION',  "1.0.1l" ); # Sun 11 May 2008
 
 
 #
@@ -1538,7 +1538,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown
-Copyright (c) 2004-2007 Michel Fortin  
+Copyright (c) 2004-2008 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 

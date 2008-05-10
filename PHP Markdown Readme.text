@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1k - Wed 26 Sep 2007
+Version 1.0.1l - Sun 11 May 2008
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -200,7 +200,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current:
+1.0.1l:
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
 
