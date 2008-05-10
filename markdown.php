@@ -507,7 +507,7 @@ class Markdown_Parser {
 	# The $boundary argument specify what character should be used to surround
 	# the token. By convension, "B" is used for block elements that needs not
 	# to be wrapped into paragraph tags at the end, ":" is used for elements
-	# that are word separators and "S" is used for general span-level elements.
+	# that are word separators and "X" is used in the general case.
 	#
 		# Swap back any tag hash found in $text so we do not have to `unhash`
 		# multiple times at the end.
