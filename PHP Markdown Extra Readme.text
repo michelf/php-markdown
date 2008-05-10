@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.7 - Wed 26 Sep 2007
+Version 1.2 - Sun 11 May 2008
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -204,10 +204,10 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Extra Current:
+Extra 1.2:
 
 *	Added flat code block syntax which don't require indentation
-	and can start and end with blank lines. A flat code blocks are
+	and can start and end with blank lines. A flat code block
 	starts with a line of consecutive tilde (~) and ends on the
 	next line with the same number of consecutive tilde. Here's an
 	example:
@@ -230,7 +230,7 @@ Extra Current:
 	been code.
 
 
-Current:
+1.0.1l:
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
 
@@ -250,16 +250,24 @@ Current:
 		
 		*       Item 2 (code block)
 
-*	A code blocks starting on the second line of a document wasn't seen
+*	A code block starting on the second line of a document wasn't seen
 	as a code block. This has been fixed.
 	
 *	Added programatically-settable parser properties `predef_urls` and 
-	`predef_titles` for predefined URLs and link titles. To use this, 
-	your PHP code must call the parser this way:
+	`predef_titles` for predefined URLs and titles for reference-style 
+	links. To use this, your PHP code must call the parser this way:
 	
 		$parser = new Markdwon_Parser;
-		$parser->predef_urls['my_url_ref'] = 'http://example.com';
+		$parser->predef_urls = array('linkref' => 'http://example.com');
 		$html = $parser->transform($text);
+	
+	You can then use the URL as a normal link reference:
+	
+		[my link][linkref]	
+		[my link][linkRef]
+		
+	Reference names in the parser properties *must* be lowercase.
+	Reference names in the Markdown source may have any case.
 
 *	Added `setup` and `teardown` methods which can be used by subclassers
 	as hook points to arrange the state of some parser variables before and 

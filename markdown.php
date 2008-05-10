@@ -3,7 +3,7 @@
 # Markdown Extra  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown & Extra
-# Copyright (c) 2004-2007 Michel Fortin  
+# Copyright (c) 2004-2008 Michel Fortin  
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
@@ -12,8 +12,8 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1k" ); # Wed 26 Sep 2007
-define( 'MARKDOWNEXTRA_VERSION',  "1.1.7" ); # Wed 26 Sep 2007
+define( 'MARKDOWN_VERSION',  "1.0.1l" ); # Sun 11 May 2008
+define( 'MARKDOWNEXTRA_VERSION',  "1.2" ); # Sun 11 May 2008
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1.7
+Version: 1.2
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -519,7 +519,7 @@ class Markdown_Parser {
 	# The $boundary argument specify what character should be used to surround
 	# the token. By convension, "B" is used for block elements that needs not
 	# to be wrapped into paragraph tags at the end, ":" is used for elements
-	# that are word separators and "S" is used for general span-level elements.
+	# that are word separators and "X" is used in the general case.
 	#
 		# Swap back any tag hash found in $text so we do not have to `unhash`
 		# multiple times at the end.
@@ -2749,7 +2749,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown & Extra
-Copyright (c) 2004-2007 Michel Fortin  
+Copyright (c) 2004-2008 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
