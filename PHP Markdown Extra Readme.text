@@ -206,8 +206,8 @@ Version History
 
 Extra 1.2:
 
-*	Added flat code block syntax which don't require indentation
-	and can start and end with blank lines. A flat code block
+*	Added fenced code block syntax which don't require indentation
+	and can start and end with blank lines. A fenced code block
 	starts with a line of consecutive tilde (~) and ends on the
 	next line with the same number of consecutive tilde. Here's an
 	example:
@@ -216,8 +216,8 @@ Extra 1.2:
 		Hello World!
 		~~~~~~~~~~~~
 
-*	Rewrote parts of the HTML block parser to better accomodate flat
-	code blocks.
+*	Rewrote parts of the HTML block parser to better accomodate
+	fenced code blocks.
 
 *	Footnotes may now be referenced from within another footnote.
 

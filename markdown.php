@@ -1713,7 +1713,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						(?: [ ]{'.($indent+4).'}[^\n]* | [ ]* ) \n
 					)*
 				|
-					# Flat code block marker
+					# Fenced code block marker
 					(?> ^ | \n )
 					[ ]{'.($indent).'}~~~+[ ]*\n
 				' : '' ). ' # End (if not is span).
@@ -1775,7 +1775,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				}
 			}
 			#
-			# Check for: Indented code block or flat code block marker.
+			# Check for: Indented code block or fenced code block marker.
 			#
 			else if ($tag{0} == "\n" || $tag{0} == "~") {
 				if ($tag{1} == "\n" || $tag{1} == " ") {
@@ -1784,7 +1784,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					$parsed .= $tag;
 				}
 				else {
-					# Flat code block marker: find matching end marker.
+					# Fenced code block marker: find matching end marker.
 					if (preg_match('{^(?>.*\n)+?'.trim($tag).' *\n}', $text, 
 						$matches)) 
 					{
@@ -2360,7 +2360,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	function doCodeBlocks($text) {
 	#
-	# Adding the flat code block syntax to regular Markdown:
+	# Adding the fenced code block syntax to regular Markdown:
 	#
 	# ~~~
 	# Code block
@@ -2387,21 +2387,21 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Closing marker.
 				\1 [ ]* \n
 			}xm',
-			array(&$this, '_doCodeBlocks_flat_callback'), $text);
+			array(&$this, '_doCodeBlocks_fenced_callback'), $text);
 
 		$text = parent::doCodeBlocks($text);
 
 		return $text;
 	}
-	function _doCodeBlocks_flat_callback($matches) {
+	function _doCodeBlocks_fenced_callback($matches) {
 		$codeblock = $matches[2];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
-			array(&$this, '_doCodeBlocks_flat_newlines'), $codeblock);
+			array(&$this, '_doCodeBlocks_fenced_newlines'), $codeblock);
 		$codeblock = "<pre><code>$codeblock</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
-	function _doCodeBlocks_flat_newlines($matches) {
+	function _doCodeBlocks_fenced_newlines($matches) {
 		return str_repeat("<br$this->empty_element_suffix", 
 			strlen($matches[0]));
 	}
