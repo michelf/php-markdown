@@ -204,6 +204,12 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Current Extra:
+
+*	Fixed a problem where Markdown headers and horizontal rules were
+	transformed into their HTML equivalent inside fenced code blocks.
+
+
 Extra 1.2:
 
 *	Added fenced code block syntax which don't require indentation

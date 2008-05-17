@@ -1541,6 +1541,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			"appendFootnotes"    => 50,
 			);
 		$this->block_gamut += array(
+			"doFencedCodeBlocks" => 5,
 			"doTables"           => 15,
 			"doDefLists"         => 45,
 			);
@@ -2358,7 +2359,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 
 
-	function doCodeBlocks($text) {
+	function doFencedCodeBlocks($text) {
 	#
 	# Adding the fenced code block syntax to regular Markdown:
 	#
@@ -2387,21 +2388,19 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Closing marker.
 				\1 [ ]* \n
 			}xm',
-			array(&$this, '_doCodeBlocks_fenced_callback'), $text);
-
-		$text = parent::doCodeBlocks($text);
+			array(&$this, '_doFencedCodeBlocks_callback'), $text);
 
 		return $text;
 	}
-	function _doCodeBlocks_fenced_callback($matches) {
+	function _doFencedCodeBlocks_callback($matches) {
 		$codeblock = $matches[2];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
-			array(&$this, '_doCodeBlocks_fenced_newlines'), $codeblock);
+			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
 		$codeblock = "<pre><code>$codeblock</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
-	function _doCodeBlocks_fenced_newlines($matches) {
+	function _doFencedCodeBlocks_newlines($matches) {
 		return str_repeat("<br$this->empty_element_suffix", 
 			strlen($matches[0]));
 	}
