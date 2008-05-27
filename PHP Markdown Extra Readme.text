@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.2 - Sun 11 May 2008
+Version 1.2.1 - Tue 27 May 2008
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -204,13 +204,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current Extra:
+Extra 1.2.1 (27 May 2008):
 
 *	Fixed a problem where Markdown headers and horizontal rules were
 	transformed into their HTML equivalent inside fenced code blocks.
 
 
-Extra 1.2:
+Extra 1.2 (11 May 2008):
 
 *	Added fenced code block syntax which don't require indentation
 	and can start and end with blank lines. A fenced code block
@@ -236,7 +236,7 @@ Extra 1.2:
 	been code.
 
 
-1.0.1l:
+1.0.1l (11 May 2008):
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
 
