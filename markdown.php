@@ -275,8 +275,8 @@ class Markdown_Parser {
 	#
 		$this->setup();
 	
-		# Remove UTF-8 BOM, if present.
-		$text = preg_replace('{^\xEF\xBB\xBF}', '', $text);
+		# Remove UTF-8 BOM and marker character in input, if present.
+		$text = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $text);
 
 		# Standardize line endings:
 		#   DOS to Unix and Mac to Unix
