@@ -2588,10 +2588,11 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
 					array(&$this, '_appendFootnotes_callback'), $footnote);
 				
-				$attr2 = str_replace("%%", ++$num, $attr);
+				$attr = str_replace("%%", ++$num, $attr);
+				$note_id = $this->encodeAttribute($note_id);
 				
 				# Add backlink to last paragraph; create new paragraph if needed.
-				$backlink = "<a href=\"#fnref:$note_id\"$attr2>&#8617;</a>";
+				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;</a>";
 				if (preg_match('{</p>$}', $footnote)) {
 					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
@@ -2630,7 +2631,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
+			
 			$attr = str_replace("%%", $num, $attr);
+			$node_id = $this->encodeAttribute($node_id);
 			
 			return
 				"<sup id=\"fnref:$node_id\">".

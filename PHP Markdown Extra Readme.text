@@ -207,7 +207,10 @@ Version History
 Current Extra:
 
 *	Fixed a bug where characters such as `"` in abbreviation
-	definitions weren't properly escaped in the generated HTML.
+	definitions weren't properly encoded to HTML entities.
+
+*	Fixed a bug where double quotes `"` were not correctly encoded
+	as HTML entities when used inside a footnote reference id.
 
 
 Extra 1.2.1 (27 May 2008):
