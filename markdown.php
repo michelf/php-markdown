@@ -1242,7 +1242,8 @@ class Markdown_Parser {
 
 	function encodeAttribute($text) {
 	#
-	# Encode text for a double-quoted HTML attribute.
+	# Encode text for a double-quoted HTML attribute. This function
+	# is *not* suitable for attributes enclosed in single quotes.
 	#
 		$text = $this->encodeAmpsAndAngles($text);
 		$text = str_replace('"', '&quot;', $text);
