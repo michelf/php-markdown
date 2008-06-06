@@ -202,16 +202,14 @@ class Markdown_Parser {
 	# Regex to match balanced [brackets].
 	# Needed to insert a maximum bracked depth while converting to PHP.
 	var $nested_brackets_depth = 6;
-	var $nested_brackets;
+	var $nested_brackets_re;
 	
 	var $nested_url_parenthesis_depth = 4;
-	var $nested_url_parenthesis;
+	var $nested_url_parenthesis_re;
 
 	# Table of hash values for escaped characters:
 	var $escape_chars = '\`*_{}[]()>#+-.!';
-	
-	# Regular expression to catch extra attributes.
-	var $attr_regex;
+	var $escape_chars_re;
 
 	# Change to ">" for HTML output.
 	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
@@ -232,13 +230,15 @@ class Markdown_Parser {
 	#
 		$this->_initDetab();
 	
-		$this->nested_brackets = 
+		$this->nested_brackets_re = 
 			str_repeat('(?>[^\[\]]+|\[', $this->nested_brackets_depth).
 			str_repeat('\])*', $this->nested_brackets_depth);
 	
-		$this->nested_url_parenthesis = 
+		$this->nested_url_parenthesis_re = 
 			str_repeat('(?>[^()\s]+|\(', $this->nested_url_parenthesis_depth).
 			str_repeat('(?>\)))*', $this->nested_url_parenthesis_depth);
+		
+		$this->escape_chars_re = '['.preg_quote($this->escape_chars).']';
 		
 		# Sort document, block, and span gamut in ascendent priority order.
 		asort($this->document_gamut);
@@ -383,9 +383,9 @@ class Markdown_Parser {
 		#    inline later.
 		# *  List "b" is made of tags which are always block-level;
 		#
-		$block_tags_a = 'ins|del';
-		$block_tags_b = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|'.
-						'script|noscript|form|fieldset|iframe|math';
+		$block_tags_a_re = 'ins|del';
+		$block_tags_b_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|'.
+						   'script|noscript|form|fieldset|iframe|math';
 
 		# Regular expression for the content of a block tag.
 		$nested_tags_level = 4;
@@ -448,7 +448,7 @@ class Markdown_Parser {
 			  # in between.
 					
 						[ ]{0,'.$less_than_tab.'}
-						<('.$block_tags_b.')# start tag = $2
+						<('.$block_tags_b_re.')# start tag = $2
 						'.$attr.'>			# attributes followed by > and \n
 						'.$content.'		# content, support nesting
 						</\2>				# the matching end tag
@@ -458,7 +458,7 @@ class Markdown_Parser {
 			| # Special version for tags of group a.
 
 						[ ]{0,'.$less_than_tab.'}
-						<('.$block_tags_a.')# start tag = $3
+						<('.$block_tags_a_re.')# start tag = $3
 						'.$attr.'>[ ]*\n	# attributes followed by >
 						'.$content2.'		# content, support nesting
 						</\3>				# the matching end tag
@@ -661,7 +661,7 @@ class Markdown_Parser {
 		$text = preg_replace_callback('{
 			(					# wrap whole match in $1
 			  \[
-				('.$this->nested_brackets.')	# link text = $2
+				('.$this->nested_brackets_re.')	# link text = $2
 			  \]
 
 			  [ ]?				# one optional space
@@ -680,14 +680,14 @@ class Markdown_Parser {
 		$text = preg_replace_callback('{
 			(				# wrap whole match in $1
 			  \[
-				('.$this->nested_brackets.')	# link text = $2
+				('.$this->nested_brackets_re.')	# link text = $2
 			  \]
 			  \(			# literal paren
 				[ ]*
 				(?:
 					<(\S*)>	# href = $3
 				|
-					('.$this->nested_url_parenthesis.')	# href = $4
+					('.$this->nested_url_parenthesis_re.')	# href = $4
 				)
 				[ ]*
 				(			# $5
@@ -783,7 +783,7 @@ class Markdown_Parser {
 		$text = preg_replace_callback('{
 			(				# wrap whole match in $1
 			  !\[
-				('.$this->nested_brackets.')		# alt text = $2
+				('.$this->nested_brackets_re.')		# alt text = $2
 			  \]
 
 			  [ ]?				# one optional space
@@ -804,7 +804,7 @@ class Markdown_Parser {
 		$text = preg_replace_callback('{
 			(				# wrap whole match in $1
 			  !\[
-				('.$this->nested_brackets.')		# alt text = $2
+				('.$this->nested_brackets_re.')		# alt text = $2
 			  \]
 			  \s?			# One optional whitespace character
 			  \(			# literal paren
@@ -812,7 +812,7 @@ class Markdown_Parser {
 				(?:
 					<(\S*)>	# src url = $3
 				|
-					('.$this->nested_url_parenthesis.')	# src url = $4
+					('.$this->nested_url_parenthesis_re.')	# src url = $4
 				)
 				[ ]*
 				(			# $5
@@ -924,19 +924,19 @@ class Markdown_Parser {
 		$less_than_tab = $this->tab_width - 1;
 
 		# Re-usable patterns to match list item bullets and number markers:
-		$marker_ul  = '[*+-]';
-		$marker_ol  = '\d+[.]';
-		$marker_any = "(?:$marker_ul|$marker_ol)";
+		$marker_ul_re  = '[*+-]';
+		$marker_ol_re  = '\d+[.]';
+		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 
-		$markers = array($marker_ul, $marker_ol);
+		$markers_relist = array($marker_ul_re, $marker_ol_re);
 
-		foreach ($markers as $marker) {
+		foreach ($markers_relist as $marker_re) {
 			# Re-usable pattern to match any entirel ul or ol list:
-			$whole_list = '
+			$whole_list_re = '
 				(								# $1 = whole list
 				  (								# $2
 					[ ]{0,'.$less_than_tab.'}
-					('.$marker.')				# $3 = first list item marker
+					('.$marker_re.')			# $3 = first list item marker
 					[ ]+
 				  )
 				  (?s:.+?)
@@ -947,7 +947,7 @@ class Markdown_Parser {
 					  (?=\S)
 					  (?!						# Negative lookahead for another list item marker
 						[ ]*
-						'.$marker.'[ ]+
+						'.$marker_re.'[ ]+
 					  )
 				  )
 				)
@@ -959,14 +959,14 @@ class Markdown_Parser {
 			if ($this->list_level) {
 				$text = preg_replace_callback('{
 						^
-						'.$whole_list.'
+						'.$whole_list_re.'
 					}mx',
 					array(&$this, '_doLists_callback'), $text);
 			}
 			else {
 				$text = preg_replace_callback('{
 						(?:(?<=\n)\n|\A\n?) # Must eat the newline
-						'.$whole_list.'
+						'.$whole_list_re.'
 					}mx',
 					array(&$this, '_doLists_callback'), $text);
 			}
@@ -976,17 +976,17 @@ class Markdown_Parser {
 	}
 	function _doLists_callback($matches) {
 		# Re-usable patterns to match list item bullets and number markers:
-		$marker_ul  = '[*+-]';
-		$marker_ol  = '\d+[.]';
-		$marker_any = "(?:$marker_ul|$marker_ol)";
+		$marker_ul_re  = '[*+-]';
+		$marker_ol_re  = '\d+[.]';
+		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 		
 		$list = $matches[1];
-		$list_type = preg_match("/$marker_ul/", $matches[3]) ? "ul" : "ol";
+		$list_type = preg_match("/$marker_ul_re/", $matches[3]) ? "ul" : "ol";
 		
-		$marker_any = ( $list_type == "ul" ? $marker_ul : $marker_ol );
+		$marker_any_re = ( $list_type == "ul" ? $marker_ul_re : $marker_ol_re );
 		
 		$list .= "\n";
-		$result = $this->processListItems($list, $marker_any);
+		$result = $this->processListItems($list, $marker_any_re);
 		
 		$result = $this->hashBlock("<$list_type>\n" . $result . "</$list_type>");
 		return "\n". $result ."\n\n";
@@ -994,7 +994,7 @@ class Markdown_Parser {
 
 	var $list_level = 0;
 
-	function processListItems($list_str, $marker_any) {
+	function processListItems($list_str, $marker_any_re) {
 	#
 	#	Process the contents of a single ordered or unordered list, splitting it
 	#	into individual list items.
@@ -1028,10 +1028,10 @@ class Markdown_Parser {
 		$list_str = preg_replace_callback('{
 			(\n)?							# leading line = $1
 			(^[ ]*)						# leading whitespace = $2
-			('.$marker_any.' [ ]+)		# list marker and space = $3
+			('.$marker_any_re.' [ ]+)		# list marker and space = $3
 			((?s:.+?))						# list item text   = $4
 			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
-			(?= \n* (\z | \2 ('.$marker_any.') [ ]+))
+			(?= \n* (\z | \2 ('.$marker_any_re.') [ ]+))
 			}xm',
 			array(&$this, '_processListItems_callback'), $list_str);
 
@@ -1362,9 +1362,9 @@ class Markdown_Parser {
 	#
 		$output = '';
 		
-		$regex = '{
+		$span_re = '{
 				(
-					\\\\['.preg_quote($this->escape_chars).']
+					\\\\'.$this->escape_chars_re.'
 				|
 					(?<![`\\\\])
 					`+						# code span marker
@@ -1390,7 +1390,7 @@ class Markdown_Parser {
 			# openning code span marker, or the next escaped character. 
 			# Each token is then passed to handleSpanToken.
 			#
-			$parts = preg_split($regex, $str, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$parts = preg_split($span_re, $str, 2, PREG_SPLIT_DELIM_CAPTURE);
 			
 			# Create token from text preceding tag.
 			if ($parts[0] != "") {
