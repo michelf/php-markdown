@@ -1255,20 +1255,21 @@ class Markdown_Parser {
 	
 	
 	function encodeAmpsAndAngles($text) {
-	# Smart processing for ampersands and angle brackets that need to be encoded.
+	#
+	# Smart processing for ampersands and angle brackets that need to 
+	# be encoded. Valid character entities are left alone unless the
+	# no-entities mode is set.
+	#
 		if ($this->no_entities) {
 			$text = str_replace('&', '&amp;', $text);
-			$text = str_replace('<', '&lt;', $text);
-			return $text;
+		} else {
+			# Ampersand-encoding based entirely on Nat Irons's Amputator
+			# MT plugin: <http://bumppo.net/projects/amputator/>
+			$text = preg_replace('/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/', 
+								'&amp;', $text);;
 		}
-
-		# Ampersand-encoding based entirely on Nat Irons's Amputator MT plugin:
-		#   http://bumppo.net/projects/amputator/
-		$text = preg_replace('/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/', 
-							 '&amp;', $text);;
-
-		# Encode naked <'s
-		$text = preg_replace('{<(?![a-z/?\$!%])}i', '&lt;', $text);
+		# Encode remaining <'s
+		$text = str_replace('<', '&lt;', $text);
 
 		return $text;
 	}
