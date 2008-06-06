@@ -1559,7 +1559,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	var $footnotes = array();
 	var $footnotes_ordered = array();
 	var $abbr_desciptions = array();
-	var $abbr_matches = array();
+	var $abbr_word_regex = array();
 	
 	# Give the current footnote number.
 	var $footnote_counter = 1;
@@ -1574,11 +1574,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
-		$this->abbr_matches = array();
+		$this->abbr_word_regex = '';
 		$this->footnote_counter = 1;
 		
 		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
-			$this->abbr_matches[] = preg_quote($abbr_word);
+			if ($this->abbr_word_regex)
+				$this->abbr_word_regex .= '|';
+			$this->abbr_word_regex .= preg_quote($abbr_word);
 			$this->abbr_desciptions[$abbr_word] = trim($abbr_desc);
 		}
 	}
@@ -1590,7 +1592,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
-		$this->abbr_matches = array();
+		$this->abbr_word_regex = '';
 		
 		parent::teardown();
 	}
@@ -2660,7 +2662,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function _stripAbbreviations_callback($matches) {
 		$abbr_word = $matches[1];
 		$abbr_desc = $matches[2];
-		$this->abbr_matches[] = preg_quote($abbr_word);
+		if ($this->abbr_word_regex)
+			$this->abbr_word_regex .= '|';
+		$this->abbr_word_regex .= preg_quote($abbr_word);
 		$this->abbr_desciptions[$abbr_word] = trim($abbr_desc);
 		return ''; # String that will replace the block
 	}
@@ -2670,12 +2674,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 	# Find defined abbreviations in text and wrap them in <abbr> elements.
 	#
-		if ($this->abbr_matches) {
-			// cannot use the /x modifier because abbr_matches may 
-			// contain spaces:
+		if ($this->abbr_word_regex) {
+			// cannot use the /x modifier because abbr_word_regex may 
+			// contain significant spaces:
 			$text = preg_replace_callback('{'.
 				'(?<![\w\x1A])'.
-				'(?:'. implode('|', $this->abbr_matches) .')'.
+				'(?:'.$this->abbr_word_regex.')'.
 				'(?![\w\x1A])'.
 				'}', 
 				array(&$this, '_doAbbreviations_callback'), $text);
@@ -2689,7 +2693,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			if (empty($desc)) {
 				return $this->hashPart("<abbr>$abbr</abbr>");
 			} else {
-				$desc = htmlspecialchars($desc, ENT_NOQUOTES);
+				$desc = $this->encodeAttribute($desc);
 				return $this->hashPart("<abbr title=\"$desc\">$abbr</abbr>");
 			}
 		} else {
