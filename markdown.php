@@ -1560,7 +1560,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	var $footnotes = array();
 	var $footnotes_ordered = array();
 	var $abbr_desciptions = array();
-	var $abbr_word_regex = array();
+	var $abbr_word_re = array();
 	
 	# Give the current footnote number.
 	var $footnote_counter = 1;
@@ -1575,13 +1575,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
-		$this->abbr_word_regex = '';
+		$this->abbr_word_re = '';
 		$this->footnote_counter = 1;
 		
 		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
-			if ($this->abbr_word_regex)
-				$this->abbr_word_regex .= '|';
-			$this->abbr_word_regex .= preg_quote($abbr_word);
+			if ($this->abbr_word_re)
+				$this->abbr_word_re .= '|';
+			$this->abbr_word_re .= preg_quote($abbr_word);
 			$this->abbr_desciptions[$abbr_word] = trim($abbr_desc);
 		}
 	}
@@ -1593,7 +1593,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
 		$this->abbr_desciptions = array();
-		$this->abbr_word_regex = '';
+		$this->abbr_word_re = '';
 		
 		parent::teardown();
 	}
@@ -1602,20 +1602,20 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	### HTML Block Parser ###
 	
 	# Tags that are always treated as block tags:
-	var $block_tags = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend';
+	var $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend';
 	
 	# Tags treated as block tags only if the opening tag is alone on it's line:
-	var $context_block_tags = 'script|noscript|math|ins|del';
+	var $context_block_tags_re = 'script|noscript|math|ins|del';
 	
 	# Tags where markdown="1" default to span mode:
-	var $contain_span_tags = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
+	var $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
 	
 	# Tags which must not have their contents modified, no matter where 
 	# they appear:
-	var $clean_tags = 'script|math';
+	var $clean_tags_re = 'script|math';
 	
 	# Tags that do not need to be closed.
-	var $auto_close_tags = 'hr|img';
+	var $auto_close_tags_re = 'hr|img';
 	
 
 	function hashHTMLBlocks($text) {
@@ -1642,7 +1642,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _hashHTMLBlocks_inMarkdown($text, $indent = 0, 
-										$enclosing_tag = '', $span = false)
+										$enclosing_tag_re = '', $span = false)
 	{
 	#
 	# Parse markdown text, calling _HashHTMLBlocks_InHTML for block tags.
@@ -1660,7 +1660,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#     If you don't like this, just don't indent the tag on which
 	#     you apply the markdown="1" attribute.
 	#
-	# *   If $enclosing_tag is not empty, stops at the first unmatched closing 
+	# *   If $enclosing_tag_re is not empty, stops at the first unmatched closing 
 	#     tag with that name. Nested tags supported.
 	#
 	# *   If $span is true, text inside must treated as span. So any double 
@@ -1672,8 +1672,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if ($text === '') return array('', '');
 
 		# Regex to check for the presense of newlines around a block tag.
-		$newline_match_before = '/(?:^\n?|\n\n)*$/';
-		$newline_match_after = 
+		$newline_before_re = '/(?:^\n?|\n\n)*$/';
+		$newline_after_re = 
 			'{
 				^						# Start of text following the tag.
 				(?>[ ]*<!--.*?-->)?		# Optional comment.
@@ -1681,15 +1681,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}xs';
 		
 		# Regex to match any tag.
-		$block_tag_match =
+		$block_tag_re =
 			'{
 				(					# $2: Capture hole tag.
 					</?					# Any opening or closing tag.
 						(?>				# Tag name.
-							'.$this->block_tags.'			|
-							'.$this->context_block_tags.'	|
-							'.$this->clean_tags.'        	|
-							(?!\s)'.$enclosing_tag.'
+							'.$this->block_tags_re.'			|
+							'.$this->context_block_tags_re.'	|
+							'.$this->clean_tags_re.'        	|
+							(?!\s)'.$enclosing_tag_re.'
 						)
 						(?:
 							(?=[\s"\'/])		# Allowed characters after tag name.
@@ -1740,7 +1740,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			# pattern will be at the end, and between will be any catches made 
 			# by the pattern.
 			#
-			$parts = preg_split($block_tag_match, $text, 2, 
+			$parts = preg_split($block_tag_re, $text, 2, 
 								PREG_SPLIT_DELIM_CAPTURE);
 			
 			# If in Markdown span mode, add a empty-string span-level hash 
@@ -1805,13 +1805,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}
 			#
 			# Check for: Opening Block level tag or
-			#            Opening Content Block tag (like ins and del) 
+			#            Opening Context Block tag (like ins and del) 
 			#               used as a block tag (tag is alone on it's line).
 			#
-			else if (preg_match("{^<(?:$this->block_tags)\b}", $tag) ||
-				(	preg_match("{^<(?:$this->context_block_tags)\b}", $tag) &&
-					preg_match($newline_match_before, $parsed) &&
-					preg_match($newline_match_after, $text)	)
+			else if (preg_match('{^<(?:'.$this->block_tags_re.')\b}', $tag) ||
+				(	preg_match('{^<(?:'.$this->context_block_tags_re.')\b}', $tag) &&
+					preg_match($newline_before_re, $parsed) &&
+					preg_match($newline_after_re, $text)	)
 				)
 			{
 				# Need to parse tag and following text using the HTML parser.
@@ -1825,7 +1825,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			# Check for: Clean tag (like script, math)
 			#            HTML Comments, processing instructions.
 			#
-			else if (preg_match("{^<(?:$this->clean_tags)\b}", $tag) ||
+			else if (preg_match('{^<(?:'.$this->clean_tags_re.')\b}', $tag) ||
 				$tag{1} == '!' || $tag{1} == '?')
 			{
 				# Need to parse tag and following text using the HTML parser.
@@ -1838,9 +1838,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			#
 			# Check for: Tag with same name as enclosing tag.
 			#
-			else if ($enclosing_tag !== '' &&
+			else if ($enclosing_tag_re !== '' &&
 				# Same name as enclosing tag.
-				preg_match("{^</?(?:$enclosing_tag)\b}", $tag))
+				preg_match('{^</?(?:'.$enclosing_tag_re.')\b}', $tag))
 			{
 				#
 				# Increase/decrease nested tag count.
@@ -1880,7 +1880,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if ($text === '') return array('', '');
 		
 		# Regex to match `markdown` attribute inside of a tag.
-		$markdown_attr_match = '
+		$markdown_attr_re = '
 			{
 				\s*			# Eat whitespace before the `markdown` attribute
 				markdown
@@ -1896,7 +1896,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}xs';
 		
 		# Regex to match any tag.
-		$tag_match = '{
+		$tag_re = '{
 				(					# $2: Capture hole tag.
 					</?					# Any opening or closing tag.
 						[\w:$]+			# Tag name.
@@ -1926,9 +1926,10 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		#
 		# Get the name of the starting tag.
+		# (This pattern makes $base_tag_name_re safe without quoting.)
 		#
-		if (preg_match("/^<([\w:$]*)\b/", $text, $matches))
-			$base_tag_name = $matches[1];
+		if (preg_match('/^<([\w:$]*)\b/', $text, $matches))
+			$base_tag_name_re = $matches[1];
 
 		#
 		# Loop through every tag until we find the corresponding closing tag.
@@ -1940,7 +1941,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			# pattern will be at the end, and between will be any catches made 
 			# by the pattern.
 			#
-			$parts = preg_split($tag_match, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$parts = preg_split($tag_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
 			
 			if (count($parts) < 3) {
 				#
@@ -1960,7 +1961,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			# Check for: Auto-close tag (like <hr/>)
 			#			 Comments and Processing Instructions.
 			#
-			if (preg_match("{^</?(?:$this->auto_close_tags)\b}", $tag) ||
+			if (preg_match('{^</?(?:'.$this->auto_close_tags_re.')\b}', $tag) ||
 				$tag{1} == '!' || $tag{1} == '?')
 			{
 				# Just add the tag to the block as if it was text.
@@ -1971,7 +1972,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Increase/decrease nested tag count. Only do so if
 				# the tag's name match base tag's.
 				#
-				if (preg_match("{^</?$base_tag_name\b}", $tag)) {
+				if (preg_match('{^</?'.$base_tag_name_re.'\b}', $tag)) {
 					if ($tag{1} == '/')						$depth--;
 					else if ($tag{strlen($tag)-2} != '/')	$depth++;
 				}
@@ -1980,16 +1981,16 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Check for `markdown="1"` attribute and handle it.
 				#
 				if ($md_attr && 
-					preg_match($markdown_attr_match, $tag, $attr_m) &&
+					preg_match($markdown_attr_re, $tag, $attr_m) &&
 					preg_match('/^1|block|span$/', $attr_m[2] . $attr_m[3]))
 				{
 					# Remove `markdown` attribute from opening tag.
-					$tag = preg_replace($markdown_attr_match, '', $tag);
+					$tag = preg_replace($markdown_attr_re, '', $tag);
 					
 					# Check if text inside this tag must be parsed in span mode.
 					$this->mode = $attr_m[2] . $attr_m[3];
 					$span_mode = $this->mode == 'span' || $this->mode != 'block' &&
-						preg_match("{^<(?:$this->contain_span_tags)\b}", $tag);
+						preg_match('{^<(?:'.$this->contain_span_tags_re.')\b}', $tag);
 					
 					# Calculate indent before tag.
 					if (preg_match('/(?:^|\n)( *?)(?! ).*?$/', $block_text, $matches)) {
@@ -2004,13 +2005,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					$parsed .= $this->$hash_method($block_text);
 					
 					# Get enclosing tag name for the ParseMarkdown function.
+					# (This pattern makes $tag_name_re safe without quoting.)
 					preg_match('/^<([\w:$]*)\b/', $tag, $matches);
-					$tag_name = $matches[1];
+					$tag_name_re = $matches[1];
 					
 					# Parse the content using the HTML-in-Markdown parser.
 					list ($block_text, $text)
 						= $this->_hashHTMLBlocks_inMarkdown($text, $indent, 
-														$tag_name, $span_mode);
+							$tag_name_re, $span_mode);
 					
 					# Outdent markdown text.
 					if ($indent > 0) {
@@ -2244,7 +2246,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$less_than_tab = $this->tab_width - 1;
 
 		# Re-usable pattern to match any entire dl list:
-		$whole_list = '(?>
+		$whole_list_re = '(?>
 			(								# $1 = whole list
 			  (								# $2
 				[ ]{0,'.$less_than_tab.'}
@@ -2273,7 +2275,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		$text = preg_replace_callback('{
 				(?>\A\n?|(?<=\n\n))
-				'.$whole_list.'
+				'.$whole_list_re.'
 			}mx',
 			array(&$this, '_doDefLists_callback'), $text);
 
@@ -2666,9 +2668,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function _stripAbbreviations_callback($matches) {
 		$abbr_word = $matches[1];
 		$abbr_desc = $matches[2];
-		if ($this->abbr_word_regex)
-			$this->abbr_word_regex .= '|';
-		$this->abbr_word_regex .= preg_quote($abbr_word);
+		if ($this->abbr_word_re)
+			$this->abbr_word_re .= '|';
+		$this->abbr_word_re .= preg_quote($abbr_word);
 		$this->abbr_desciptions[$abbr_word] = trim($abbr_desc);
 		return ''; # String that will replace the block
 	}
@@ -2678,12 +2680,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 	# Find defined abbreviations in text and wrap them in <abbr> elements.
 	#
-		if ($this->abbr_word_regex) {
-			// cannot use the /x modifier because abbr_word_regex may 
+		if ($this->abbr_word_re) {
+			// cannot use the /x modifier because abbr_word_re may 
 			// contain significant spaces:
 			$text = preg_replace_callback('{'.
 				'(?<![\w\x1A])'.
-				'(?:'.$this->abbr_word_regex.')'.
+				'(?:'.$this->abbr_word_re.')'.
 				'(?![\w\x1A])'.
 				'}', 
 				array(&$this, '_doAbbreviations_callback'), $text);
