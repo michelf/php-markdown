@@ -287,8 +287,8 @@ class Markdown_Parser {
 	#
 		$this->setup();
 	
-		# Remove UTF-8 BOM, if present.
-		$text = preg_replace('{^\xEF\xBB\xBF}', '', $text);
+		# Remove UTF-8 BOM and marker character in input, if present.
+		$text = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $text);
 
 		# Standardize line endings:
 		#   DOS to Unix and Mac to Unix
@@ -359,9 +359,8 @@ class Markdown_Parser {
 	}
 	function _stripLinkDefinitions_callback($matches) {
 		$link_id = strtolower($matches[1]);
-		$this->urls[$link_id] = $this->encodeAttribute($matches[2]);
-		if (isset($matches[3]))
-			$this->titles[$link_id] = $this->encodeAttribute($matches[3]);
+		$this->urls[$link_id] = $matches[2];
+		$this->titles[$link_id] =& $matches[3];
 		return ''; # String that will replace the block
 	}
 
@@ -840,10 +839,11 @@ class Markdown_Parser {
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
-			$url = $this->urls[$link_id];
+			$url = $this->encodeAttribute($this->urls[$link_id]);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
+				$title = $this->encodeAttribute($title);
 				$result .=  " title=\"$title\"";
 			}
 			$result .= $this->empty_element_suffix;
@@ -1254,7 +1254,8 @@ class Markdown_Parser {
 
 	function encodeAttribute($text) {
 	#
-	# Encode text for a double-quoted HTML attribute.
+	# Encode text for a double-quoted HTML attribute. This function
+	# is *not* suitable for attributes enclosed in single quotes.
 	#
 		$text = $this->encodeAmpsAndAngles($text);
 		$text = str_replace('"', '&quot;', $text);
@@ -1420,7 +1421,7 @@ class Markdown_Parser {
 				return $this->hashPart("&#". ord($token{1}). ";");
 			case "`":
 				# Search for end marker in remaining text.
-				if (preg_match('/^(.*?[^`])'.$token.'(?!`)(.*)$/sm', 
+				if (preg_match('/^(.*?[^`])'.preg_quote($token).'(?!`)(.*)$/sm', 
 					$str, $matches))
 				{
 					$str = $matches[2];
