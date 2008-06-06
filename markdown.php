@@ -1537,6 +1537,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# Insert extra document, block, and span transformations. 
 		# Parent constructor will do the sorting.
 		$this->document_gamut += array(
+			"doFencedCodeBlocks" => 5,
 			"stripFootnotes"     => 15,
 			"stripAbbreviations" => 25,
 			"appendFootnotes"    => 50,

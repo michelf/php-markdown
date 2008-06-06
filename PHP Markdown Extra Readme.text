@@ -206,6 +206,10 @@ Version History
 
 Current Extra:
 
+*	Fixed a problem where abbreviation definitions, footnote
+	definitions and link references were stripped inside
+	fenced code blocks.
+
 *	Fixed a bug where characters such as `"` in abbreviation
 	definitions weren't properly encoded to HTML entities.
 
