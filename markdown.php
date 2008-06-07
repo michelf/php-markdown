@@ -897,6 +897,10 @@ class Markdown_Parser {
 		return $text;
 	}
 	function _doHeaders_callback_setext($matches) {
+		# Terrible hack to check we haven't found an empty list item.
+		if ($matches[2] == '-' && preg_match('{^-(?: |$)}', $matches[1]))
+			return $matches[0];
+		
 		$level = $matches[2]{0} == '=' ? 1 : 2;
 		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
@@ -1018,11 +1022,13 @@ class Markdown_Parser {
 
 		$list_str = preg_replace_callback('{
 			(\n)?							# leading line = $1
-			(^[ ]*)						# leading whitespace = $2
-			('.$marker_any_re.' [ ]+)		# list marker and space = $3
-			((?s:.+?))						# list item text   = $4
+			(^[ ]*)							# leading whitespace = $2
+			('.$marker_any_re.'				# list marker and space = $3
+				(?:[ ]+|(?=\n))	# space only required if item is not empty
+			)
+			((?s:.*?))						# list item text   = $4
 			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
-			(?= \n* (\z | \2 ('.$marker_any_re.') [ ]+))
+			(?= \n* (\z | \2 ('.$marker_any_re.') (?:[ ]+|(?=\n))))
 			}xm',
 			array(&$this, '_processListItems_callback'), $list_str);
 

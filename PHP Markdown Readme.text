@@ -200,6 +200,11 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Current:
+
+*	Lists can now have empty items.
+
+
 1.0.1l:
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
