@@ -2522,63 +2522,25 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 
 
-	function doItalicsAndBold($text) {
 	#
-	# Redefined to change emphasis by underscore behaviour so that it does not 
+	# Redefining emphasis markers so that emphasis by underscore does not
 	# work in the middle of a word.
 	#
-		# <strong> must go first:
-		$text = preg_replace_callback(array(
-			'{
-				(						# $1: Marker
-					(?<![a-zA-Z0-9])	# Not preceded by alphanum
-					(?<!__)				#	or by two marker chars.
-					__
-				)
-				(?=\S) 					# Not followed by whitespace 
-				(?!__)					#   or two others marker chars.
-				(						# $2: Content
-					(?>
-						[^_]+?			# Anthing not em markers.
-					|
-										# Balence any regular _ emphasis inside.
-						(?<![a-zA-Z0-9]) _ (?=\S) (.+?) 
-						(?<=\S) _ (?![a-zA-Z0-9])
-					|
-						_+				# Allow unbalenced as last resort.
-					)+?
-				)
-				(?<=\S) __				# End mark not preceded by whitespace.
-				(?![a-zA-Z0-9])			# Not followed by alphanum
-				(?!__)					#   or two others marker chars.
-			}sx',
-			'{
-				( (?<!\*\*) \*\* )		# $1: Marker (not preceded by two *)
-				(?=\S) 					# Not followed by whitespace 
-				(?!\1)					#   or two others marker chars.
-				(						# $2: Content
-					(?>
-						[^*]+?			# Anthing not em markers.
-					|
-										# Balence any regular * emphasis inside.
-						\* (?=\S) (.+?) (?<=\S) \*
-					|
-						\*				# Allow unbalenced as last resort.
-					)+?
-				)
-				(?<=\S) \*\*			# End mark not preceded by whitespace.
-			}sx',
-			),
-			array(&$this, '_doItalicAndBold_strong_callback'), $text);
-		# Then <em>:
-		$text = preg_replace_callback(array(
-			'{ ( (?<![a-zA-Z0-9])(?<!_)_ ) (?=\S) (?! \1) (.+?) (?<=\S) \1(?![a-zA-Z0-9]) }sx',
-			'{ ( (?<!\*)\* ) (?=\S) (?! \1) (.+?) (?<=\S)(?<!\s\*) \1 }sx',
-			),
-			array(&$this, '_doItalicAndBold_em_callback'), $text);
-
-		return $text;
-	}
+	var $em_relist = array(
+		''  => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?=\S)(?![.,:;]\s)',
+		'*' => '(?<=\S)(?<!\*)\*(?!\*)',
+		'_' => '(?<=\S)(?<!_)_(?![a-zA-Z0-9_])',
+		);
+	var $strong_relist = array(
+		''   => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?=\S)(?![.,:;]\s)',
+		'**' => '(?<=\S)(?<!\*)\*\*(?!\*)',
+		'__' => '(?<=\S)(?<!_)__(?![a-zA-Z0-9_])',
+		);
+	var $em_strong_relist = array(
+		''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?=\S)(?![.,:;]\s)',
+		'***' => '(?<=\S)(?<!\*)\*\*\*(?!\*)',
+		'___' => '(?<=\S)(?<!_)___(?![a-zA-Z0-9_])',
+		);
 
 
 	function formParagraphs($text) {
