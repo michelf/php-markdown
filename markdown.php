@@ -1240,7 +1240,7 @@ class Markdown_Parser {
 						$span = $this->runSpanGamut($span);
 						$span = "<em>$span</em>";
 						$text_stack[0] .= $this->hashPart($span);
-						$strong = '';
+						$em = '';
 					} else {
 						$text_stack[0] .= $token;
 					}
