@@ -1666,11 +1666,11 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 	
 	
-	# Extra hashes used during extra transformations.
+	# Extra variables used during extra transformations.
 	var $footnotes = array();
 	var $footnotes_ordered = array();
 	var $abbr_desciptions = array();
-	var $abbr_word_re = array();
+	var $abbr_word_re = '';
 	
 	# Give the current footnote number.
 	var $footnote_counter = 1;
@@ -1871,13 +1871,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			
 			$tag  = $parts[1]; # Tag to handle.
 			$text = $parts[2]; # Remaining text after current tag.
+			$tag_re = preg_quote($tag); # For use in a regular expression.
 			
 			#
 			# Check for: Code span marker
 			#
 			if ($tag{0} == "`") {
 				# Find corresponding end marker.
-				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)'.$tag.'(?!`)}', 
+				$tag_re = preg_quote($tag);
+				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)'.$tag_re.'(?!`)}',
 					$text, $matches))
 				{
 					# End marker found: pass text unchanged until marker.
@@ -1900,7 +1902,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				}
 				else {
 					# Fenced code block marker: find matching end marker.
-					if (preg_match('{^(?>.*\n)+?'.trim($tag).' *\n}', $text, 
+					$tag_re = preg_quote(trim($tag));
+					if (preg_match('{^(?>.*\n)+?'.$tag_re.' *\n}', $text, 
 						$matches)) 
 					{
 						# End marker found: pass text unchanged until marker.
