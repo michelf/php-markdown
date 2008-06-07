@@ -217,6 +217,14 @@ Current Extra:
 	as HTML entities when used inside a footnote reference id.
 
 
+Current:
+
+*	Lists can now have empty items.
+
+*	Rewrote the emphasis and strong emphasis parser to fix some issues
+	with odly placed and overlong markers.
+
+
 Extra 1.2.1 (27 May 2008):
 
 *	Fixed a problem where Markdown headers and horizontal rules were
