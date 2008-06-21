@@ -1,7 +1,11 @@
 PHP Markdown Extra
 ==================
 
+<<<<<<< HEAD:PHP Markdown Extra Readme.text
 Version 1.2.1 - Tue 27 May 2008
+=======
+Version 1.0.1m - Sat 21 Jun 2008
+>>>>>>> master:PHP Markdown Readme.text
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -204,7 +208,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current Extra:
+Extra 1.2.2 (21 Jun 2008):
 
 *	Fixed a problem where abbreviation definitions, footnote
 	definitions and link references were stripped inside
@@ -217,7 +221,7 @@ Current Extra:
 	as HTML entities when used inside a footnote reference id.
 
 
-Current:
+1.0.1m (21 Jun 2008):
 
 *	Lists can now have empty items.
 
