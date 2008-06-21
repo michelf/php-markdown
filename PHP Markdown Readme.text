@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1l - Sun 11 May 2008
+Version 1.0.1m - Sat 21 Jun 2008
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -200,7 +200,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current:
+1.0.1m (21 Jun 2008):
 
 *	Lists can now have empty items.
 
@@ -208,7 +208,7 @@ Current:
 	with odly placed and overlong markers.
 
 
-1.0.1l:
+1.0.1l (11 May 2008):
 
 *	Now removing the UTF-8 BOM at the start of a document, if present.
 
