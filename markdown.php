@@ -229,6 +229,7 @@ class Markdown_Parser {
 	# Constructor function. Initialize appropriate member variables.
 	#
 		$this->_initDetab();
+		$this->prepareItalicsAndBold();
 	
 		$this->nested_brackets_re = 
 			str_repeat('(?>[^\[\]]+|\[', $this->nested_brackets_depth).
@@ -1125,6 +1126,26 @@ class Markdown_Parser {
 		'***' => '(?<=\S)(?<!\*)\*\*\*(?!\*)',
 		'___' => '(?<=\S)(?<!_)___(?!_)',
 		);
+	var $em_strong_prepared_relist;
+	
+	function prepareItalicsAndBold() {
+	#
+	# Prepare regular expressions for seraching emphasis tokens in any
+	# context.
+	#
+		foreach ($this->em_relist as $em => $expression) {
+			foreach ($this->strong_relist as $strong => $expression) {
+				if (isset($this->em_strong_relist["$em$strong"])) {
+					$token_relist[] = $this->em_strong_relist["$em$strong"];
+				}
+				$token_relist[] = $this->strong_relist[$strong];
+				$token_relist[] = $this->em_relist[$em];
+				$token_re = '{('. implode('|', $token_relist) .')}';
+				
+				$this->em_strong_prepared_relist["$em$strong"] = $token_re;
+			}
+		}
+	}
 	
 	function doItalicsAndBold($text) {
 		$token_stack = array('');
@@ -1135,16 +1156,10 @@ class Markdown_Parser {
 		
 		while (1) {
 			#
-			# Create regular expression for seraching emphasis tokens
+			# Get prepared regular expression for seraching emphasis tokens
 			# in current context.
 			#
-			$token_relist = array();
-			if (isset($this->em_strong_relist["$em$strong"])) {
-				$token_relist[] = $this->em_strong_relist["$em$strong"];
-			}
-			$token_relist[] = $this->strong_relist[$strong];
-			$token_relist[] = $this->em_relist[$em];
-			$token_re = '{('. implode('|', $token_relist) .')}';
+			$token_re = $this->em_strong_prepared_relist["$em$strong"];
 			
 			#
 			# Each loop iteration seach for the next emphasis token. 
