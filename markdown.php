@@ -1124,15 +1124,18 @@ class Markdown_Parser {
 	# Prepare regular expressions for seraching emphasis tokens in any
 	# context.
 	#
-		foreach ($this->em_relist as $em => $expression) {
-			foreach ($this->strong_relist as $strong => $expression) {
+		foreach ($this->em_relist as $em => $em_re) {
+			foreach ($this->strong_relist as $strong => $strong_re) {
+				# Construct list of allowed token expressions.
+				$token_relist = array();
 				if (isset($this->em_strong_relist["$em$strong"])) {
 					$token_relist[] = $this->em_strong_relist["$em$strong"];
 				}
-				$token_relist[] = $this->strong_relist[$strong];
-				$token_relist[] = $this->em_relist[$em];
-				$token_re = '{('. implode('|', $token_relist) .')}';
+				$token_relist[] = $em_re;
+				$token_relist[] = $strong_re;
 				
+				# Construct master expression from list.
+				$token_re = '{('. implode('|', $token_relist) .')}';
 				$this->em_strong_prepared_relist["$em$strong"] = $token_re;
 			}
 		}
