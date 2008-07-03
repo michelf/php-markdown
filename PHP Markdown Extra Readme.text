@@ -208,6 +208,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Extra Current:
+
+*	In WordPress pages featuring more than one post, footnote id prefixes are 
+	now automatically applied with the current post ID to avoid clashes
+	between footnotes belonging to different posts.
+
+
 Extra 1.2.2 (21 Jun 2008):
 
 *	Fixed a problem where abbreviation definitions, footnote
