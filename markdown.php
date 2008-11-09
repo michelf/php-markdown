@@ -691,12 +691,12 @@ class Markdown_Parser {
 			  \)
 			)
 			}xs',
-			array(&$this, '_DoAnchors_inline_callback'), $text);
+			array(&$this, '_doAnchors_inline_callback'), $text);
 
 		#
 		# Last, handle reference-style shortcuts: [link text]
-		# These must come last in case you've also got [link test][1]
-		# or [link test](/foo)
+		# These must come last in case you've also got [link text][1]
+		# or [link text](/foo)
 		#
 //		$text = preg_replace_callback('{
 //			(					# wrap whole match in $1
@@ -1121,7 +1121,7 @@ class Markdown_Parser {
 	
 	function prepareItalicsAndBold() {
 	#
-	# Prepare regular expressions for seraching emphasis tokens in any
+	# Prepare regular expressions for searching emphasis tokens in any
 	# context.
 	#
 		foreach ($this->em_relist as $em => $em_re) {
@@ -1156,7 +1156,7 @@ class Markdown_Parser {
 			$token_re = $this->em_strong_prepared_relist["$em$strong"];
 			
 			#
-			# Each loop iteration seach for the next emphasis token. 
+			# Each loop iteration search for the next emphasis token. 
 			# Each token is then passed to handleSpanToken.
 			#
 			$parts = preg_split($token_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
@@ -1289,7 +1289,7 @@ class Markdown_Parser {
 		# These leading spaces cause problem with <pre> content, 
 		# so we need to fix that:
 		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', 
-			array(&$this, '_DoBlockQuotes_callback2'), $bq);
+			array(&$this, '_doBlockQuotes_callback2'), $bq);
 
 		return "\n". $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
 	}
