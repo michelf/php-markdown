@@ -210,6 +210,10 @@ Extra Current:
 	now automatically applied with the current post ID to avoid clashes
 	between footnotes belonging to different posts.
 
+*	Fix for a bug introduced in Extra 1.2 where block-level HTML tags where 
+	not detected correctly, thus the addition of erroneous `<p>` tags and
+	interpretation of their content as Markdown content instead of HTML.
+
 
 Extra 1.2.2 (21 Jun 2008):
 
