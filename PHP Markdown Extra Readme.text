@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.2.2 - Sat 21 Jun 2008
+Version 1.2.3 - Wed 31 Dec 2008
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -204,7 +204,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Extra Current:
+Extra 1.2.3 (31 Dec 2008):
 
 *	In WordPress pages featuring more than one post, footnote id prefixes are 
 	now automatically applied with the current post ID to avoid clashes
@@ -212,7 +212,8 @@ Extra Current:
 
 *	Fix for a bug introduced in Extra 1.2 where block-level HTML tags where 
 	not detected correctly, thus the addition of erroneous `<p>` tags and
-	interpretation of their content as Markdown content instead of HTML.
+	interpretation of their content as Markdown-formatted instead of
+	HTML-formatted.
 
 
 Extra 1.2.2 (21 Jun 2008):
