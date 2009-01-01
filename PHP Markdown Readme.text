@@ -205,6 +205,15 @@ Current:
 *	Fix for adjacent list of different kind where the second list could
 	end as a sublist of the first when not separated by an empty line.
 
+*	Now accepting many valid email addresses in autolinks that were 
+	previously rejected, such as:
+	
+		<abc+mailbox/department=shipping@example.com>
+		<!#$%&'*+-/=?^_`.{|}~@example.com>
+		<"abc@def"@example.com>
+		<"Fred Bloggs"@example.com>
+		<jsmith@[192.0.2.1]>
+
 
 1.0.1m (21 Jun 2008):
 
