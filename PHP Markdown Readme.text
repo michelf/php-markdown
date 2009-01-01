@@ -214,6 +214,17 @@ Current:
 		<"Fred Bloggs"@example.com>
 		<jsmith@[192.0.2.1]>
 
+*	Now accepting spaces in URLs for inline and reference-style links. Such 
+	URLs need to be surrounded by angle brakets. For instance:
+	
+		[link text](<http://url/with space> "optional title")
+
+		[link text][ref]
+		[ref]: <http://url/with space> "optional title"
+	
+	There is still a quirk which may prevent this from working correctly with 
+	relative URLs in inline-style links however.
+
 
 1.0.1m (21 Jun 2008):
 
