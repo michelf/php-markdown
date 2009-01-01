@@ -200,6 +200,12 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Current:
+
+*	Fix for adjacent list of different kind where the second list could
+	end as a sublist of the first when not separated by an empty line.
+
+
 1.0.1m (21 Jun 2008):
 
 *	Lists can now have empty items.

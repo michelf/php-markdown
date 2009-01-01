@@ -929,19 +929,22 @@ class Markdown_Parser {
 		$marker_ol_re  = '\d+[.]';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 
-		$markers_relist = array($marker_ul_re, $marker_ol_re);
+		$markers_relist = array(
+			$marker_ul_re => $marker_ol_re,
+			$marker_ol_re => $marker_ul_re,
+			);
 
-		foreach ($markers_relist as $marker_re) {
+		foreach ($markers_relist as $marker_re => $other_marker_re) {
 			# Re-usable pattern to match any entirel ul or ol list:
 			$whole_list_re = '
 				(								# $1 = whole list
 				  (								# $2
-					[ ]{0,'.$less_than_tab.'}
-					('.$marker_re.')			# $3 = first list item marker
+					([ ]{0,'.$less_than_tab.'})	# $3 = number of spaces
+					('.$marker_re.')			# $4 = first list item marker
 					[ ]+
 				  )
 				  (?s:.+?)
-				  (								# $4
+				  (								# $5
 					  \z
 					|
 					  \n{2,}
@@ -949,6 +952,12 @@ class Markdown_Parser {
 					  (?!						# Negative lookahead for another list item marker
 						[ ]*
 						'.$marker_re.'[ ]+
+					  )
+					|
+					  (?=						# Lookahead for another kind of list
+					    \n
+						\3						# Must have the same indentation
+						'.$other_marker_re.'[ ]+
 					  )
 				  )
 				)
@@ -982,7 +991,7 @@ class Markdown_Parser {
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 		
 		$list = $matches[1];
-		$list_type = preg_match("/$marker_ul_re/", $matches[3]) ? "ul" : "ol";
+		$list_type = preg_match("/$marker_ul_re/", $matches[4]) ? "ul" : "ol";
 		
 		$marker_any_re = ( $list_type == "ul" ? $marker_ul_re : $marker_ol_re );
 		
