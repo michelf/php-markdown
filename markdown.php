@@ -332,14 +332,18 @@ class Markdown_Parser {
 							  [ ]*
 							  \n?				# maybe *one* newline
 							  [ ]*
-							<?(\S+?)>?			# url = $2
+							(?:
+							  <(.+?)>			# url = $2
+							|
+							  (\S+?)			# url = $3
+							)
 							  [ ]*
 							  \n?				# maybe one newline
 							  [ ]*
 							(?:
 								(?<=\s)			# lookbehind for whitespace
 								["(]
-								(.*?)			# title = $3
+								(.*?)			# title = $4
 								[")]
 								[ ]*
 							)?	# title is optional
@@ -351,8 +355,9 @@ class Markdown_Parser {
 	}
 	function _stripLinkDefinitions_callback($matches) {
 		$link_id = strtolower($matches[1]);
-		$this->urls[$link_id] = $matches[2];
-		$this->titles[$link_id] =& $matches[3];
+		$url = $matches[2] == '' ? $matches[3] : $matches[2];
+		$this->urls[$link_id] = $url;
+		$this->titles[$link_id] =& $matches[4];
 		return ''; # String that will replace the block
 	}
 
@@ -677,7 +682,7 @@ class Markdown_Parser {
 			  \(			# literal paren
 				[ ]*
 				(?:
-					<(\S*)>	# href = $3
+					<(.+?)>	# href = $3
 				|
 					('.$this->nested_url_parenthesis_re.')	# href = $4
 				)
