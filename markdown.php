@@ -1855,7 +1855,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				'. ( !$span ? ' # If not in span.
 				|
 					# Indented code block
-					(?> ^[ ]*\n? | \n[ ]*\n )
+					(?: ^[ ]*\n | ^ | \n[ ]*\n )
 					[ ]{'.($indent+4).'}[^\n]* \n
 					(?>
 						(?: [ ]{'.($indent+4).'}[^\n]* | [ ]* ) \n
@@ -1925,28 +1925,29 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				}
 			}
 			#
-			# Check for: Indented code block or fenced code block marker.
+			# Check for: Indented code block.
 			#
-			else if ($tag{0} == "\n" || $tag{0} == "~") {
-				if ($tag{1} == "\n" || $tag{1} == " ") {
-					# Indented code block: pass it unchanged, will be handled 
-					# later.
-					$parsed .= $tag;
+			else if ($tag{0} == "\n" || $tag{0} == " ") {
+				# Indented code block: pass it unchanged, will be handled 
+				# later.
+				$parsed .= $tag;
+			}
+			#
+			# Check for: Fenced code block marker.
+			#
+			else if ($tag{0} == "~") {
+				# Fenced code block marker: find matching end marker.
+				$tag_re = preg_quote(trim($tag));
+				if (preg_match('{^(?>.*\n)+?'.$tag_re.' *\n}', $text, 
+					$matches)) 
+				{
+					# End marker found: pass text unchanged until marker.
+					$parsed .= $tag . $matches[0];
+					$text = substr($text, strlen($matches[0]));
 				}
 				else {
-					# Fenced code block marker: find matching end marker.
-					$tag_re = preg_quote(trim($tag));
-					if (preg_match('{^(?>.*\n)+?'.$tag_re.' *\n}', $text, 
-						$matches)) 
-					{
-						# End marker found: pass text unchanged until marker.
-						$parsed .= $tag . $matches[0];
-						$text = substr($text, strlen($matches[0]));
-					}
-					else {
-						# No end marker: just skip it.
-						$parsed .= $tag;
-					}
+					# No end marker: just skip it.
+					$parsed .= $tag;
 				}
 			}
 			#
