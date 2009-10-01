@@ -680,18 +680,18 @@ class Markdown_Parser {
 				('.$this->nested_brackets_re.')	# link text = $2
 			  \]
 			  \(			# literal paren
-				[ ]*
+				[ \n]*
 				(?:
 					<(.+?)>	# href = $3
 				|
 					('.$this->nested_url_parenthesis_re.')	# href = $4
 				)
-				[ ]*
+				[ \n]*
 				(			# $5
 				  ([\'"])	# quote char = $6
 				  (.*?)		# Title = $7
 				  \6		# matching quote
-				  [ ]*	# ignore any spaces/tabs between closing quote and )
+				  [ \n]*	# ignore any spaces/tabs between closing quote and )
 				)?			# title is optional
 			  \)
 			)
@@ -805,18 +805,18 @@ class Markdown_Parser {
 			  \]
 			  \s?			# One optional whitespace character
 			  \(			# literal paren
-				[ ]*
+				[ \n]*
 				(?:
 					<(\S*)>	# src url = $3
 				|
 					('.$this->nested_url_parenthesis_re.')	# src url = $4
 				)
-				[ ]*
+				[ \n]*
 				(			# $5
 				  ([\'"])	# quote char = $6
 				  (.*?)		# title = $7
 				  \6		# matching quote
-				  [ ]*
+				  [ \n]*
 				)?			# title is optional
 			  \)
 			)

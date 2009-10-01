@@ -225,6 +225,9 @@ Current:
 	There is still a quirk which may prevent this from working correctly with 
 	relative URLs in inline-style links however.
 
+*	Fixed a bug where inline-style links wouldn't be recognized when the link 
+	definition contains a line break between the url and the title.
+
 
 1.0.1m (21 Jun 2008):
 
