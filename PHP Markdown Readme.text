@@ -228,6 +228,9 @@ Current:
 *	Fixed a bug where inline-style links wouldn't be recognized when the link 
 	definition contains a line break between the url and the title.
 
+*	Fixed a bug where tags where the name contains an underscore aren't parsed 
+	correctly.
+
 
 1.0.1m (21 Jun 2008):
 
