@@ -4,7 +4,7 @@
 #
 # PHP Markdown
 # Copyright (c) 2004-2009 Michel Fortin  
-# <http://www.michelf.com/projects/php-markdown/>
+# <http://michelf.com/projects/php-markdown/>
 #
 # Original Markdown
 # Copyright (c) 2004-2006 John Gruber  
@@ -60,16 +60,16 @@ function Markdown($text) {
 
 /*
 Plugin Name: Markdown
-Plugin URI: http://www.michelf.com/projects/php-markdown/
-Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
+Plugin URI: http://michelf.com/projects/php-markdown/
+Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://michelf.com/projects/php-markdown/">More...</a>
 Version: 1.0.1n
 Author: Michel Fortin
-Author URI: http://www.michelf.com/
+Author URI: http://michelf.com/
 */
 
 if (isset($wp_version)) {
 	# More details about how it works here:
-	# <http://www.michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
+	# <http://michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
 	
 	# Post content and excerpts
 	# - Remove WordPress paragraph generator.
@@ -147,7 +147,7 @@ function identify_modifier_markdown() {
 		'authors'		=> 'Michel Fortin and John Gruber',
 		'licence'		=> 'BSD-like',
 		'version'		=> MARKDOWN_VERSION,
-		'help'			=> '<a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>'
+		'help'			=> '<a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://michelf.com/projects/php-markdown/">More...</a>'
 	);
 }
 
@@ -1693,7 +1693,7 @@ Copyright and License
 
 PHP Markdown
 Copyright (c) 2004-2009 Michel Fortin  
-<http://www.michelf.com/>  
+<http://michelf.com/>  
 All rights reserved.
 
 Based on Markdown
