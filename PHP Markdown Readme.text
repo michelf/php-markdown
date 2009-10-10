@@ -200,7 +200,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current:
+1.0.1n (10 Oct 2009):
 
 *	Enabled reference-style shortcut links. Now you can write reference-style 
 	links with less brakets:
@@ -215,9 +215,6 @@ Current:
 	compatibility's sake to allow it in PHP Markdown too.
 
  [half]: http://babelmark.bobtfish.net/?markdown=This+is+%5Bmy+website%5D.%0D%0A%09%09%0D%0A%5Bmy+website%5D%3A+http%3A%2F%2Fexample.com%2F%0D%0A&src=1&dest=2
-
-*	Fix for adjacent list of different kind where the second list could
-	end as a sublist of the first when not separated by an empty line.
 
 *	Now accepting many valid email addresses in autolinks that were 
 	previously rejected, such as:
@@ -238,6 +235,9 @@ Current:
 	
 	There is still a quirk which may prevent this from working correctly with 
 	relative URLs in inline-style links however.
+
+*	Fix for adjacent list of different kind where the second list could
+	end as a sublist of the first when not separated by an empty line.
 
 *	Fixed a bug where inline-style links wouldn't be recognized when the link 
 	definition contains a line break between the url and the title.
@@ -731,7 +731,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown
-Copyright (c) 2004-2007 Michel Fortin  
+Copyright (c) 2004-2009 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
