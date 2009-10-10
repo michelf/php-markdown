@@ -204,10 +204,21 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Current:
+1.0.1n (10 Oct 2009):
 
-*	Fix for adjacent list of different kind where the second list could
-	end as a sublist of the first when not separated by an empty line.
+*	Enabled reference-style shortcut links. Now you can write reference-style 
+	links with less brakets:
+	
+		This is [my website].
+		
+		[my website]: http://example.com/
+	
+	This was added in the 1.0.2 betas, but commented out in the 1.0.1 branch, 
+	waiting for the feature to be officialized. [But half of the other Markdown
+	implementations are supporting this syntax][half], so it makes sense for 
+	compatibility's sake to allow it in PHP Markdown too.
+
+ [half]: http://babelmark.bobtfish.net/?markdown=This+is+%5Bmy+website%5D.%0D%0A%09%09%0D%0A%5Bmy+website%5D%3A+http%3A%2F%2Fexample.com%2F%0D%0A&src=1&dest=2
 
 *	Now accepting many valid email addresses in autolinks that were 
 	previously rejected, such as:
@@ -228,6 +239,9 @@ Current:
 	
 	There is still a quirk which may prevent this from working correctly with 
 	relative URLs in inline-style links however.
+
+*	Fix for adjacent list of different kind where the second list could
+	end as a sublist of the first when not separated by an empty line.
 
 *	Fixed a bug where inline-style links wouldn't be recognized when the link 
 	definition contains a line break between the url and the title.
@@ -731,7 +745,8 @@ Extra 1.0b1 (25 Jun 2005)
 Copyright and License
 ---------------------
 
-Copyright (c) 2004-2005 Michel Fortin  
+PHP Markdown & Extra  
+Copyright (c) 2004-2009 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 

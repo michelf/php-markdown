@@ -3,7 +3,7 @@
 # Markdown Extra  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown & Extra
-# Copyright (c) 2004-2008 Michel Fortin  
+# Copyright (c) 2004-2009 Michel Fortin  
 # <http://www.michelf.com/projects/php-markdown/>
 #
 # Original Markdown
@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1m" ); # Sat 21 Jun 2008
+define( 'MARKDOWN_VERSION',  "1.0.1n" ); # Sat 10 Oct 2009
 define( 'MARKDOWNEXTRA_VERSION',  "1.2.3" ); # Wed 31 Dec 2008
 
 
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.2.2
+Version: 1.2.3
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
@@ -727,14 +727,14 @@ class Markdown_Parser {
 		# These must come last in case you've also got [link text][1]
 		# or [link text](/foo)
 		#
-//		$text = preg_replace_callback('{
-//			(					# wrap whole match in $1
-//			  \[
-//				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
-//			  \]
-//			)
-//			}xs',
-//			array(&$this, '_doAnchors_reference_callback'), $text);
+		$text = preg_replace_callback('{
+			(					# wrap whole match in $1
+			  \[
+				([^\[\]]+)		# link text = $2; can\'t contain [ or ]
+			  \]
+			)
+			}xs',
+			array(&$this, '_doAnchors_reference_callback'), $text);
 
 		$this->in_anchor = false;
 		return $text;
@@ -2891,8 +2891,8 @@ See the readme file for detailed release notes for this version.
 Copyright and License
 ---------------------
 
-PHP Markdown & Extra
-Copyright (c) 2004-2008 Michel Fortin  
+PHP Markdown & Extra  
+Copyright (c) 2004-2009 Michel Fortin  
 <http://www.michelf.com/>  
 All rights reserved.
 
