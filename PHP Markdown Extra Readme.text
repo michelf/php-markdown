@@ -252,7 +252,7 @@ Version History
 *	Fixed some corner-cases mixing underscore-ephasis and asterisk-emphasis.
 
 
-Extra 1.2.4:
+Extra 1.2.4 (10 Oct 2009):
 
 *	Fixed a problem where unterminated tags in indented code blocks could 
 	prevent proper escaping of characaters in the code block.
