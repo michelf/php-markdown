@@ -13,7 +13,7 @@
 
 
 define( 'MARKDOWN_VERSION',  "1.0.1n" ); # Sat 10 Oct 2009
-define( 'MARKDOWNEXTRA_VERSION',  "1.2.3" ); # Wed 31 Dec 2008
+define( 'MARKDOWNEXTRA_VERSION',  "1.2.4" ); # Sat 10 Oct 2009
 
 
 #
@@ -71,7 +71,7 @@ function Markdown($text) {
 Plugin Name: Markdown Extra
 Plugin URI: http://michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://michelf.com/projects/php-markdown/">More...</a>
-Version: 1.2.3
+Version: 1.2.4
 Author: Michel Fortin
 Author URI: http://michelf.com/
 */
@@ -2698,7 +2698,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if (!empty($this->footnotes_ordered)) {
 			$text .= "\n\n";
 			$text .= "<div class=\"footnotes\">\n";
-			$text .= "<hr". MARKDOWN_EMPTY_ELEMENT_SUFFIX ."\n";
+			$text .= "<hr". $this->empty_element_suffix ."\n";
 			$text .= "<ol>\n\n";
 			
 			$attr = " rev=\"footnote\"";
