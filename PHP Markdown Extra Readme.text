@@ -4,7 +4,7 @@ PHP Markdown Extra
 Version 1.2.3 - Wed 31 Dec 2008
 
 by Michel Fortin
-<http://www.michelf.com/>
+<http://michelf.com/>
 
 based on Markdown by John Gruber  
 <http://daringfireball.net/>
@@ -14,7 +14,7 @@ Introduction
 ------------
 
 This is a special version of PHP Markdown with extra features. See
-<http://www.michelf.com/projects/php-markdown/extra/> for details.
+<http://michelf.com/projects/php-markdown/extra/> for details.
 
 Markdown is a text-to-HTML conversion tool for web writers. Markdown
 allows you to write using an easy-to-read, easy-to-write plain text
@@ -113,7 +113,7 @@ can solve this problem by installing the "smartypants.php" file from
 Compatibility Mode function will use SmartyPants automatically without 
 further modification.
 
- [psp]: http://www.michelf.com/projects/php-smartypants/
+ [psp]: http://michelf.com/projects/php-smartypants/
 
 
 ### In Your Own Programs ###
@@ -747,7 +747,7 @@ Copyright and License
 
 PHP Markdown & Extra  
 Copyright (c) 2004-2009 Michel Fortin  
-<http://www.michelf.com/>  
+<http://michelf.com/>  
 All rights reserved.
 
 Based on Markdown  
