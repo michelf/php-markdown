@@ -202,6 +202,20 @@ Version History
 
 Current:
 
+*	Enabled reference-style shortcut links. Now you can write reference-style 
+	links with less brakets:
+	
+		This is [my website].
+		
+		[my website]: http://example.com/
+	
+	This was added in the 1.0.2 betas, but commented out in the 1.0.1 branch, 
+	waiting for the feature to be officialized. [But half of the other Markdown
+	implementations are supporting this syntax][half], so it makes sense for 
+	compatibility's sake to allow it in PHP Markdown too.
+
+ [half]: http://babelmark.bobtfish.net/?markdown=This+is+%5Bmy+website%5D.%0D%0A%09%09%0D%0A%5Bmy+website%5D%3A+http%3A%2F%2Fexample.com%2F%0D%0A&src=1&dest=2
+
 *	Fix for adjacent list of different kind where the second list could
 	end as a sublist of the first when not separated by an empty line.
 
