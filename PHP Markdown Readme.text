@@ -245,6 +245,8 @@ Version History
 *	Fixed a bug where tags where the name contains an underscore aren't parsed 
 	correctly.
 
+*	Fixed some corner-cases mixing underscore-ephasis and asterisk-emphasis.
+
 
 1.0.1m (21 Jun 2008):
 
