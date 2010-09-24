@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.2.4 - Sat 10 Oct 2009
+Version 1.2.4.1 - Fri 24 Sept 2010
 
 by Michel Fortin
 <http://michelf.com/>
@@ -9,6 +9,8 @@ by Michel Fortin
 based on Markdown by John Gruber  
 <http://daringfireball.net/>
 
+table of contents support added by Joe Topjian
+<http://terrarum.net/>
 
 Introduction
 ------------
@@ -203,6 +205,21 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.2.4.1 (24 Sept 2010):
+*   Added Table of Contents support:
+
+    Create Table of Contents by specifying the following tag:
+
+        [TOC]
+
+    Table of Contents requirements:
+        * Only headings 2-6
+        * Headings must have an ID
+        * Builds TOC with headings _after_ the [TOC] tag
+
+    Table of Contents generation technnique was inspired by 
+    [ReMarkable](http://camendesign.com/code/remarkable)
 
 1.0.1n (10 Oct 2009):
 

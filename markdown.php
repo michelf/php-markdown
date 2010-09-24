@@ -1706,6 +1706,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			"stripFootnotes"     => 15,
 			"stripAbbreviations" => 25,
 			"appendFootnotes"    => 50,
+            "doTOC"              => 55,
 			);
 		$this->block_gamut += array(
 			"doFencedCodeBlocks" => 5,
@@ -2839,6 +2840,26 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			return $matches[0];
 		}
 	}
+
+    function doTOC($text) {
+    #    
+    # Adds TOC support by including the following on a single line:
+    #    
+    # [TOC]
+    #    
+    # TOC Requirements:
+    #     * Only headings 2-6
+    #     * Headings must have an ID
+    #     * Builds TOC with headings _after_ the [TOC] tag
+      
+        if (preg_match ('/\[TOC\]/m', $text, $i, PREG_OFFSET_CAPTURE)) {
+            preg_match_all ('/<h([2-6]) id="([0-9a-z_-]+)">(.*?)<\/h\1>/i', $text, $h, PREG_SET_ORDER, $i[0][1]);
+            foreach ($h as &$m) $toc .= str_repeat ("\t", (int) $m[1]-2)."*\t [${m[3]}](#${m[2]})\n";
+            $text = preg_replace ('/\[TOC\]/m', Markdown($toc), $text);
+        }
+        return trim ($text, "\n");
+    }
+
 
 }
 
