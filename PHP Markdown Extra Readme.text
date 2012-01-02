@@ -204,6 +204,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Latest:
+
+*	Silenced a new warning introduced around PHP 5.3 complaining about
+	POSIX characters classes not being implemented. PHP Markdown does not
+	use POSIX character classes, but it nevertheless trigged that warning.
+
+
 1.0.1n (10 Oct 2009):
 
 *	Enabled reference-style shortcut links. Now you can write reference-style 
