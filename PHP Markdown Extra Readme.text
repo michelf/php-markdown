@@ -211,6 +211,12 @@ Latest:
 	use POSIX character classes, but it nevertheless trigged that warning.
 
 
+Latest Extra:
+
+*	Fixed an issue preventing fenced code blocks indented inside lists items 
+	and elsewhere from being interpreted correctly.
+
+
 1.0.1n (10 Oct 2009):
 
 *	Enabled reference-style shortcut links. Now you can write reference-style 
