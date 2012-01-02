@@ -1885,7 +1885,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					# Fenced code block marker
 					(?> ^ | \n )
-					[ ]{'.($indent).'}~~~+[ ]*\n
+					[ ]{0,'.($indent).'}~~~+[ ]*\n
 				' : '' ). ' # End (if not is span).
 				)
 			}xs';
@@ -1960,7 +1960,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			else if ($tag{0} == "~") {
 				# Fenced code block marker: find matching end marker.
 				$tag_re = preg_quote(trim($tag));
-				if (preg_match('{^(?>.*\n)+?'.$tag_re.' *\n}', $text, 
+				if (preg_match('{^(?>.*\n)+?[ ]{0,'.($indent).'}'.$tag_re.'[ ]*\n}', $text, 
 					$matches)) 
 				{
 					# End marker found: pass text unchanged until marker.
