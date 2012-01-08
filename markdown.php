@@ -3,7 +3,7 @@
 # Markdown  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown
-# Copyright (c) 2004-2009 Michel Fortin  
+# Copyright (c) 2004-2012 Michel Fortin  
 # <http://michelf.com/projects/php-markdown/>
 #
 # Original Markdown
@@ -12,7 +12,7 @@
 #
 
 
-define( 'MARKDOWN_VERSION',  "1.0.1n" ); # Sat 10 Oct 2009
+define( 'MARKDOWN_VERSION',  "1.0.1o" ); # Sun 8 Jan 2012
 
 
 #
@@ -62,7 +62,7 @@ function Markdown($text) {
 Plugin Name: Markdown
 Plugin URI: http://michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://michelf.com/projects/php-markdown/">More...</a>
-Version: 1.0.1n
+Version: 1.0.1o
 Author: Michel Fortin
 Author URI: http://michelf.com/
 */

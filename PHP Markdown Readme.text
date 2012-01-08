@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1m - Sat 21 Jun 2008
+Version 1.0.1o - Sun 8 Jan 2012
 
 by Michel Fortin
 <http://michelf.com/>
@@ -200,7 +200,7 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
-Latest:
+1.0.1o (8 Jan 2012):
 
 *	Silenced a new warning introduced around PHP 5.3 complaining about
 	POSIX characters classes not being implemented. PHP Markdown does not
