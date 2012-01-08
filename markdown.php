@@ -1947,17 +1947,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				}
 			}
 			#
-			# Check for: Indented code block.
-			#
-			else if ($tag{0} == "\n" || $tag{0} == " ") {
-				# Indented code block: pass it unchanged, will be handled 
-				# later.
-				$parsed .= $tag;
-			}
-			#
 			# Check for: Fenced code block marker.
 			#
-			else if ($tag{0} == "~") {
+			else if (preg_match('{^\n?[ ]{0,'.($indent+3).'}~}', $tag)) {
 				# Fenced code block marker: find matching end marker.
 				$tag_re = preg_quote(trim($tag));
 				if (preg_match('{^(?>.*\n)+?[ ]{0,'.($indent).'}'.$tag_re.'[ ]*\n}', $text, 
@@ -1971,6 +1963,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					# No end marker: just skip it.
 					$parsed .= $tag;
 				}
+			}
+			#
+			# Check for: Indented code block.
+			#
+			else if ($tag{0} == "\n" || $tag{0} == " ") {
+				# Indented code block: pass it unchanged, will be handled 
+				# later.
+				$parsed .= $tag;
 			}
 			#
 			# Check for: Opening Block level tag or

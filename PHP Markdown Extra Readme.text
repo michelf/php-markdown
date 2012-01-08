@@ -216,6 +216,9 @@ Latest Extra:
 *	Fixed an issue preventing fenced code blocks indented inside lists items 
 	and elsewhere from being interpreted correctly.
 
+*	Fixed an issue where HTML tags inside fenced code blocks were sometime
+	not encoded with entities.
+
 
 1.0.1n (10 Oct 2009):
 
