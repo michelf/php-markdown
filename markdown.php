@@ -2552,9 +2552,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(
 					~{3,} # Marker: three tilde or more.
 				)
+				
+				# 2: CSS classes
+				\s?([\s-_\w\d]+)?
+				
 				[ ]* \n # Whitespace and newline following marker.
 				
-				# 2: Content
+				# 3: Content
 				(
 					(?>
 						(?!\1 [ ]* \n)	# Not a closing marker.
@@ -2570,11 +2574,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _doFencedCodeBlocks_callback($matches) {
-		$codeblock = $matches[2];
+		$codeblock = $matches[3];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		$codeblock = "<pre><code>$codeblock</code></pre>";
+		$classes   = empty($matches[2]) ? '' : $matches[2];
+		$codeblock = "<pre class\"$classes\"><code>$codeblock</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doFencedCodeBlocks_newlines($matches) {
