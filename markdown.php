@@ -2582,13 +2582,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function _doFencedCodeBlocks_callback($matches) {
 		$codeblock = $matches[3];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
-		/*
-		Newlines must be replaced with <br />'s because otherwise extra tabs and spaces will
-		be shown depending on where the Markdown'ed content appears in the HTML source. This
-		ensures that code blocks are only a single line in the HTML source and no extra
-		spaces can appear.
-		*/
-		$codeblock = preg_replace_callback('/\n+/',
+		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
 		$class     = ! empty($matches[2]) ? $matches[2] : ( ! empty($matches[4]) ? $matches[4] : '');
 		$class     = ! empty($class) ? ' class="'.trim($class, '.').'"' : '';
