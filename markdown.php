@@ -2544,6 +2544,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Code block
 	# ~~~
 	#
+	# ~~~ #id-here.classname.anotherclass[lang=php]
+	# Code block
+	# ~~~
+	#
+	# ~~~ classname anotherclass
+	# Code block
+	# ~~~
+	#
 		$less_than_tab = $this->tab_width;
 		
 		$text = preg_replace_callback('{
@@ -2553,8 +2561,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					~{3,} # Marker: three tilde or more.
 				)
 				
-				# 2: CSS classes
-				[ ]*(\.[^\n]+)?
+				# 2: Attributes
+				[ ]*([^\n]+)?
 				
 				[ ]* \n # Whitespace and newline following marker.
 				
@@ -2569,8 +2577,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Closing marker.
 				\1
 				
-				# 4: CSS classes
-				[ ]*(\.[^\n]+)?
+				# 4: Attributes
+				[ ]*([^\n]+)?
 				
 				# End of line
 				[ ]* \n
@@ -2584,14 +2592,55 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		$class     = ! empty($matches[2]) ? $matches[2] : ( ! empty($matches[4]) ? $matches[4] : '');
-		$class     = ! empty($class) ? ' class="'.trim($class, '.').'"' : '';
-		$codeblock = "<pre$class><code>$codeblock</code></pre>";
+		$attrs     = ! empty($matches[2]) ? $matches[2] : ( ! empty($matches[4]) ? $matches[4] : '');
+		$attrs     = $this->_doFencedCodeBlocks_parseAttrs($attrs);
+		$codeblock = "<pre$attrs><code>$codeblock</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doFencedCodeBlocks_newlines($matches) {
 		return str_repeat("<br$this->empty_element_suffix", 
 			strlen($matches[0]));
+	}
+	function _doFencedCodeBlocks_parseAttrs($attrs) {
+		preg_match_all('/([#\.\[][^#\.\[]+)/', $attrs, $matches);
+		
+		if (isset($matches[0]) AND ! empty($matches[0])) {
+			$list = array();
+			$list['class'] = '';
+			
+			foreach ($matches[0] as $match) {
+				switch($match[0]) {
+					case '#':
+						$list['id'] = trim($match, '#');
+						break;
+					
+					case '.':
+						$list['class'] .= trim($match, '.').' ';
+						break;
+					
+					case '[':
+						list($key, $value) = explode('=', trim($match, '[]"\''));
+						$list[trim($key)] = trim($value, ' "\'');
+						break;
+				}
+			}
+			
+			$attrs = '';
+			
+			foreach ($list as $attr => $value) {
+				if ( ! empty($value)) {
+					$attrs .= $attr.'="'.trim($value).'" ';
+				}
+			}
+			
+			if ( ! empty($attrs)) {
+				$attrs = ' '.trim($attrs);
+			}
+		} elseif ( ! empty($attrs)) {
+			$attrs = ' class="'.$attrs.'"';
+		}
+		
+		return $attrs;
 	}
 
 
