@@ -1892,7 +1892,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					# Fenced code block marker
 					(?> ^ | \n )
-					[ ]{0,'.($indent).'}~~~+[ ]*\n
+					[ ]{0,'.($indent).'}~~~+[^\n]*\n
 				' : '' ). ' # End (if not is span).
 				)
 			}xs';
