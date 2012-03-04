@@ -26,8 +26,8 @@ PHP Markdown is a port to PHP of the original Markdown program by
 John Gruber.
 
 PHP Markdown can work as a plug-in for WordPress and bBlog, as a 
-modifier for the Smarty templating engine, or as a remplacement for
-textile formatting in any software that support textile.
+modifier for the Smarty templating engine, or as a replacement for
+Textile formatting in any software that supports Textile.
 
 Full documentation of Markdown's syntax is available on John's 
 Markdown page: <http://daringfireball.net/projects/markdown/>
@@ -45,7 +45,7 @@ PHP Markdown works with [WordPress][wp], version 1.2 or later.
 
  [wp]: http://wordpress.org/
 
-1.  To use PHP Markdown with WordPress, place the "makrdown.php" file 
+1.  To use PHP Markdown with WordPress, place the "markdown.php" file 
     in the "plugins" folder. This folder is located inside 
     "wp-content" at the root of your site:
 
@@ -54,17 +54,17 @@ PHP Markdown works with [WordPress][wp], version 1.2 or later.
 2.  Activate the plugin with the administrative interface of 
     WordPress. In the "Plugins" section you will now find Markdown. 
     To activate the plugin, click on the "Activate" button on the 
-    same line than Markdown. Your entries will now be formatted by 
+    same line as Markdown. Your entries will now be formatted by 
     PHP Markdown.
 
 3.  To post Markdown content, you'll first have to disable the 
-	"visual" editor in the User section of WordPress.
+    "visual" editor in the User section of WordPress.
 
 You can configure PHP Markdown to not apply to the comments on your 
 WordPress weblog. See the "Configuration" section below.
 
 It is not possible at this time to apply a different set of 
-filters to different entries. All your entries will be formated by 
+filters to different entries. All your entries will be formatted by 
 PHP Markdown. This is a limitation of WordPress. If your old entries 
 are written in HTML (as opposed to another formatting syntax, like 
 Textile), they'll probably stay fine after installing Markdown.
@@ -91,19 +91,19 @@ entry. This setting will only apply to the entry you are editing.
 
 [TextPattern][tp] use [Textile][tx] to format your text. You can 
 replace Textile by Markdown in TextPattern without having to change
-any code by using the *Texitle Compatibility Mode*. This may work 
+any code by using the *Textile Compatibility Mode*. This may work 
 with other software that expect Textile too.
 
  [tx]: http://www.textism.com/tools/textile/
  [tp]: http://www.textpattern.com/
 
 1.  Rename the "markdown.php" file to "classTextile.php". This will
-	make PHP Markdown behave as if it was the actual Textile parser.
+    make PHP Markdown behave as if it was the actual Textile parser.
 
 2.  Replace the "classTextile.php" file TextPattern installed in your
-	web directory. It can be found in the "lib" directory:
+    web directory. It can be found in the "lib" directory:
 
-		(site home)/textpattern/lib/
+        (site home)/textpattern/lib/
 
 Contrary to Textile, Markdown does not convert quotes to curly ones 
 and does not convert multiple hyphens (`--` and `---`) into en- and 
@@ -224,11 +224,11 @@ Extra 1.2.5 (8 Jan 2012):
 
 *	Enabled reference-style shortcut links. Now you can write reference-style 
 	links with less brakets:
-	
+
 		This is [my website].
-		
+
 		[my website]: http://example.com/
-	
+
 	This was added in the 1.0.2 betas, but commented out in the 1.0.1 branch, 
 	waiting for the feature to be officialized. [But half of the other Markdown
 	implementations are supporting this syntax][half], so it makes sense for 
@@ -238,7 +238,7 @@ Extra 1.2.5 (8 Jan 2012):
 
 *	Now accepting many valid email addresses in autolinks that were 
 	previously rejected, such as:
-	
+
 		<abc+mailbox/department=shipping@example.com>
 		<!#$%&'*+-/=?^_`.{|}~@example.com>
 		<"abc@def"@example.com>
@@ -247,7 +247,7 @@ Extra 1.2.5 (8 Jan 2012):
 
 *	Now accepting spaces in URLs for inline and reference-style links. Such 
 	URLs need to be surrounded by angle brakets. For instance:
-	
+
 		[link text](<http://url/with space> "optional title")
 
 		[link text][ref]
@@ -354,27 +354,27 @@ Extra 1.2 (11 May 2008):
 
 *	Fix for code blocks as first element of a list item. Previously,
 	this didn't create any code block for item 2:
-	
+
 		*   Item 1 (regular paragraph)
-		
+
 		*       Item 2 (code block)
 
 *	A code block starting on the second line of a document wasn't seen
 	as a code block. This has been fixed.
-	
+
 *	Added programatically-settable parser properties `predef_urls` and 
 	`predef_titles` for predefined URLs and titles for reference-style 
 	links. To use this, your PHP code must call the parser this way:
-	
+
 		$parser = new Markdwon_Parser;
 		$parser->predef_urls = array('linkref' => 'http://example.com');
 		$html = $parser->transform($text);
-	
+
 	You can then use the URL as a normal link reference:
 	
 		[my link][linkref]	
 		[my link][linkRef]
-		
+
 	Reference names in the parser properties *must* be lowercase.
 	Reference names in the Markdown source may have any case.
 
