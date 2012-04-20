@@ -9,6 +9,8 @@ by Michel Fortin
 based on Markdown by John Gruber  
 <http://daringfireball.net/>
 
+table of contents support added by Joe Topjian
+<http://terrarum.net/>
 
 Introduction
 ------------
@@ -219,6 +221,20 @@ Extra 1.2.5 (8 Jan 2012):
 *	Fixed an issue where HTML tags inside fenced code blocks were sometime
 	not encoded with entities.
 
+Extra 1.2.4.1 (24 Sept 2010):
+*   Added Table of Contents support:
+
+    Create Table of Contents by specifying the following tag:
+
+        [TOC]
+
+    Table of Contents requirements:
+        * Only headings 2-6
+        * Headings must have an ID
+        * Builds TOC with headings _after_ the [TOC] tag
+
+    Table of Contents generation technnique was inspired by 
+    [ReMarkable](http://camendesign.com/code/remarkable)
 
 1.0.1n (10 Oct 2009):
 
