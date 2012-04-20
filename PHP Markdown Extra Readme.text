@@ -254,7 +254,7 @@ Extra 1.2.4.1 (24 Sept 2010):
 
 *	Now accepting many valid email addresses in autolinks that were 
 	previously rejected, such as:
-	
+
 		<abc+mailbox/department=shipping@example.com>
 		<!#$%&'*+-/=?^_`.{|}~@example.com>
 		<"abc@def"@example.com>
@@ -263,7 +263,7 @@ Extra 1.2.4.1 (24 Sept 2010):
 
 *	Now accepting spaces in URLs for inline and reference-style links. Such 
 	URLs need to be surrounded by angle brakets. For instance:
-	
+
 		[link text](<http://url/with space> "optional title")
 
 		[link text][ref]
