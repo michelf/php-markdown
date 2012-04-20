@@ -2253,7 +2253,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})? # id attribute
+				(?:[ ]+\{\#([^\}#.]*)\})? # id attribute
 				[ ]*
 				\n+
 			}xm',
@@ -2261,15 +2261,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		return $text;
 	}
-	function _doHeaders_attr($attr) {
-		if (empty($attr))  return "";
-		return " id=\"$attr\"";
+	function _doHeaders_attr($attr, $text) {
+		$id = empty($attr) ? str_replace(' ', '-', $text) : $attr;
+		return " id=\"$id\"";
 	}
 	function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($id =& $matches[2]);
+		$attr  = $this->_doHeaders_attr($id =& $matches[2], $matches[1]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
@@ -2853,7 +2853,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
     #     * Builds TOC with headings _after_ the [TOC] tag
       
         if (preg_match ('/\[TOC\]/m', $text, $i, PREG_OFFSET_CAPTURE)) {
-            preg_match_all ('/<h([2-6]) id="([0-9a-z_-]+)">(.*?)<\/h\1>/i', $text, $h, PREG_SET_ORDER, $i[0][1]);
+			$toc = '';
+            preg_match_all ('/<h([2-6]) id="([^"]+)">(.*?)<\/h\1>/i', $text, $h, PREG_SET_ORDER, $i[0][1]);
             foreach ($h as &$m) $toc .= str_repeat ("\t", (int) $m[1]-2)."*\t [${m[3]}](#${m[2]})\n";
             $text = preg_replace ('/\[TOC\]/m', Markdown($toc), $text);
         }
