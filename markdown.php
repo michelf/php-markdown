@@ -2538,9 +2538,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	function doFencedCodeBlocks($text) {
 	#
-	# Adding the fenced code block syntax to regular Markdown:
+	# Adding the fenced code block syntax (with optional language) to regular Markdown:
 	#
 	# ~~~
+	# Code block
+	# ~~~
+	#
+	# - OR -
+	#
+	# ~~~ language
 	# Code block
 	# ~~~
 	#
@@ -2552,7 +2558,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(
 					~{3,} # Marker: three tilde or more.
 				)
-				[ ]* \n # Whitespace and newline following marker.
+				[ ]*  # Optional whitspace following marker.
+				# 2: Optional language
+				(
+					[a-zA-Z0-9_-]+  # Alphanumeric with hyphen and underscore allowed
+				)?
+				[ ]* \n # Optional whitespace and mandatory newline following marker and optional language.
 
 				# 2: Content
 				(
@@ -2570,11 +2581,18 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _doFencedCodeBlocks_callback($matches) {
-		$codeblock = $matches[2];
+		$codeblock = $matches[3];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		$codeblock = "<pre><code>$codeblock</code></pre>";
+
+		if (strlen($matches[2])) {
+			$codeblock = '<pre class="prettyprint"><code class="lang-'.$matches[2].'">'.$codeblock.'</code></pre>';
+		}
+		else {
+			$codeblock = '<pre><code>'.$codeblock.'</code></pre>';
+		}
+
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doFencedCodeBlocks_newlines($matches) {
