@@ -1848,7 +1848,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# Regex to match any tag.
 		$block_tag_re =
 			'{
-				(					# $2: Capture hole tag.
+				(					# $2: Capture whole tag.
 					</?					# Any opening or closing tag.
 						(?>				# Tag name.
 							'.$this->block_tags_re.'			|
@@ -2066,7 +2066,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		
 		# Regex to match any tag.
 		$tag_re = '{
-				(					# $2: Capture hole tag.
+				(					# $2: Capture whole tag.
 					</?					# Any opening or closing tag.
 						[\w:$]+			# Tag name.
 						(?:
@@ -2193,7 +2193,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					if (!$span_mode)	$parsed .= "\n\n$block_text\n\n";
 					else				$parsed .= "$block_text";
 					
-					# Start over a new block.
+					# Start over with a new block.
 					$block_text = "";
 				}
 				else $block_text .= $tag;
@@ -2212,8 +2212,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	function hashClean($text) {
 	#
-	# Called whenever a tag must be hashed when a function insert a "clean" tag
-	# in $text, it pass through this function and is automaticaly escaped, 
+	# Called whenever a tag must be hashed when a function inserts a "clean" tag
+	# in $text, it passes through this function and is automaticaly escaped, 
 	# blocking invalid nested overlap.
 	#
 		return $this->hashPart($text, 'C');
@@ -2858,7 +2858,7 @@ such as tables and definition list.
 
 Markdown is a text-to-HTML filter; it translates an easy-to-read /
 easy-to-write structured text format into HTML. Markdown's text format
-is most similar to that of plain text email, and supports features such
+is mostly similar to that of plain text email, and supports features such
 as headers, *emphasis*, code blocks, blockquotes, and links.
 
 Markdown's syntax is designed not as a generic markup language, but
