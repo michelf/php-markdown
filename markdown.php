@@ -1665,7 +1665,7 @@ Perl by John Gruber.
 
 Markdown is a text-to-HTML filter; it translates an easy-to-read /
 easy-to-write structured text format into HTML. Markdown's text format
-is most similar to that of plain text email, and supports features such
+is mostly similar to that of plain text email, and supports features such
 as headers, *emphasis*, code blocks, blockquotes, and links.
 
 Markdown's syntax is designed not as a generic markup language, but
