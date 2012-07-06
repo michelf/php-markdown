@@ -1,17 +1,20 @@
-PHP Markdown
-============
+PHP Markdown Extra
+==================
 
-Version 1.0.1o - Sun 8 Jan 2012
+Version 1.2.5 - Sun 8 Jan 2012
 
 by Michel Fortin
 <http://michelf.com/>
 
-based on work by John Gruber  
+based on Markdown by John Gruber  
 <http://daringfireball.net/>
 
 
 Introduction
 ------------
+
+This is a special version of PHP Markdown with extra features. See
+<http://michelf.com/projects/php-markdown/extra/> for details.
 
 Markdown is a text-to-HTML conversion tool for web writers. Markdown
 allows you to write using an easy-to-read, easy-to-write plain text
@@ -113,26 +116,6 @@ further modification.
  [psp]: http://michelf.com/projects/php-smartypants/
 
 
-### Updating Markdown in Other Programs ###
-
-Many web applications now ship with PHP Markdown, or have plugins to 
-perform the conversion to HTML. You can update PHP Markdown in many of 
-these programs by swapping the old "markdown.php" file for the new one.
-
-Here is a short non-exhaustive list of some programs and where they 
-hide the "markdown.php" file.
-
-| Program   | Path to Markdown
-| -------   | ----------------
-| [Pivot][] | `(site home)/pivot/includes/markdown/markdown.php`
-
-If you're unsure if you can do this with your application, ask the 
-developer, or wait for the developer to update his application or 
-plugin with the new version of PHP Markdown.
-
- [Pivot]: http://pivotlog.net/
-
-
 ### In Your Own Programs ###
 
 You can use PHP Markdown easily in your current PHP program. Simply 
@@ -160,6 +143,27 @@ to "modifier.markdown.php" and put it in your smarty plugins folder.
 If you are using MovableType 3.1 or later, the Smarty plugin folder is 
 located at `(MT CGI root)/php/extlib/smarty/plugins`. This will allow 
 Markdown to work on dynamic pages.
+
+
+### Updating Markdown in Other Programs ###
+
+Many web applications now ship with PHP Markdown, or have plugins to 
+perform the conversion to HTML. You can update PHP Markdown -- or 
+replace it with PHP Markdown Extra -- in many of these programs by 
+swapping the old "markdown.php" file for the new one.
+
+Here is a short non-exhaustive list of some programs and where they 
+hide the "markdown.php" file.
+
+| Program   | Path to Markdown
+| -------   | ----------------
+| [Pivot][] | `(site home)/pivot/includes/markdown/`
+
+If you're unsure if you can do this with your application, ask the 
+developer, or wait for the developer to update his application or 
+plugin with the new version of PHP Markdown.
+
+ [Pivot]: http://pivotlog.net/
 
 
 Configuration
@@ -205,6 +209,15 @@ Version History
 *	Silenced a new warning introduced around PHP 5.3 complaining about
 	POSIX characters classes not being implemented. PHP Markdown does not
 	use POSIX character classes, but it nevertheless trigged that warning.
+
+
+Extra 1.2.5 (8 Jan 2012):
+
+*	Fixed an issue preventing fenced code blocks indented inside lists items 
+	and elsewhere from being interpreted correctly.
+
+*	Fixed an issue where HTML tags inside fenced code blocks were sometime
+	not encoded with entities.
 
 
 1.0.1n (10 Oct 2009):
@@ -255,12 +268,75 @@ Version History
 *	Fixed some corner-cases mixing underscore-ephasis and asterisk-emphasis.
 
 
+Extra 1.2.4 (10 Oct 2009):
+
+*	Fixed a problem where unterminated tags in indented code blocks could 
+	prevent proper escaping of characaters in the code block.
+
+
+Extra 1.2.3 (31 Dec 2008):
+
+*	In WordPress pages featuring more than one post, footnote id prefixes are 
+	now automatically applied with the current post ID to avoid clashes
+	between footnotes belonging to different posts.
+
+*	Fix for a bug introduced in Extra 1.2 where block-level HTML tags where 
+	not detected correctly, thus the addition of erroneous `<p>` tags and
+	interpretation of their content as Markdown-formatted instead of
+	HTML-formatted.
+
+
+Extra 1.2.2 (21 Jun 2008):
+
+*	Fixed a problem where abbreviation definitions, footnote
+	definitions and link references were stripped inside
+	fenced code blocks.
+
+*	Fixed a bug where characters such as `"` in abbreviation
+	definitions weren't properly encoded to HTML entities.
+
+*	Fixed a bug where double quotes `"` were not correctly encoded
+	as HTML entities when used inside a footnote reference id.
+
+
 1.0.1m (21 Jun 2008):
 
 *	Lists can now have empty items.
 
 *	Rewrote the emphasis and strong emphasis parser to fix some issues
 	with odly placed and overlong markers.
+
+
+Extra 1.2.1 (27 May 2008):
+
+*	Fixed a problem where Markdown headers and horizontal rules were
+	transformed into their HTML equivalent inside fenced code blocks.
+
+
+Extra 1.2 (11 May 2008):
+
+*	Added fenced code block syntax which don't require indentation
+	and can start and end with blank lines. A fenced code block
+	starts with a line of consecutive tilde (~) and ends on the
+	next line with the same number of consecutive tilde. Here's an
+	example:
+	
+	    ~~~~~~~~~~~~
+		Hello World!
+		~~~~~~~~~~~~
+
+*	Rewrote parts of the HTML block parser to better accomodate
+	fenced code blocks.
+
+*	Footnotes may now be referenced from within another footnote.
+
+*	Added programatically-settable parser property `predef_attr` for 
+	predefined attribute definitions.
+
+*	Fixed an issue where an indented code block preceded by a blank
+	line containing some other whitespace would confuse the HTML 
+	block parser into creating an HTML block when it should have 
+	been code.
 
 
 1.0.1l (11 May 2008):
@@ -307,12 +383,16 @@ Version History
 	after parsing.
 
 
+Extra 1.1.7 (26 Sep 2007):
+
 1.0.1k (26 Sep 2007):
 
 *	Fixed a problem introduced in 1.0.1i where three or more identical
 	uppercase letters, as well as a few other symbols, would trigger
 	a horizontal line.
 
+
+Extra 1.1.6 (4 Sep 2007):
 
 1.0.1j (4 Sep 2007):
 
@@ -325,6 +405,8 @@ Version History
 	producing a PHP warning.
 
 
+Extra 1.1.5 (31 Aug 2007):
+
 1.0.1i (31 Aug 2007):
 
 *	Fixed a problem where an escaped backslash before a code span 
@@ -336,6 +418,8 @@ Version History
 *	Overall speed improvements, especially with long documents.
 
 
+Extra 1.1.4 (3 Aug 2007):
+
 1.0.1h (3 Aug 2007):
 
 *	Added two properties (`no_markup` and `no_entities`) to the parser 
@@ -344,6 +428,38 @@ Version History
 *	Fix for a problem introduced in 1.0.1g where posting comments in 
 	WordPress would trigger PHP warnings and cause some markup to be 
 	incorrectly filtered by the kses filter in WordPress.
+
+
+Extra 1.1.3 (3 Jul 2007):
+
+*	Fixed a performance problem when parsing some invalid HTML as an HTML 
+	block which was resulting in too much recusion and a segmentation fault 
+	for long documents.
+
+*	The markdown="" attribute now accepts unquoted values.
+
+*	Fixed an issue where underscore-emphasis didn't work when applied on the 
+	first or the last word of an element having the markdown="1" or 
+	markdown="span" attribute set unless there was some surrounding whitespace.
+	This didn't work:
+	
+		<p markdown="1">_Hello_ _world_</p>
+	
+	Now it does produce emphasis as expected.
+
+*	Fixed an issue preventing footnotes from working when the parser's 
+	footnote id prefix variable (fn_id_prefix) is not empty.
+
+*	Fixed a performance problem where the regular expression for strong 
+	emphasis introduced in version 1.1 could sometime be long to process, 
+	give slightly wrong results, and in some circumstances could remove 
+	entirely the content for a whole paragraph.
+
+*	Fixed an issue were abbreviations tags could be incorrectly added 
+	inside URLs and title of links.
+
+*	Placing footnote markers inside a link, resulting in two nested links, is 
+	no longer allowed.
 
 
 1.0.1g (3 Jul 2007):
@@ -397,6 +513,15 @@ Version History
 		Here are two hyphens: \--
 
 
+Extra 1.1.2 (7 Feb 2007)
+
+*	Fixed an issue where headers preceded too closely by a paragraph 
+	(with no blank line separating them) where put inside the paragraph.
+
+*	Added the missing TextileRestricted method that was added to regular
+	PHP Markdown since 1.0.1d but which I forgot to add to Extra.
+
+
 1.0.1f (7 Feb 2007):
 
 *	Fixed an issue with WordPress where manually-entered excerpts, but 
@@ -428,6 +553,20 @@ Version History
 	got swapped with emphasis tags.
 
 
+Extra 1.1.1 (28 Dec 2006)
+
+*	Fixed a problem where whitespace at the end of the line of an atx-style
+	header would cause tailing `#` to appear as part of the header's content.
+	This was caused by a small error in the regex that handles the definition
+	for the id attribute in PHP Markdown Extra.
+
+*	Fixed a problem where empty abbreviations definitions would eat the 
+	following line as its definition.
+
+*	Fixed an issue with calling the Markdown parser repetitivly with text 
+	containing footnotes. The footnote hashes were not reinitialized properly.
+
+
 1.0.1e (28 Dec 2006)
 
 *	Added support for internationalized domain names for email addresses in 
@@ -441,6 +580,13 @@ Version History
 *	PHP Markdown will now use its own function to calculate the length of an 
 	UTF-8 string in `detab` when `mb_strlen` is not available instead of 
 	giving a fatal error.
+
+
+Extra 1.1 (1 Dec 2006)
+
+*	Added a syntax for footnotes.
+
+*	Added an experimental syntax to define abbreviations.
 
 
 1.0.1d (1 Dec 2006)
@@ -530,222 +676,100 @@ Version History
 		There are two raw backticks here: \` and here: \`, not a code span
 
 
-1.0.1c (9 Dec 2005)
+Extra 1.0 - 5 September 2005
 
-*   Fixed a problem occurring with PHP 5.1.1 due to a small
-    change to strings variable replacement behaviour in
-    this version.
-
-
-1.0.1b (6 Jun 2005)
-
-*	Fixed a bug where an inline image followed by a reference link would
-	give a completely wrong result.
-
-*	Fix for escaped backticks still triggering code spans:
+*   Added support for setting the id attributes for headers like this:
 	
-		There are two raw backticks here: \` and here: \`, not a code span
+        Header 1            {#header1}
+        ========
+	
+        ## Header 2 ##      {#header2}
+	
+    This only work only for headers for now.
 
-*	Fix for an ordered list following an unordered list, and the 
-	reverse. There is now a loop in _DoList that does the two 
-	separately.
+*   Tables will now work correctly as the first element of a definition 
+    list. For example, this input:
 
-*	Fix for nested sub-lists in list-paragraph mode. Previously we got
-	a spurious extra level of `<p>` tags for something like this:
+        Term
 
-		*	this
-		
-			*	sub
-		
-			that
+        :   Header  | Header
+            ------- | -------
+            Cell    | Cell
+		    
+    used to produce no definition list and a table where the first 
+    header was named ": Header". This is now fixed.
 
-*	Fixed some incorrect behaviour with emphasis. This will now work
-	as it should:
-
-		*test **thing***  
-		**test *thing***  
-		***thing* test**  
-		***thing** test*
-
-		Name: __________  
-		Address: _______
-
-*	Correct a small bug in `_TokenizeHTML` where a Doctype declaration
-	was not seen as HTML.
-
-*	Major rewrite of the WordPress integration code that should 
-	correct many problems by preventing default WordPress filters from 
-	tampering with Markdown-formatted text. More details here:
-	<http://michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
+*   Fix for a problem where a paragraph following a table was not 
+    placed between `<p>` tags.
 
 
-1.0.1a (15 Apr 2005)
+Extra 1.0b4 - 1 August 2005
 
-*	Fixed an issue where PHP warnings were trigged when converting
-	text with list items running on PHP 4.0.6. This was comming from 
-	the `rtrim` function which did not support the second argument 
-	prior version 4.1. Replaced by a regular expression.
+*   Fixed some issues where whitespace around HTML blocks were trigging
+    empty paragraph tags.
 
-*	Markdown now filter correctly post excerpts and comment
-	excerpts in WordPress.
+*   Fixed an HTML block parsing issue that would cause a block element 
+    following a code span or block with unmatched opening bracket to be
+    placed inside a paragraph.
 
-*	Automatic links and some code sample were "corrected" by 
-	the balenceTag filter in WordPress meant to ensure HTML
-	is well formed. This new version of PHP Markdown postpone this
-	filter so that it runs after Markdown.
-
-*	Blockquote syntax and some code sample were stripped by 
-	a new WordPress 1.5 filter meant to remove unwanted HTML 
-	in comments. This new version of PHP Markdown postpone this
-	filter so that it runs after Markdown.
+*   Removed some PHP notices that could appear when parsing definition
+    lists and tables with PHP notice reporting flag set.
 
 
-1.0.1 (16 Dec 2004):
+Extra 1.0b3 - 29 July 2005
 
-*	Changed the syntax rules for code blocks and spans. Previously,
-	backslash escapes for special Markdown characters were processed
-	everywhere other than within inline HTML tags. Now, the contents of
-	code blocks and spans are no longer processed for backslash escapes.
-	This means that code blocks and spans are now treated literally,
-	with no special rules to worry about regarding backslashes.
+*   Definition lists now require a blank line before each term. Solves
+    an ambiguity where the last line of lazy-indented definitions could 
+    be mistaken by PHP Markdown as a new term in the list.
 
-	**IMPORTANT**: This breaks the syntax from all previous versions of
-	Markdown. Code blocks and spans involving backslash characters will
-	now generate different output than before.
+*   Definition lists now support multiple terms per definition.
 
-	Implementation-wise, this change was made by moving the call to
-	`_EscapeSpecialChars()` from the top-level `Markdown()` function to
-	within `_RunSpanGamut()`.
+*   Some special tags were replaced in the output by their md5 hash 
+    key. Things such as this now work as expected:
+	
+        ## Header <?php echo $number ?> ##
 
-*	Significants performance improvement in `_DoHeader`, `_Detab`
-	and `_TokenizeHTML`.
 
-*	Added `>`, `+`, and `-` to the list of backslash-escapable
-	characters. These should have been done when these characters
-	were added as unordered list item markers.
+Extra 1.0b2 - 26 July 2005
 
-*	Inline links using `<` and `>` URL delimiters weren't working:
+*   Definition lists can now take two or more definitions for one term.
+    This should have been the case before, but a bug prevented this 
+    from working right.
 
-		like [this](<http://example.com/>)
+*   Fixed a problem where single column table with a pipe only at the
+    end where not parsed as table. Here is such a table:
+	
+        | header
+        | ------
+        | cell
 
-	Fixed by moving `_DoAutoLinks()` after `_DoAnchors()` in
-	`_RunSpanGamut()`.
+*   Fixed problems with empty cells in the first column of a table with 
+    no leading pipe, like this one:
+	
+        header | header
+        ------ | ------
+               | cell
 
-*	Fixed bug where auto-links were being processed within code spans:
+*   Code spans containing pipes did not within a table. This is now 
+    fixed by parsing code spans before splitting rows into cells.
 
-		like this: `<http://example.com/>`
+*   Added the pipe character to the backlash escape character lists.
 
-	Fixed by moving `_DoAutoLinks()` from `_RunBlockGamut()` to
-	`_RunSpanGamut()`.
+Extra 1.0b1 (25 Jun 2005)
 
-*	Sort-of fixed a bug where lines in the middle of hard-wrapped
-	paragraphs, which lines look like the start of a list item,
-	would accidentally trigger the creation of a list. E.g. a
-	paragraph that looked like this:
-
-		I recommend upgrading to version
-		8. Oops, now this line is treated
-		as a sub-list.
-
-	This is fixed for top-level lists, but it can still happen for
-	sub-lists. E.g., the following list item will not be parsed
-	properly:
-
-		*	I recommend upgrading to version
-			8. Oops, now this line is treated
-			as a sub-list.
-
-	Given Markdown's list-creation rules, I'm not sure this can
-	be fixed.
-
-*	Fix for horizontal rules preceded by 2 or 3 spaces or followed by
-	trailing spaces and tabs.
-
-*	Standalone HTML comments are now handled; previously, they'd get
-	wrapped in a spurious `<p>` tag.
-
-*	`_HashHTMLBlocks()` now tolerates trailing spaces and tabs following
-	HTML comments and `<hr/>` tags.
-
-*	Changed special case pattern for hashing `<hr>` tags in
-	`_HashHTMLBlocks()` so that they must occur within three spaces
-	of left margin. (With 4 spaces or a tab, they should be
-	code blocks, but weren't before this fix.)
-
-*	Auto-linked email address can now optionally contain
-	a 'mailto:' protocol. I.e. these are equivalent:
-
-		<mailto:user@example.com>
-		<user@example.com>
-
-*	Fixed annoying bug where nested lists would wind up with
-	spurious (and invalid) `<p>` tags.
-
-*	Changed `_StripLinkDefinitions()` so that link definitions must
-	occur within three spaces of the left margin. Thus if you indent
-	a link definition by four spaces or a tab, it will now be a code
-	block.
-
-*	You can now write empty links:
-
-		[like this]()
-
-	and they'll be turned into anchor tags with empty href attributes.
-	This should have worked before, but didn't.
-
-*	`***this***` and `___this___` are now turned into
-
-		<strong><em>this</em></strong>
-
-	Instead of
-
-		<strong><em>this</strong></em>
-
-	which isn't valid.
-
-*	Fixed problem for links defined with urls that include parens, e.g.:
-
-		[1]: http://sources.wikipedia.org/wiki/Middle_East_Policy_(Chomsky)
-
-	"Chomsky" was being erroneously treated as the URL's title.
-
-*	Double quotes in the title of an inline link used to give strange 
-	results (incorrectly made entities). Fixed.
-
-*	Tabs are now correctly changed into spaces. Previously, only 
-	the first tab was converted. In code blocks, the second one was too,
-	but was not always correctly aligned.
-
-*	Fixed a bug where a tab character inserted after a quote on the same
-	line could add a slash before the quotes.
-
-		This is "before"	[tab] and "after" a tab.
-
-	Previously gave this result:
-
-		<p>This is \"before\"  [tab] and "after" a tab.</p>
-
-*	Removed a call to `htmlentities`. This fixes a bug where multibyte
-	characters present in the title of a link reference could lead to
-	invalid utf-8 characters. 
-
-*	Changed a regular expression in `_TokenizeHTML` that could lead to
-	a segmentation fault with PHP 4.3.8 on Linux.
-
-*	Fixed some notices that could show up if PHP error reporting 
-	E_NOTICE flag was set.
+*   First public release of PHP Markdown Extra.
 
 
 Copyright and License
 ---------------------
 
-PHP Markdown
+PHP Markdown & Extra  
 Copyright (c) 2004-2009 Michel Fortin  
 <http://michelf.com/>  
 All rights reserved.
 
 Based on Markdown  
-Copyright (c) 2003-2006 John Gruber   
+Copyright (c) 2003-2005 John Gruber   
 <http://daringfireball.net/>   
 All rights reserved.
 
@@ -753,12 +777,13 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
 
-*   Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
+*   Redistributions of source code must retain the above copyright 
+    notice, this list of conditions and the following disclaimer.
 
 *   Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
+    documentation and/or other materials provided with the 
+    distribution.
 
 *   Neither the name "Markdown" nor the names of its contributors may
     be used to endorse or promote products derived from this software
