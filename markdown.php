@@ -2254,9 +2254,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+ \{(\#[-_:a-zA-Z0-9]+){0,1}
-				 		  (?:[ ]+(\.[-_:a-zA-Z0-9]+))*\} )?	 			# $3 = id/class attributes
-				#(?:[ ]+\{\.([-_:a-zA-Z0-9]+)\})?	# $4 = class attribute
+				(?:[ ]+ \{((?:\#[-_:a-zA-Z0-9]+){0,1}
+				 		  (?:[ ]*(?:\.[-_:a-zA-Z0-9]+))*)\} )?	 # $3 = id/class attributes
+				
 				[ ]*
 				\n+
 			}xm',
@@ -2272,6 +2272,25 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if (empty($header_Class)) return "";
 		return " class=\"$header_Class\"";
 	}
+	
+	function _doHeaders_attribs($header_Attr) {
+		if (empty($header_Attr)) return "";
+		if (preg_match("/\#([-_:a-zA-Z0-9]+)[ ]*(.*)/", $header_Attr, $matches)) {
+			$id = "id=\"$matches[1]\" ";
+			$classes = preg_split("/[ ]+/", $matches[2]);
+		} else {
+			$id = "";
+			$classes = preg_split("/[ ]+/", $header_Attr);
+		}
+		
+		echo($classes);
+		foreach ($classes as &$class) {
+			$class = preg_replace("/\./", "", $class);
+		}
+		$classString = "class=\"" . implode(" ", $classes) . "\""; 
+		return " $id$classString";
+	}
+	
 	function _doHeaders_callback_setext($matches) {
 		if ($matches[4] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
@@ -2284,9 +2303,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$headerId = $this->_doHeaders_id($id =& $matches[3]);
-		$headerClass = $this->_doHeaders_class($class =& $matches[4]);
-		$block = "<h$level$headerId$headerClass>".$this->runSpanGamut($matches[2])."</h$level>";
+		$attr = $this->_doHeaders_attribs($att =& $matches[3]);
+		$block = "<h$level$attr> ".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
