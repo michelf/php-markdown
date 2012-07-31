@@ -2226,27 +2226,27 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Redefined to add class attribute support
 	#
 		# Setext-style headers:
-		#	  Header 1  {#header1} {.class1}
+		#	  Header 1  {#header1 .class1}
 		#	  ========
 		#  
-		#	  Header 2  {#header2} {.class2}
+		#	  Header 2  {#header2 .class2 .class3}
 		#	  --------
 		#
 		$text = preg_replace_callback(
 			'{
 				(^.+?)								# $1: Header text
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})?	# $2: Id attribute
-				(?:[ ]+\{\.([-_:a-zA-Z0-9]+)\})?	# $3: class attribute
-				[ ]*\n(=+|-+)[ ]*\n+				# $4: Header footer
+				(?:[ ]+ \{((?:[ ]*\#[-_:a-zA-Z0-9]+){0,1}
+				 		  (?:[ ]*(?:\.[-_:a-zA-Z0-9]+))*)\} )?	 # $3 = id/class attributes
+				[ ]*\n(=+|-+)[ ]*\n+				# $3: Header footer
 			}mx',
 			array(&$this, '_doHeaders_callback_setext'), $text);
 
 		# atx-style headers:
-		#	# Header 1        {#header1} {.class1}
-		#	## Header 2       {#header2} {.class2}
-		#	## Header 2 with closing hashes ##  {#header3} {.class3}
+		#	# Header 1        {#header1 .class1}
+		#	## Header 2       {#header2 .class2}
+		#	## Header 2 with closing hashes ##  {#header3.class1.class2}
 		#	...
-		#	###### Header 6   {#header2} {.class2}
+		#	###### Header 6   {.class2}
 		#
 		$text = preg_replace_callback('{
 				^(\#{1,6})	# $1 = string of #\'s
@@ -2254,7 +2254,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+ \{((?:\#[-_:a-zA-Z0-9]+){0,1}
+				(?:[ ]+ \{((?:[ ]*\#[-_:a-zA-Z0-9]+){0,1}
 				 		  (?:[ ]*(?:\.[-_:a-zA-Z0-9]+))*)\} )?	 # $3 = id/class attributes
 				
 				[ ]*
@@ -2264,38 +2264,26 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		return $text;
 	}
-	function _doHeaders_id($header_Id) {
-		if (empty($header_Id))  return "";
-		return " id=\"$header_Id\"";
-	}
-	function _doHeaders_class($header_Class) {
-		if (empty($header_Class)) return "";
-		return " class=\"$header_Class\"";
-	}
-	
+
 	function _doHeaders_attribs($header_Attr) {
 		if (empty($header_Attr)) return "";
 		if (preg_match("/\#([-_:a-zA-Z0-9]+)[ ]*(.*)/", $header_Attr, $matches)) {
 			$id = "id=\"$matches[1]\" ";
-			$classes = preg_split("/[ ]+/", $matches[2]);
+			$classes = preg_split("/[ .]+/", $matches[2], -1, PREG_SPLIT_NO_EMPTY);
 		} else {
 			$id = "";
-			$classes = preg_split("/[ ]+/", $header_Attr);
-		}
-		foreach ($classes as &$class) {
-			$class = preg_replace("/\./", "", $class);
+			$classes = preg_split("/[ .]+/", $header_Attr, -1, PREG_SPLIT_NO_EMPTY);
 		}
 		$classString = "class=\"" . implode(" ", $classes) . "\""; 
 		return " $id$classString";
 	}
 	
 	function _doHeaders_callback_setext($matches) {
-		if ($matches[4] == '-' && preg_match('{^- }', $matches[1]))
+		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
-		$level = $matches[4]{0} == '=' ? 1 : 2;
-		$headerId = $this->_doHeaders_id($id =& $matches[2]);
-		$headerClass = $this->_doHeaders_class($class =& $matches[3]);
-		$block = "<h$level$headerId$headerClass>".$this->runSpanGamut($matches[1])."</h$level>";
+		$level = $matches[3]{0} == '=' ? 1 : 2;
+		$attr = $this->_doHeaders_attribs($att =& $matches[2]);
+		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
