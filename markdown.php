@@ -2254,8 +2254,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})?	 # $3 = id attribute
-				(?:[ ]+\{\.([-_:a-zA-Z0-9]+)\})?	# $4 = class attribute
+				(?:[ ]+ \{(\#[-_:a-zA-Z0-9]+){0,1}
+				 		  (?:[ ]+(\.[-_:a-zA-Z0-9]+))*\} )?	 			# $3 = id/class attributes
+				#(?:[ ]+\{\.([-_:a-zA-Z0-9]+)\})?	# $4 = class attribute
 				[ ]*
 				\n+
 			}xm',
