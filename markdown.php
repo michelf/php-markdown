@@ -2282,8 +2282,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$id = "";
 			$classes = preg_split("/[ ]+/", $header_Attr);
 		}
-		
-		echo($classes);
 		foreach ($classes as &$class) {
 			$class = preg_replace("/\./", "", $class);
 		}
