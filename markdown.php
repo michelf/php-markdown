@@ -56,7 +56,7 @@ function Markdown($text) {
 	# Setup static parser variable.
 	static $parser;
 	if (!isset($parser)) {
-		$parser_class = MARKDOWN_PARSER_CLASS;
+		$parser_class = __NAMESPACE__ . '\\' . MARKDOWN_PARSER_CLASS;
 		$parser = new $parser_class;
 	}
 
@@ -238,8 +238,7 @@ class Markdown_Parser {
 	var $predef_urls = array();
 	var $predef_titles = array();
 
-
-	function Markdown_Parser() {
+	public function __construct() {
 	#
 	# Constructor function. Initialize appropriate member variables.
 	#
@@ -1690,8 +1689,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Predefined abbreviations.
 	var $predef_abbr = array();
 
-
-	function MarkdownExtra_Parser() {
+	public function __construct() {
 	#
 	# Constructor function. Initialize the parser object.
 	#
@@ -1717,7 +1715,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			"doAbbreviations"    => 70,
 			);
 		
-		parent::Markdown_Parser();
+		parent::__construct();
 	}
 	
 	
