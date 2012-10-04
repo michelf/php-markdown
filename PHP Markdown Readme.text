@@ -200,6 +200,13 @@ expected; (3) the output PHP Markdown actually produced.
 Version History
 ---------------
 
+Current:
+
+*	The following HTML 5 elements are treated as block elements when at the 
+	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
+	`header`, `footer`, and `figure`. `svg` too.
+
+
 1.0.1o (8 Jan 2012):
 
 *	Silenced a new warning introduced around PHP 5.3 complaining about
