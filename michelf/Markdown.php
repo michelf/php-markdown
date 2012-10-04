@@ -1525,10 +1525,18 @@ class Markdown {
 
 
 #
-# Markdown Extra Parser Class
+# Temporary Markdown Extra Parser Implementation Class
+#
+# NOTE: DON'T USE THIS CLASS
+# Currently the implementation of of Extra resides here in this temporary class.
+# This makes it easier to propagate the changes between the three different
+# packaging styles of PHP Markdown. When this issue is resolved, this
+# MarkdownExtra_TmpImpl class here will disappear and \michelf\MarkdownExtra
+# will contain the code. So please use \michelf\MarkdownExtra and ignore this
+# one.
 #
 
-class _MarkdownExtra extends \michelf\Markdown {
+class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 
 	# Prefix for footnote ids.
 	var $fn_id_prefix = "";

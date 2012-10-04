@@ -16,5 +16,11 @@ namespace michelf;
 #
 # Markdown Extra Parser Class
 #
+# Note: Currently the implementation resides in the temporary class
+# \michelf\MarkdownExtra_TmpImpl (in the same file as \michelf\Markdown).
+# This makes it easier to propagate the changes between the three different
+# packaging styles of PHP Markdown. Once this issue is resolved, the
+# _MarkdownExtra_TmpImpl will disappear and this one will contain the code.
+#
 
-class MarkdownExtra extends \michelf\_MarkdownExtra {}
+class MarkdownExtra extends \michelf\_MarkdownExtra_TmpImpl {}
