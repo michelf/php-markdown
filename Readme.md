@@ -107,6 +107,11 @@ Version History
 
 Current:
 
+*	Created a library-style unified package that will work with namespace-based 
+	autoloading introduced in PHP 5.3. This is the same parser, but packaged
+	differently. It is available separatedly from the two other available 
+	packages, and requires PHP 5.3.
+
 *	The following HTML 5 elements are treated as block elements when at the 
 	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
 	`header`, `footer`, and `figure`. `svg` too.
