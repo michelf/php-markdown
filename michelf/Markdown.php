@@ -25,8 +25,7 @@ const  MARKDOWNEXTRA_VERSION  =  "1.2.5";  # Sun 8 Jan 2012
 const  MARKDOWN_EMPTY_ELEMENT_SUFFIX  =  " />";
 
 # Define the width of a tab for code blocks.
-const  MARKDOWN_TAB_WIDTH  =  4;
-
+const  MARKDOWN_TAB_WIDTH          =  4;
 
 # Optional title attribute for footnote links and backlinks.
 const  MARKDOWN_FN_LINK_TITLE      =  "";
