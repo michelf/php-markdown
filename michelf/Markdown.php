@@ -65,6 +65,21 @@ class Markdown {
 		return $parser->transform($text);
 	}
 
+	### Configuration Variables ###
+
+	# Change to ">" for HTML output.
+	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
+	var $tab_width = MARKDOWN_TAB_WIDTH;
+	
+	# Change to `true` to disallow markup or entities.
+	var $no_markup = false;
+	var $no_entities = false;
+	
+	# Predefined urls and titles for reference links and images.
+	var $predef_urls = array();
+	var $predef_titles = array();
+
+
 	### Parser Implementation ###
 
 	# Regex to match balanced [brackets].
@@ -78,18 +93,6 @@ class Markdown {
 	# Table of hash values for escaped characters:
 	var $escape_chars = '\`*_{}[]()>#+-.!';
 	var $escape_chars_re;
-
-	# Change to ">" for HTML output.
-	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
-	var $tab_width = MARKDOWN_TAB_WIDTH;
-	
-	# Change to `true` to disallow markup or entities.
-	var $no_markup = false;
-	var $no_entities = false;
-	
-	# Predefined urls and titles for reference links and images.
-	var $predef_urls = array();
-	var $predef_titles = array();
 
 
 	function __construct() {
@@ -259,7 +262,9 @@ class Markdown {
 		#
 		$block_tags_a_re = 'ins|del';
 		$block_tags_b_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|'.
-						   'script|noscript|form|fieldset|iframe|math';
+						   'script|noscript|form|fieldset|iframe|math|svg|'.
+						   'article|section|nav|aside|hgroup|header|footer|'
+						   'figure';
 
 		# Regular expression for the content of a block tag.
 		$nested_tags_level = 4;
@@ -1537,6 +1542,8 @@ class Markdown {
 
 class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 
+	### Configuration Variables ###
+
 	# Prefix for footnote ids.
 	var $fn_id_prefix = "";
 	
@@ -1551,6 +1558,8 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	# Predefined abbreviations.
 	var $predef_abbr = array();
 
+
+	### Parser Implementation ###
 
 	function __construct() {
 	#
@@ -1628,20 +1637,20 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	### HTML Block Parser ###
 	
 	# Tags that are always treated as block tags:
-	var $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend';
-	
-	# Tags treated as block tags only if the opening tag is alone on it's line:
-	var $context_block_tags_re = 'script|noscript|math|ins|del';
+	var $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption';
+						   
+	# Tags treated as block tags only if the opening tag is alone on its line:
+	var $context_block_tags_re = 'script|noscript|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 	
 	# Tags where markdown="1" default to span mode:
 	var $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
 	
 	# Tags which must not have their contents modified, no matter where 
 	# they appear:
-	var $clean_tags_re = 'script|math';
+	var $clean_tags_re = 'script|math|svg';
 	
 	# Tags that do not need to be closed.
-	var $auto_close_tags_re = 'hr|img';
+	var $auto_close_tags_re = 'hr|img|param|source|track';
 	
 
 	function hashHTMLBlocks($text) {
