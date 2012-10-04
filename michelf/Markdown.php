@@ -12,29 +12,16 @@
 #
 namespace michelf;
 
+#
+# The following constants are deprecated: avoid using them, they'll disappear
+# soon.
+#
+# You can get the parser's version using the constant inside of the parser
+# class: \michelf\Markdown::MARKDOWN_VERSION.
+#
 
 const  MARKDOWN_VERSION  =  "1.0.1o";  # Sun 8 Jan 2012
 const  MARKDOWNEXTRA_VERSION  =  "1.2.5";  # Sun 8 Jan 2012
-
-
-#
-# Global default settings:
-#
-
-# Change to ">" for HTML output
-const  MARKDOWN_EMPTY_ELEMENT_SUFFIX  =  " />";
-
-# Define the width of a tab for code blocks.
-const  MARKDOWN_TAB_WIDTH          =  4;
-
-# Optional title attribute for footnote links and backlinks.
-const  MARKDOWN_FN_LINK_TITLE      =  "";
-const  MARKDOWN_FN_BACKLINK_TITLE  =  "";
-
-# Optional class attribute for footnote links and backlinks.
-const  MARKDOWN_FN_LINK_CLASS      =  "";
-const  MARKDOWN_FN_BACKLINK_CLASS  =  "";
-
 
 
 #
@@ -42,6 +29,10 @@ const  MARKDOWN_FN_BACKLINK_CLASS  =  "";
 #
 
 class Markdown {
+
+	### Version ###
+
+	const  MARKDOWN_VERSION  = \michelf\MARKDOWN_VERSION;
 
 	### Simple Function Interface ###
 
@@ -68,8 +59,8 @@ class Markdown {
 	### Configuration Variables ###
 
 	# Change to ">" for HTML output.
-	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
-	var $tab_width = MARKDOWN_TAB_WIDTH;
+	var $empty_element_suffix = " />";
+	var $tab_width = 4;
 	
 	# Change to `true` to disallow markup or entities.
 	var $no_markup = false;
@@ -1548,12 +1539,12 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	var $fn_id_prefix = "";
 	
 	# Optional title attribute for footnote links and backlinks.
-	var $fn_link_title = MARKDOWN_FN_LINK_TITLE;
-	var $fn_backlink_title = MARKDOWN_FN_BACKLINK_TITLE;
+	var $fn_link_title = "";
+	var $fn_backlink_title = "";
 	
 	# Optional class attribute for footnote links and backlinks.
-	var $fn_link_class = MARKDOWN_FN_LINK_CLASS;
-	var $fn_backlink_class = MARKDOWN_FN_BACKLINK_CLASS;
+	var $fn_link_class = "";
+	var $fn_backlink_class = "";
 	
 	# Predefined abbreviations.
 	var $predef_abbr = array();
@@ -2713,90 +2704,4 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 }
 
 
-/*
-
-PHP Markdown
-==================
-
-Description
------------
-
-This is a PHP port of the original Markdown formatter written in Perl 
-by John Gruber. This special "Extra" version of PHP Markdown features 
-further enhancements to the syntax for making additional constructs 
-such as tables and definition list.
-
-Markdown is a text-to-HTML filter; it translates an easy-to-read /
-easy-to-write structured text format into HTML. Markdown's text format
-is most similar to that of plain text email, and supports features such
-as headers, *emphasis*, code blocks, blockquotes, and links.
-
-Markdown's syntax is designed not as a generic markup language, but
-specifically to serve as a front-end to (X)HTML. You can use span-level
-HTML tags anywhere in a Markdown document, and you can use block level
-HTML tags (like <div> and <table> as well).
-
-For more information about Markdown's syntax, see:
-
-<http://daringfireball.net/projects/markdown/>
-
-
-Bugs
-----
-
-To file bug reports please send email to:
-
-<michel.fortin@michelf.com>
-
-Please include with your report: (1) the example input; (2) the output you
-expected; (3) the output Markdown actually produced.
-
-
-Version History
---------------- 
-
-See the readme file for detailed release notes for this version.
-
-
-Copyright and License
----------------------
-
-PHP Markdown & Extra  
-Copyright (c) 2004-2009 Michel Fortin  
-<http://michelf.com/>  
-All rights reserved.
-
-Based on Markdown  
-Copyright (c) 2003-2006 John Gruber   
-<http://daringfireball.net/>   
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-*	Redistributions of source code must retain the above copyright notice,
-	this list of conditions and the following disclaimer.
-
-*	Redistributions in binary form must reproduce the above copyright
-	notice, this list of conditions and the following disclaimer in the
-	documentation and/or other materials provided with the distribution.
-
-*	Neither the name "Markdown" nor the names of its contributors may
-	be used to endorse or promote products derived from this software
-	without specific prior written permission.
-
-This software is provided by the copyright holders and contributors "as
-is" and any express or implied warranties, including, but not limited
-to, the implied warranties of merchantability and fitness for a
-particular purpose are disclaimed. In no event shall the copyright owner
-or contributors be liable for any direct, indirect, incidental, special,
-exemplary, or consequential damages (including, but not limited to,
-procurement of substitute goods or services; loss of use, data, or
-profits; or business interruption) however caused and on any theory of
-liability, whether in contract, strict liability, or tort (including
-negligence or otherwise) arising in any way out of the use of this
-software, even if advised of the possibility of such damage.
-
-*/
 ?>

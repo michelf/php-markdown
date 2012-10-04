@@ -23,4 +23,15 @@ namespace michelf;
 # _MarkdownExtra_TmpImpl will disappear and this one will contain the code.
 #
 
-class MarkdownExtra extends \michelf\_MarkdownExtra_TmpImpl {}
+class MarkdownExtra extends \michelf\_MarkdownExtra_TmpImpl {
+
+	### Version ###
+
+	const  MARKDOWNEXTRA_VERSION  = \michelf\MARKDOWNEXTRA_VERSION;
+
+	### Parser Implementation ###
+
+	# Temporarily, the implemenation is in the _MarkdownExtra_TmpImpl class.
+	# See note above.
+
+}
