@@ -1683,6 +1683,8 @@ class Markdown_Parser {
 
 class MarkdownExtra_Parser extends Markdown_Parser {
 
+	### Configuration Variables ###
+
 	# Prefix for footnote ids.
 	var $fn_id_prefix = "";
 	
@@ -1697,6 +1699,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Predefined abbreviations.
 	var $predef_abbr = array();
 
+
+	### Parser Implementation ###
 
 	function MarkdownExtra_Parser() {
 	#
