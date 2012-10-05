@@ -34,6 +34,9 @@ Installation and Requirement
 ----------------------------
 
 PHP Markdown requires PHP version 4.0.5 or later.
+Before PHP 5.3.7, pcre.backtrack_limit defaults to 100000.
+You might need to set it to higher values. PHP 5.3.7 or later
+defaults to 1000000.
 
 
 ### WordPress ###
@@ -194,7 +197,8 @@ To file bug reports please send email to:
 <michel.fortin@michelf.com>
 
 Please include with your report: (1) the example input; (2) the output you
-expected; (3) the output PHP Markdown actually produced.
+expected; (3) the output PHP Markdown actually produced; (4) the output of
+running `php --info | grep pcre`.
 
 
 Version History
