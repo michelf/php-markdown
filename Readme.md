@@ -39,8 +39,12 @@ Installation and Requirement
 
 This library package requires PHP 5.3 or later.
 
-Note: The older plugin/library hybrid package for PHP Markdown and 
+Note: The older plugin/library hybrid package for PHP Markdown and
 PHP Markdown Extra is still maintained and will work with PHP 4.0.5 and later.
+
+Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
+in many situations. You might need to set it to higher values. Later PHP 
+releases defaults to 1 000 000, which is usually fine.
 
 
 Usage
@@ -101,9 +105,18 @@ To file bug reports please send email to:
 Please include with your report: (1) the example input; (2) the output you
 expected; (3) the output PHP Markdown actually produced.
 
+If you have a problem where Markdown gives you an empty result, first check 
+that the backtrack limit is not too low by running `php --info | grep pcre`.
+See Installation and Requirement above for details.
+
 
 Version History
 ---------------
+
+Current Extra:
+
+*	Multiple reference to the same footnote are now allowed.
+
 
 Current:
 
@@ -112,7 +125,7 @@ Current:
 	differently. It is available separatedly from the two other available 
 	packages, and requires PHP 5.3.
 
-*	The following HTML 5 elements are treated as block elements when at the 
+*	The following HTML 5 elements are treated as block elements when at the
 	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
 	`header`, `footer`, and `figure`. `svg` too.
 

@@ -1585,6 +1585,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	# Extra variables used during extra transformations.
 	var $footnotes = array();
 	var $footnotes_ordered = array();
+	var $footnotes_numbers = array();
 	var $abbr_desciptions = array();
 	var $abbr_word_re = '';
 	
@@ -1600,6 +1601,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
+		$this->footnotes_numbers = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
 		$this->footnote_counter = 1;
@@ -1618,6 +1620,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	#
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
+		$this->footnotes_numbers = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
 		
@@ -1656,7 +1659,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	#
 	# This works by calling _HashHTMLBlocks_InMarkdown, which then calls
 	# _HashHTMLBlocks_InHTML when it encounter block tags. When the markdown="1" 
-	# attribute is found whitin a tag, _HashHTMLBlocks_InHTML calls back
+	# attribute is found within a tag, _HashHTMLBlocks_InHTML calls back
 	#  _HashHTMLBlocks_InMarkdown to handle the Markdown syntax within the tag.
 	# These two functions are calling each other. It's recursive!
 	#
@@ -1709,7 +1712,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		# Regex to match any tag.
 		$block_tag_re =
 			'{
-				(					# $2: Capture hole tag.
+				(					# $2: Capture whole tag.
 					</?					# Any opening or closing tag.
 						(?>				# Tag name.
 							'.$this->block_tags_re.'			|
@@ -1927,7 +1930,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		
 		# Regex to match any tag.
 		$tag_re = '{
-				(					# $2: Capture hole tag.
+				(					# $2: Capture whole tag.
 					</?					# Any opening or closing tag.
 						[\w:$]+			# Tag name.
 						(?:
@@ -2054,7 +2057,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 					if (!$span_mode)	$parsed .= "\n\n$block_text\n\n";
 					else				$parsed .= "$block_text";
 					
-					# Start over a new block.
+					# Start over with a new block.
 					$block_text = "";
 				}
 				else $block_text .= $tag;
@@ -2073,8 +2076,8 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 
 	function hashClean($text) {
 	#
-	# Called whenever a tag must be hashed when a function insert a "clean" tag
-	# in $text, it pass through this function and is automaticaly escaped, 
+	# Called whenever a tag must be hashed when a function inserts a "clean" tag
+	# in $text, it passes through this function and is automaticaly escaped, 
 	# blocking invalid nested overlap.
 	#
 		return $this->hashPart($text, 'C');
@@ -2612,11 +2615,15 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		# Create footnote marker only if it has a corresponding footnote *and*
 		# the footnote hasn't been used by another marker.
 		if (isset($this->footnotes[$node_id])) {
-			# Transfert footnote content to the ordered list.
-			$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
-			unset($this->footnotes[$node_id]);
+			$num =& $this->footnotes_numbers[$node_id];
+			if (!isset($num))
+			{
+				# Transfer footnote content to the ordered list and give it its
+				# number
+				$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
+				$num = $this->footnote_counter++;
+			}
 			
-			$num = $this->footnote_counter++;
 			$attr = " rel=\"footnote\"";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
