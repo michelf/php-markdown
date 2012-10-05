@@ -1806,7 +1806,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 	# This works by calling _HashHTMLBlocks_InMarkdown, which then calls
 	# _HashHTMLBlocks_InHTML when it encounter block tags. When the markdown="1" 
-	# attribute is found whitin a tag, _HashHTMLBlocks_InHTML calls back
+	# attribute is found within a tag, _HashHTMLBlocks_InHTML calls back
 	#  _HashHTMLBlocks_InMarkdown to handle the Markdown syntax within the tag.
 	# These two functions are calling each other. It's recursive!
 	#
