@@ -117,6 +117,8 @@ Current Extra:
 
 *	Multiple reference to the same footnote are now allowed.
 
+*	Fixed an issue where no_markup mode was ineffective.
+
 
 Current:
 
