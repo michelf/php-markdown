@@ -1663,6 +1663,8 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	#  _HashHTMLBlocks_InMarkdown to handle the Markdown syntax within the tag.
 	# These two functions are calling each other. It's recursive!
 	#
+		if ($this->no_markup)  return $text;
+
 		#
 		# Call the HTML-in-Markdown hasher.
 		#
