@@ -2759,14 +2759,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	function _appendFootnotes_callback($matches) {
 		$node_id = $this->fn_id_prefix . $matches[1];
 		
-		# Create footnote marker only if it has a corresponding footnote *and*
-		# the footnote hasn't been used by another marker.
+		# Create footnote marker only if it has a corresponding footnote
 		if (isset($this->footnotes[$node_id])) {
-			# Transfert footnote content to the ordered list.
+			# Transfer footnote content to the ordered list.
 			$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
-			unset($this->footnotes[$node_id]);
 			
-			$num = $this->footnote_counter++;
+			$num = $matches[1];
 			$attr = " rel=\"footnote\"";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
