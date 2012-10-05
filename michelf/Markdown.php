@@ -36,7 +36,7 @@ class Markdown {
 
 	### Simple Function Interface ###
 
-	static function default_transform($text) {
+	static function defaultTransform($text) {
 	#
 	# Initialize the parser and return the result of its transform method.
 	# This will work fine for derived classes too.
