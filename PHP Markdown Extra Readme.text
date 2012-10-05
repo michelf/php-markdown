@@ -212,9 +212,14 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
+Current Extra:
+
+*	Multiple reference to the same footnote are now allowed.
+
+
 Current:
 
-*	The following HTML 5 elements are treated as block elements when at the 
+*	The following HTML 5 elements are treated as block elements when at the
 	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
 	`header`, `footer`, and `figure`. `svg` too.
 
