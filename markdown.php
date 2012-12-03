@@ -1739,6 +1739,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Extra variables used during extra transformations.
 	var $footnotes = array();
 	var $footnotes_ordered = array();
+	var $footnotes_ref_count = array();
 	var $footnotes_numbers = array();
 	var $abbr_desciptions = array();
 	var $abbr_word_re = '';
@@ -1755,6 +1756,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
+		$this->footnotes_ref_count = array();
 		$this->footnotes_numbers = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
@@ -1774,6 +1776,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	#
 		$this->footnotes = array();
 		$this->footnotes_ordered = array();
+		$this->footnotes_ref_count = array();
 		$this->footnotes_numbers = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
@@ -2738,6 +2741,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$footnote = reset($this->footnotes_ordered);
 				$note_id = key($this->footnotes_ordered);
 				unset($this->footnotes_ordered[$note_id]);
+				$ref_count = $this->footnotes_ref_count[$note_id];
+				unset($this->footnotes_ref_count[$note_id]);
+				unset($this->footnotes[$note_id]);
 				
 				$footnote .= "\n"; # Need to append newline before parsing.
 				$footnote = $this->runBlockGamut("$footnote\n");				
@@ -2746,9 +2752,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				
 				$attr = str_replace("%%", ++$num, $attr);
 				$note_id = $this->encodeAttribute($note_id);
-				
-				# Add backlink to last paragraph; create new paragraph if needed.
+
+				# Prepare backlink, multiple backlinks if multiple references
 				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;</a>";
+				for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
+					$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>&#8617;</a>";
+				}
+				# Add backlink to last paragraph; create new paragraph if needed.
 				if (preg_match('{</p>$}', $footnote)) {
 					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
@@ -2772,12 +2782,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# the footnote hasn't been used by another marker.
 		if (isset($this->footnotes[$node_id])) {
 			$num =& $this->footnotes_numbers[$node_id];
-			if (!isset($num))
-			{
+			if (!isset($num)) {
 				# Transfer footnote content to the ordered list and give it its
 				# number
 				$this->footnotes_ordered[$node_id] = $this->footnotes[$node_id];
+				$this->footnotes_ref_count[$node_id] = 1;
 				$num = $this->footnote_counter++;
+				$ref_count_mark = '';
+			} else {
+				$ref_count_mark = $this->footnotes_ref_count[$node_id] += 1;
 			}
 			
 			$attr = " rel=\"footnote\"";
@@ -2796,7 +2809,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$node_id = $this->encodeAttribute($node_id);
 			
 			return
-				"<sup id=\"fnref:$node_id\">".
+				"<sup id=\"fnref$ref_count_mark:$node_id\">".
 				"<a href=\"#fn:$node_id\"$attr>$num</a>".
 				"</sup>";
 		}
