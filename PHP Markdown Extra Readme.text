@@ -221,7 +221,10 @@ Current Extra:
 
 Current:
 
-*	The following HTML 5 elements are treated as block elements when at the
+*	Fixed an issue where some XML-style empty tags (such as `<br/>`) were not 
+	recognized correctly as such when inserted into Markdown-formatted text.
+
+*	The following HTML 5 elements are treated as block elements when at the 
 	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
 	`header`, `footer`, and `figure`. `svg` too.
 
