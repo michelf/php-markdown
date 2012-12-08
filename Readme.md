@@ -131,6 +131,9 @@ Current:
 	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
 	`header`, `footer`, and `figure`. `svg` too.
 
+*	Fixed an issue where some XML-style empty tags (such as `<br/>`) were not 
+	recognized correctly as such when inserted into Markdown-formatted text.
+
 
 1.0.1o (8 Jan 2012):
 
