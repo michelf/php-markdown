@@ -2245,19 +2245,19 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	function doHeaders($text) {
 	#
-	# Redefined to add id attribute support.
+	# Redefined to add id and class attribute support.
 	#
 		# Setext-style headers:
 		#	  Header 1  {#header1}
 		#	  ========
 		#  
-		#	  Header 2  {#header2}
+		#	  Header 2  {#header2 .class1 .class2}
 		#	  --------
 		#
 		$text = preg_replace_callback(
 			'{
 				(^.+?)								# $1: Header text
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})?	# $2: Id attribute
+				(?:[ ]+ \{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\} )?	 # $3 = id/class attributes
 				[ ]*\n(=+|-+)[ ]*\n+				# $3: Header footer
 			}mx',
 			array(&$this, '_doHeaders_callback_setext'), $text);
@@ -2265,9 +2265,9 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		# atx-style headers:
 		#	# Header 1        {#header1}
 		#	## Header 2       {#header2}
-		#	## Header 2 with closing hashes ##  {#header3}
+		#	## Header 2 with closing hashes ##  {#header3.class1.class2}
 		#	...
-		#	###### Header 6   {#header2}
+		#	###### Header 6   {.class2}
 		#
 		$text = preg_replace_callback('{
 				^(\#{1,6})	# $1 = string of #\'s
@@ -2275,7 +2275,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})? # id attribute
+				(?:[ ]+ \{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\} )?	 # $3 = id/class attributes
 				[ ]*
 				\n+
 			}xm',
@@ -2284,20 +2284,44 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _doHeaders_attr($attr) {
-		if (empty($attr))  return "";
-		return " id=\"$attr\"";
+		if (empty($attr)) return "";
+		
+		# Split on components
+		preg_match_all("/[.#][-_:a-zA-Z0-9]+/", $attr, $matches);
+		$elements = $matches[0];
+
+		# handle classes and ids (only first id taken into account
+		$classes = array();
+		$id = FALSE;
+		foreach ($elements as $element) {
+			if ($element{0} == '.') {
+				$classes[] = substr($element, 1);
+			} else if ($element{0} == '#') {
+				if ($id === FALSE) $id = substr($element, 1);
+			}
+		}
+
+		# compose attributes as string
+		$attr_str = "";
+		if (!empty($id)) {
+			$attr_str .= ' id="'.$id.'"';
+		}
+		if (!empty($classes)) {
+			$attr_str .= ' class="'.implode(" ", $classes).'"';
+		}
+		return $attr_str;
 	}
 	function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($id =& $matches[2]);
+		$attr  = $this->_doHeaders_attr($dummy =& $matches[2]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->_doHeaders_attr($id =& $matches[3]);
+		$attr  = $this->_doHeaders_attr($dummy =& $matches[3]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}

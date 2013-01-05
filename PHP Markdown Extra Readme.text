@@ -214,6 +214,13 @@ Version History
 
 Current Extra:
 
+*	Headers can now have a class attribute. You can add a class using this 
+	syntax:
+
+		### Header ###  {#id .class1 .class2}
+	
+	Spaces between components in the brace is optional.
+
 *	Multiple reference to the same footnote are now allowed.
 
 *	Fixed an issue where no_markup mode was ineffective.
