@@ -1964,10 +1964,10 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					# Fenced code block marker
 					(?> ^ | \n )
-					[ ]{0,'.($indent).'}~~~+[ ]*
+					[ ]{0,'.($indent+3).'}~{3,}
 									[ ]*
 					(?:
-						[.][-_:a-zA-Z0-9]+ # standalone class name
+						[.]?[-_:a-zA-Z0-9]+ # standalone class name
 					|
 						'.$this->id_class_attr_nocatch_re.' # extra attributes
 					)?
