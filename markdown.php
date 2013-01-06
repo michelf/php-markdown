@@ -1785,6 +1785,47 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	}
 	
 	
+	### Extra Attribute Parser ###
+
+	# Expression to use to catch attributes (includes the braces)
+	var $id_class_attr_catch_re = '\{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\}';
+
+	function doExtraAttributes($tag_name, $attr) {
+	#
+	# Parse attributes caught by the $this->id_class_attr_catch_re expression
+	# and return the HTML-formatted list of attributes.
+	#
+	# Currently supported attributes are .class and #id.
+	#
+		if (empty($attr)) return "";
+		
+		# Split on components
+		preg_match_all("/[.#][-_:a-zA-Z0-9]+/", $attr, $matches);
+		$elements = $matches[0];
+
+		# handle classes and ids (only first id taken into account)
+		$classes = array();
+		$id = false;
+		foreach ($elements as $element) {
+			if ($element{0} == '.') {
+				$classes[] = substr($element, 1);
+			} else if ($element{0} == '#') {
+				if ($id === false) $id = substr($element, 1);
+			}
+		}
+
+		# compose attributes as string
+		$attr_str = "";
+		if (!empty($id)) {
+			$attr_str .= ' id="'.$id.'"';
+		}
+		if (!empty($classes)) {
+			$attr_str .= ' class="'.implode(" ", $classes).'"';
+		}
+		return $attr_str;
+	}
+
+
 	### HTML Block Parser ###
 	
 	# Tags that are always treated as block tags:
@@ -2257,7 +2298,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$text = preg_replace_callback(
 			'{
 				(^.+?)								# $1: Header text
-				(?:[ ]+ \{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\} )?	 # $3 = id/class attributes
+				(?:[ ]+ '.$this->id_class_attr_catch_re.' )?	 # $3 = id/class attributes
 				[ ]*\n(=+|-+)[ ]*\n+				# $3: Header footer
 			}mx',
 			array(&$this, '_doHeaders_callback_setext'), $text);
@@ -2275,7 +2316,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+ \{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\} )?	 # $3 = id/class attributes
+				(?:[ ]+ '.$this->id_class_attr_catch_re.' )?	 # $3 = id/class attributes
 				[ ]*
 				\n+
 			}xm',
@@ -2283,45 +2324,17 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 		return $text;
 	}
-	function _doHeaders_attr($attr) {
-		if (empty($attr)) return "";
-		
-		# Split on components
-		preg_match_all("/[.#][-_:a-zA-Z0-9]+/", $attr, $matches);
-		$elements = $matches[0];
-
-		# handle classes and ids (only first id taken into account
-		$classes = array();
-		$id = FALSE;
-		foreach ($elements as $element) {
-			if ($element{0} == '.') {
-				$classes[] = substr($element, 1);
-			} else if ($element{0} == '#') {
-				if ($id === FALSE) $id = substr($element, 1);
-			}
-		}
-
-		# compose attributes as string
-		$attr_str = "";
-		if (!empty($id)) {
-			$attr_str .= ' id="'.$id.'"';
-		}
-		if (!empty($classes)) {
-			$attr_str .= ' class="'.implode(" ", $classes).'"';
-		}
-		return $attr_str;
-	}
 	function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($dummy =& $matches[2]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->_doHeaders_attr($dummy =& $matches[3]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
