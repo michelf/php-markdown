@@ -253,7 +253,7 @@ Current Extra:
 	element instead, you can set the MARKDOWN_ATTR_ON_PRE configuration 
 	variable to true.
 
-*	Multiple reference to the same footnote are now allowed.
+*	Multiple references to the same footnote are now allowed.
 
 *	Fixed an issue where no_markup mode was ineffective.
 
