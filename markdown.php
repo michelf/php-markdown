@@ -34,6 +34,13 @@ define( 'MARKDOWNEXTRA_VERSION',  "1.2.5" ); # Sun 8 Jan 2012
 @define( 'MARKDOWN_FN_LINK_CLASS',         "" );
 @define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
 
+# Fenced code block class prefix
+@define( 'MARKDOWN_CODE_CLASS_PREFIX',     "" );
+
+# User-specified class attribute for code blocks goes on the "code" tag,
+# but setting this to true will put attributes on the "pre" tag instead
+@define( 'MARKDOWN_ATTR_ON_PRE', false );
+
 
 #
 # WordPress settings:
@@ -1789,6 +1796,8 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 
 	# Expression to use to catch attributes (includes the braces)
 	var $id_class_attr_catch_re = '\{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\}';
+	# Expression to use when parsing in a context when no capture is desired
+	var $id_class_attr_nocatch_re = '\{(?:[ ]*[#.][-_:a-zA-Z0-9]+){1,}[ ]*\}';
 
 	function doExtraAttributes($tag_name, $attr) {
 	#
@@ -1949,7 +1958,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					# Fenced code block marker
 					(?> ^ | \n )
-					[ ]{0,'.($indent).'}~~~+[ ]*\n
+					[ ]{0,'.($indent).'}~~~+[ ]*
+									[ ]*
+					(?:
+						[.][-_:a-zA-Z0-9]+ # standalone class name
+					|
+						'.$this->id_class_attr_nocatch_re.' # extra attributes
+					)?
+					[ ]*
+					\n
 				' : '' ). ' # End (if not is span).
 				)
 			}xs';
@@ -2612,9 +2629,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(
 					~{3,} # Marker: three tilde or more.
 				)
+				[ ]*
+				(?:
+					[.]?([-_:a-zA-Z0-9]+) # 2: standalone class name
+				|
+					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
+				)?
 				[ ]* \n # Whitespace and newline following marker.
 				
-				# 2: Content
+				# 4: Content
 				(
 					(?>
 						(?!\1 [ ]* \n)	# Not a closing marker.
@@ -2630,11 +2653,24 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _doFencedCodeBlocks_callback($matches) {
-		$codeblock = $matches[2];
+		$classname =& $matches[2];
+		$attrs     =& $matches[3];
+		$codeblock = $matches[4];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		$codeblock = "<pre><code>$codeblock</code></pre>";
+
+		if ($classname != "") {
+			if ($classname{0} == '.')
+				$classname = substr($classname, 1);
+			$attr_str = ' class="'.MARKDOWN_CODE_CLASS_PREFIX.$classname.'"';
+		} else {
+			$attr_str = $this->doExtraAttributes(MARKDOWN_ATTR_ON_PRE ? "pre" : "code", $attrs);
+		}
+		$pre_attr_str  = MARKDOWN_ATTR_ON_PRE ? $attr_str : '';
+		$code_attr_str = MARKDOWN_ATTR_ON_PRE ? '' : $attr_str;
+		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
+		
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doFencedCodeBlocks_newlines($matches) {
