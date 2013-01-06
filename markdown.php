@@ -2036,10 +2036,10 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			#
 			# Check for: Fenced code block marker.
 			#
-			else if (preg_match('{^\n?[ ]{0,'.($indent+3).'}~}', $tag)) {
+			else if (preg_match('{^\n?[ ]{0,'.($indent+3).'}(~+)}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
-				$tag_re = preg_quote(trim($tag));
-				if (preg_match('{^(?>.*\n)+?[ ]{0,'.($indent).'}'.$tag_re.'[ ]*\n}', $text, 
+				$fence_re = $capture[1]; # use captured fence in re
+				if (preg_match('{^(?>.*\n)+?[ ]{0,'.($indent).'}'.$fence_re.'[ ]*\n}', $text, 
 					$matches)) 
 				{
 					# End marker found: pass text unchanged until marker.
