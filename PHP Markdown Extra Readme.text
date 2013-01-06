@@ -253,6 +253,9 @@ Current Extra:
 	element instead, you can set the MARKDOWN_CODE_ATTR_ON_PRE configuration 
 	variable to true.
 
+*	Fixed an issue were consecutive fenced code blocks containing HTML-like
+	code would confuse the parser.
+
 *	Multiple references to the same footnote are now allowed.
 
 *	Fixed an issue where no_markup mode was ineffective.
