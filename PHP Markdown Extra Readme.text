@@ -250,7 +250,7 @@ Current Extra:
 	A code block creates a `pre` HTML element containing a `code` element. 
 	The `code` HTML element is the one that receives the attribute. If for
 	some reason you need attributes to be applied to the enclosing `pre`
-	element instead, you can set the MARKDOWN_ATTR_ON_PRE configuration 
+	element instead, you can set the MARKDOWN_CODE_ATTR_ON_PRE configuration 
 	variable to true.
 
 *	Multiple references to the same footnote are now allowed.

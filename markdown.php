@@ -34,12 +34,12 @@ define( 'MARKDOWNEXTRA_VERSION',  "1.2.5" ); # Sun 8 Jan 2012
 @define( 'MARKDOWN_FN_LINK_CLASS',         "" );
 @define( 'MARKDOWN_FN_BACKLINK_CLASS',     "" );
 
-# Fenced code block class prefix
+# Optional class prefix for fenced code block.
 @define( 'MARKDOWN_CODE_CLASS_PREFIX',     "" );
 
-# User-specified class attribute for code blocks goes on the "code" tag,
-# but setting this to true will put attributes on the "pre" tag instead
-@define( 'MARKDOWN_ATTR_ON_PRE', false );
+# Class attribute for code blocks goes on the `code` tag;
+# setting this to true will put attributes on the `pre` tag instead.
+@define( 'MARKDOWN_CODE_ATTR_ON_PRE',   false );
 
 
 #
@@ -1706,6 +1706,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Optional class attribute for footnote links and backlinks.
 	var $fn_link_class = MARKDOWN_FN_LINK_CLASS;
 	var $fn_backlink_class = MARKDOWN_FN_BACKLINK_CLASS;
+
+	# Optional class prefix for fenced code block.
+	var $code_class_prefix = MARKDOWN_CODE_CLASS_PREFIX;
+	# Class attribute for code blocks goes on the `code` tag;
+	# setting this to true will put attributes on the `pre` tag instead.
+	var $code_attr_on_pre = MARKDOWN_CODE_ATTR_ON_PRE;
 	
 	# Predefined abbreviations.
 	var $predef_abbr = array();
@@ -2663,12 +2669,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		if ($classname != "") {
 			if ($classname{0} == '.')
 				$classname = substr($classname, 1);
-			$attr_str = ' class="'.MARKDOWN_CODE_CLASS_PREFIX.$classname.'"';
+			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
 		} else {
-			$attr_str = $this->doExtraAttributes(MARKDOWN_ATTR_ON_PRE ? "pre" : "code", $attrs);
+			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
 		}
-		$pre_attr_str  = MARKDOWN_ATTR_ON_PRE ? $attr_str : '';
-		$code_attr_str = MARKDOWN_ATTR_ON_PRE ? '' : $attr_str;
+		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
+		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
 		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
 		
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
