@@ -71,23 +71,6 @@ are written in HTML (as opposed to another formatting syntax, like
 Textile), they'll probably stay fine after installing Markdown.
 
 
-### bBlog ###
-
-PHP Markdown also works with [bBlog][bb].
-
- [bb]: http://www.bblog.com/
-
-To use PHP Markdown with bBlog, rename "markdown.php" to 
-"modifier.markdown.php" and place the file in the "bBlog_plugins" 
-folder. This folder is located inside the "bblog" directory of 
-your site, like this:
-
-        (site home)/bblog/bBlog_plugins/modifier.markdown.php
-
-Select "Markdown" as the "Entry Modifier" when you post a new 
-entry. This setting will only apply to the entry you are editing.
-
-
 ### Replacing Textile in TextPattern ###
 
 [TextPattern][tp] use [Textile][tx] to format your text. You can 
