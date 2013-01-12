@@ -4,7 +4,7 @@ PHP Markdown
 Version 1.0.1o - Sun 8 Jan 2012
 
 by Michel Fortin
-<http://michelf.com/>
+<http://michelf.ca/>
 
 based on work by John Gruber  
 <http://daringfireball.net/>
@@ -97,7 +97,7 @@ can solve this problem by installing the "smartypants.php" file from
 Compatibility Mode function will use SmartyPants automatically without 
 further modification.
 
- [psp]: http://michelf.com/projects/php-smartypants/
+ [psp]: http://michelf.ca/projects/php-smartypants/
 
 
 ### Updating Markdown in Other Programs ###
@@ -178,7 +178,7 @@ Bugs
 ----
 
 To file bug reports please send email to:
-<michel.fortin@michelf.com>
+<michel.fortin@michelf.ca>
 
 Please include with your report: (1) the example input; (2) the output you
 expected; (3) the output PHP Markdown actually produced.
@@ -577,7 +577,7 @@ Current:
 *	Major rewrite of the WordPress integration code that should 
 	correct many problems by preventing default WordPress filters from 
 	tampering with Markdown-formatted text. More details here:
-	<http://michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
+	<http://michelf.ca/weblog/2005/wordpress-text-flow-vs-markdown/>
 
 
 1.0.1a (15 Apr 2005)
@@ -742,7 +742,7 @@ Copyright and License
 
 PHP Markdown
 Copyright (c) 2004-2009 Michel Fortin  
-<http://michelf.com/>  
+<http://michelf.ca/>  
 All rights reserved.
 
 Based on Markdown  
