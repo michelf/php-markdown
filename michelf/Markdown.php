@@ -2,11 +2,11 @@
 #
 # Markdown  -  A text-to-HTML conversion tool for web writers
 #
-# PHP Markdown
-# Copyright (c) 2004-2012 Michel Fortin  
+# PHP Markdown  
+# Copyright (c) 2004-2013 Michel Fortin  
 # <http://michelf.com/projects/php-markdown/>
 #
-# Original Markdown
+# Original Markdown  
 # Copyright (c) 2004-2006 John Gruber  
 # <http://daringfireball.net/projects/markdown/>
 #
@@ -20,8 +20,9 @@ namespace michelf;
 # class: \michelf\Markdown::MARKDOWN_VERSION.
 #
 
-const  MARKDOWN_VERSION  =  "1.0.1o";  # Sun 8 Jan 2012
-const  MARKDOWNEXTRA_VERSION  =  "1.2.5";  # Sun 8 Jan 2012
+const  MARKDOWNLIB_VERSION  =  "0.1";  # Sun 13 Jan 2013
+const  MARKDOWN_VERSION  =  "1.0.1p";  # Sun 13 Jan 2013
+const  MARKDOWNEXTRA_VERSION  =  "1.2.6";  # Sun 13 Jan 2013
 
 
 #

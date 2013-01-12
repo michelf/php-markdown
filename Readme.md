@@ -1,11 +1,10 @@
 PHP Markdown & Extra
 ====================
 
-PHP Markdown & Extra version 1.0.1o - Sun 8 Jan 2012  
-PHP Markdown Extra version 1.2.5 - Sun 8 Jan 2012
+PHP Markdown Lib 0.1 - Sun 13 Jan 2013
 
 by Michel Fortin  
-<http://michelf.com/>
+<http://michelf.ca/>
 
 based on Markdown by John Gruber  
 <http://daringfireball.net/>
@@ -26,9 +25,9 @@ tool, written in Perl, that converts the plain text markup to HTML.
 PHP Markdown is a port to PHP of the original Markdown program by 
 John Gruber.
 
-PHP Markdown can work as a plug-in for WordPress and bBlog, as a 
-modifier for the Smarty templating engine, or as a replacement for
-Textile formatting in any software that supports Textile.
+PHP Markdown can work as a plug-in for WordPress, as a modifier for
+the Smarty templating engine, or as a replacement for Textile
+formatting in any software that supports Textile.
 
 Full documentation of Markdown's syntax is available on John's 
 Markdown page: <http://daringfireball.net/projects/markdown/>
@@ -100,7 +99,7 @@ Bugs
 ----
 
 To file bug reports please send email to:
-<michel.fortin@michelf.com>
+<michel.fortin@michelf.ca>
 
 Please include with your report: (1) the example input; (2) the output you
 expected; (3) the output PHP Markdown actually produced.
@@ -113,7 +112,9 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Current Extra:
+Lib 0.1 (13 Jan 2013):
+
+Extra 1.2.6 (13 Jan 2013):
 
 *	Headers can now have a class attribute. You can add a class inside the
 	extra attribute block which can optionally be put after a header:
@@ -162,7 +163,7 @@ Current Extra:
 *	Fixed an issue where no_markup mode was ineffective.
 
 
-Current:
+1.0.1p (13 Jan 2013):
 
 *	Created a library-style unified package that will work with namespace-based 
 	autoloading introduced in PHP 5.3. This is the same parser, but packaged
@@ -737,8 +738,8 @@ Copyright and License
 ---------------------
 
 PHP Markdown & Extra  
-Copyright (c) 2004-2009 Michel Fortin  
-<http://michelf.com/>  
+Copyright (c) 2004-2013 Michel Fortin  
+<http://michelf.ca/>  
 All rights reserved.
 
 Based on Markdown  
