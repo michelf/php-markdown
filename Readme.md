@@ -1,7 +1,7 @@
-PHP Markdown & Extra
-====================
+PHP Markdown
+============
 
-PHP Markdown Lib 0.1 - Sun 13 Jan 2013
+PHP Markdown Lib 1.3-beta1 - Sun 13 Jan 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -112,7 +112,7 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Lib 0.1 (13 Jan 2013):
+Lib 1.3-beta1 (13 Jan 2013):
 
 Extra 1.2.6 (13 Jan 2013):
 

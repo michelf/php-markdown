@@ -22,7 +22,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-lib": "0.x-dev"
+			"dev-lib": "1.3.x-dev"
 		}
 	}
 }
