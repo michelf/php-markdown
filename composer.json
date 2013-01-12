@@ -1,26 +1,28 @@
 {
-    "name": "michelf/php-markdown",
-    "type": "library",
-    "description": "PHP Markdown",
-    "homepage": "http://michelf.com/projects/php-markdown",
-    "keywords": ["markdown"],
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Michel Fortin",
-            "homepage": "http://michelf.com"
-        },
-        {
-            "name": "John Gruber",
-            "homepage": "http://daringfireball.net"
-        }
-    ],
-    "require": {
-        "php": ">=4.0.5"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
-    }
+	"name": "michelf/php-markdown",
+	"type": "library",
+	"description": "PHP Markdown",
+	"homepage": "http://michelf.ca/projects/php-markdown",
+	"keywords": ["markdown"],
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Michel Fortin",
+			"email": "michel.fortin@michelf.ca",
+			"homepage": "http://michelf.ca",
+			"role": "Developer"
+		},
+		{
+			"name": "John Gruber",
+			"homepage": "http://daringfireball.net"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-lib": "0.x-dev"
+		}
+	}
 }
