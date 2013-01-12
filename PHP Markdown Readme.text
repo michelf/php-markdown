@@ -1,9 +1,9 @@
 PHP Markdown
 ============
 
-Version 1.0.1o - Sun 8 Jan 2012
+Version 1.0.1p - Sun 13 Jan 2013
 
-by Michel Fortin
+by Michel Fortin  
 <http://michelf.ca/>
 
 based on work by John Gruber  
@@ -22,9 +22,9 @@ tool, written in Perl, that converts the plain text markup to HTML.
 PHP Markdown is a port to PHP of the original Markdown program by 
 John Gruber.
 
-PHP Markdown can work as a plug-in for WordPress and bBlog, as a 
-modifier for the Smarty templating engine, or as a replacement for
-Textile formatting in any software that supports Textile.
+PHP Markdown can work as a plug-in for WordPress, as a modifier for
+the Smarty templating engine, or as a replacement for Textile
+formatting in any software that supports Textile.
 
 Full documentation of Markdown's syntax is available on John's 
 Markdown page: <http://daringfireball.net/projects/markdown/>
@@ -191,7 +191,7 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Current:
+1.0.1p (13 Jan 2013):
 
 *	Fixed an issue where some XML-style empty tags (such as `<br/>`) were not 
 	recognized correctly as such when inserted into Markdown-formatted text.
@@ -741,7 +741,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown
-Copyright (c) 2004-2009 Michel Fortin  
+Copyright (c) 2004-2013 Michel Fortin  
 <http://michelf.ca/>  
 All rights reserved.
 
