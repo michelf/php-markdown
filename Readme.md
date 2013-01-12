@@ -115,7 +115,49 @@ Version History
 
 Current Extra:
 
-*	Multiple reference to the same footnote are now allowed.
+*	Headers can now have a class attribute. You can add a class inside the
+	extra attribute block which can optionally be put after a header:
+
+		### Header ###  {#id .class1 .class2}
+	
+	Spaces between components in the brace is optional.
+
+*	Fenced code blocks can also have a class and an id attribute. If you only
+	need to apply a class (typically to indicate the language of a code 
+	snippet), you can write it like this:
+	
+		~~~ html
+		<b>bold</b>
+		~~~
+	
+	or like this:
+	
+		~~~ .html
+		<b>bold</b>
+		~~~
+	
+	There is a new configuration option `MARKDOWN_CODE_CLASS_PREFIX` you can
+	use if you need to append a prefix to the class name.
+	
+	You might also opt to use an extra attribute block just like for headers:
+	
+		~~~ {.html #id .codeclass}
+		<b>bold</b>
+		~~~
+	
+	Note that class names added this way are not affected by the 
+	MARKDOWN_CODE_CLASS_PREFIX.
+	
+	A code block creates a `pre` HTML element containing a `code` element. 
+	The `code` HTML element is the one that receives the attribute. If for
+	some reason you need attributes to be applied to the enclosing `pre`
+	element instead, you can set the MARKDOWN_CODE_ATTR_ON_PRE configuration 
+	variable to true.
+
+*	Fixed an issue were consecutive fenced code blocks containing HTML-like
+	code would confuse the parser.
+
+*	Multiple references to the same footnote are now allowed.
 
 *	Fixed an issue where no_markup mode was ineffective.
 

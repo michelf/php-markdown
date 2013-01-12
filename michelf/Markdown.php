@@ -1549,6 +1549,12 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	# Optional class attribute for footnote links and backlinks.
 	var $fn_link_class = "";
 	var $fn_backlink_class = "";
+
+	# Optional class prefix for fenced code block.
+	var $code_class_prefix = "";
+	# Class attribute for code blocks goes on the `code` tag;
+	# setting this to true will put attributes on the `pre` tag instead.
+	var $code_attr_on_pre = false;
 	
 	# Predefined abbreviations.
 	var $predef_abbr = array();
@@ -1635,6 +1641,49 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 	}
 	
 	
+	### Extra Attribute Parser ###
+
+	# Expression to use to catch attributes (includes the braces)
+	var $id_class_attr_catch_re = '\{((?:[ ]*[#.][-_:a-zA-Z0-9]+){1,})[ ]*\}';
+	# Expression to use when parsing in a context when no capture is desired
+	var $id_class_attr_nocatch_re = '\{(?:[ ]*[#.][-_:a-zA-Z0-9]+){1,}[ ]*\}';
+
+	function doExtraAttributes($tag_name, $attr) {
+	#
+	# Parse attributes caught by the $this->id_class_attr_catch_re expression
+	# and return the HTML-formatted list of attributes.
+	#
+	# Currently supported attributes are .class and #id.
+	#
+		if (empty($attr)) return "";
+		
+		# Split on components
+		preg_match_all("/[.#][-_:a-zA-Z0-9]+/", $attr, $matches);
+		$elements = $matches[0];
+
+		# handle classes and ids (only first id taken into account)
+		$classes = array();
+		$id = false;
+		foreach ($elements as $element) {
+			if ($element{0} == '.') {
+				$classes[] = substr($element, 1);
+			} else if ($element{0} == '#') {
+				if ($id === false) $id = substr($element, 1);
+			}
+		}
+
+		# compose attributes as string
+		$attr_str = "";
+		if (!empty($id)) {
+			$attr_str .= ' id="'.$id.'"';
+		}
+		if (!empty($classes)) {
+			$attr_str .= ' class="'.implode(" ", $classes).'"';
+		}
+		return $attr_str;
+	}
+
+
 	### HTML Block Parser ###
 	
 	# Tags that are always treated as block tags:
@@ -1757,8 +1806,16 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 					)*
 				|
 					# Fenced code block marker
-					(?> ^ | \n )
-					[ ]{0,'.($indent).'}~~~+[ ]*\n
+					(?<= ^ | \n )
+					[ ]{0,'.($indent+3).'}~{3,}
+									[ ]*
+					(?:
+						[.]?[-_:a-zA-Z0-9]+ # standalone class name
+					|
+						'.$this->id_class_attr_nocatch_re.' # extra attributes
+					)?
+					[ ]*
+					\n
 				' : '' ). ' # End (if not is span).
 				)
 			}xs';
@@ -1822,10 +1879,11 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 			#
 			# Check for: Fenced code block marker.
 			#
-			else if (preg_match('{^\n?[ ]{0,'.($indent+3).'}~}', $tag)) {
+			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+)}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
-				$tag_re = preg_quote(trim($tag));
-				if (preg_match('{^(?>.*\n)+?[ ]{0,'.($indent).'}'.$tag_re.'[ ]*\n}', $text, 
+				$fence_indent = strlen($capture[1]); # use captured indent in re
+				$fence_re = $capture[2]; # use captured fence in re
+				if (preg_match('{^(?>.*\n)*?[ ]{'.($fence_indent).'}'.$fence_re.'[ ]*(?:\n|$)}', $text,
 					$matches)) 
 				{
 					# End marker found: pass text unchanged until marker.
@@ -2095,19 +2153,19 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 
 	function doHeaders($text) {
 	#
-	# Redefined to add id attribute support.
+	# Redefined to add id and class attribute support.
 	#
 		# Setext-style headers:
 		#	  Header 1  {#header1}
 		#	  ========
 		#  
-		#	  Header 2  {#header2}
+		#	  Header 2  {#header2 .class1 .class2}
 		#	  --------
 		#
 		$text = preg_replace_callback(
 			'{
 				(^.+?)								# $1: Header text
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})?	# $2: Id attribute
+				(?:[ ]+ '.$this->id_class_attr_catch_re.' )?	 # $3 = id/class attributes
 				[ ]*\n(=+|-+)[ ]*\n+				# $3: Header footer
 			}mx',
 			array(&$this, '_doHeaders_callback_setext'), $text);
@@ -2115,9 +2173,9 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		# atx-style headers:
 		#	# Header 1        {#header1}
 		#	## Header 2       {#header2}
-		#	## Header 2 with closing hashes ##  {#header3}
+		#	## Header 2 with closing hashes ##  {#header3.class1.class2}
 		#	...
-		#	###### Header 6   {#header2}
+		#	###### Header 6   {.class2}
 		#
 		$text = preg_replace_callback('{
 				^(\#{1,6})	# $1 = string of #\'s
@@ -2125,7 +2183,7 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
-				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})? # id attribute
+				(?:[ ]+ '.$this->id_class_attr_catch_re.' )?	 # $3 = id/class attributes
 				[ ]*
 				\n+
 			}xm',
@@ -2133,21 +2191,17 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 
 		return $text;
 	}
-	function _doHeaders_attr($attr) {
-		if (empty($attr))  return "";
-		return " id=\"$attr\"";
-	}
 	function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($id =& $matches[2]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->_doHeaders_attr($id =& $matches[3]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
@@ -2425,9 +2479,15 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 				(
 					~{3,} # Marker: three tilde or more.
 				)
+				[ ]*
+				(?:
+					[.]?([-_:a-zA-Z0-9]+) # 2: standalone class name
+				|
+					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
+				)?
 				[ ]* \n # Whitespace and newline following marker.
 				
-				# 2: Content
+				# 4: Content
 				(
 					(?>
 						(?!\1 [ ]* \n)	# Not a closing marker.
@@ -2443,11 +2503,24 @@ class _MarkdownExtra_TmpImpl extends \michelf\Markdown {
 		return $text;
 	}
 	function _doFencedCodeBlocks_callback($matches) {
-		$codeblock = $matches[2];
+		$classname =& $matches[2];
+		$attrs     =& $matches[3];
+		$codeblock = $matches[4];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		$codeblock = "<pre><code>$codeblock</code></pre>";
+
+		if ($classname != "") {
+			if ($classname{0} == '.')
+				$classname = substr($classname, 1);
+			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
+		} else {
+			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
+		}
+		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
+		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
+		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
+		
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doFencedCodeBlocks_newlines($matches) {
