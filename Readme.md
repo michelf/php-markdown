@@ -50,22 +50,22 @@ Usage
 -----
 
 You can use PHP Markdown easily in your PHP program. This library package
-is meant to be used with autoloading, so putting the 'michelf' folder
+is meant to be used with autoloading, so putting the 'Michelf' folder
 in your include path should be enough for this to work:
 
-	use \michelf\Markdown;
+	use \Michelf\Markdown;
 	$my_html = Markdown::defaultTransform($my_text);
 
 PHP Markdown Extra is also available the same way:
 
-	use \michelf\MarkdownExtra;
+	use \Michelf\MarkdownExtra;
 	$my_html = MarkdownExtra::defaultTransform($my_text);
 
 If you wish to use PHP Markdown with another text filter function 
 built to parse HTML, you should filter the text *after* the Markdown
 function call. This is an example with [PHP SmartyPants][psp]:
 
-	use \michelf\Markdown, \michelf\SmartyPants;
+	use \Michelf\Markdown, \Michelf\SmartyPants;
 	$my_html = Markdown::defaultTransform($my_text);
 	$my_html = SmartyPants::defaultTransform($my_html);
 
@@ -73,7 +73,7 @@ All these examples are using the static `markdown` function found inside the
 parser class. If you want to customize the parser, you can also instantiate
 it directly and change some configuration variables:
 
-	use \michelf\MarkdownExtra;
+	use \Michelf\MarkdownExtra;
 	$parser = new MarkdownExtra;
 	$parser->fn_id_prefix = "post22-";
 	$my_html = $parser->transform($my_text);
@@ -111,6 +111,16 @@ See Installation and Requirement above for details.
 
 Version History
 ---------------
+
+Lib 1.3-beta3 (21 Jan 2013):
+
+*	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
+
+
+Lib 1.3-beta2 (14 Jan 2013):
+
+*	Fixed missing autoloading information for composer.
+
 
 Lib 1.3-beta1 (13 Jan 2013):
 
