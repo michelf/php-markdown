@@ -112,9 +112,12 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Lib 1.3-beta3 (21 Jan 2013):
+Lib 1.3-beta4 (21 Jan 2013):
 
 *	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
+
+*	Fixed some regular expressions to make PCRE not shout warnings about POSIX
+	collation classes (dependent on your version of PCRE).
 
 
 Lib 1.3-beta2 (14 Jan 2013):

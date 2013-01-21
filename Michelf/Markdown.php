@@ -20,7 +20,7 @@ namespace Michelf;
 # class: \Michelf\Markdown::MARKDOWN_VERSION.
 #
 
-const  MARKDOWNLIB_VERSION  =  "1.3-beta3";  # Mon 21 Jan 2013
+const  MARKDOWNLIB_VERSION  =  "1.3-beta4";  # Mon 21 Jan 2013
 const  MARKDOWN_VERSION  =  "1.0.1p";  # Sun 13 Jan 2013
 const  MARKDOWNEXTRA_VERSION  =  "1.2.6";  # Sun 13 Jan 2013
 
