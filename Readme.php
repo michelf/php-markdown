@@ -4,10 +4,10 @@
 # through the Markdown filter. You can adapt this sample code in any way
 # you like.
 
-# Enable class autoloading
-spl_autoload_register();
+# Note: this line is only needed when PSR-0 class autoloading is not in place.
+require_once './Michelf/Markdown.php';
 
-# Load Markdown class
+# Get Markdown class
 use \Michelf\Markdown;
 
 # Read file and pass content through the Markdown praser
