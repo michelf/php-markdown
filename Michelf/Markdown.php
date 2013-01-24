@@ -1548,8 +1548,8 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	var $fn_backlink_title = "";
 	
 	# Optional class attribute for footnote links and backlinks.
-	var $fn_link_class = "";
-	var $fn_backlink_class = "";
+	var $fn_link_class = "footnote-ref";
+	var $fn_backlink_class = "footnote-backref";
 
 	# Optional class prefix for fenced code block.
 	var $code_class_prefix = "";
@@ -2717,7 +2717,6 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				$ref_count_mark = $this->footnotes_ref_count[$node_id] += 1;
 			}
 			
-			$attr = " rel=\"footnote\"";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
 				$class = $this->encodeAttribute($class);
