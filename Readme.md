@@ -112,6 +112,15 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
+Current Lib:
+
+*	Changed HTML output for footnotes: now instead of adding `rel` and `rev`
+	attributes, footnotes links have the class name `footnote-ref` and
+	backlinks `footnote-backref`. (This change only affect Lib branch.)
+
+*	Corrected namespace capitalization in composer package definition file.
+
+
 Lib 1.3-beta4 (21 Jan 2013):
 
 *	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
