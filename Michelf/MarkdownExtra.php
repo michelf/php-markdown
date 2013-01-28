@@ -13,6 +13,10 @@
 namespace Michelf;
 
 
+# Just force Michelf/Markdown.php to load. This is needed to load
+# the temporary implementation class. See below for details.
+\Michelf\Markdown::MARKDOWN_VERSION;
+
 #
 # Markdown Extra Parser Class
 #
