@@ -4,8 +4,10 @@
 # through the Markdown filter. You can adapt this sample code in any way
 # you like.
 
-# Note: this line is only needed when PSR-0 class autoloading is not in place.
-require_once './Michelf/Markdown.php';
+# Install PSR-0-compatible class autoloader
+spl_autoload_register(function($class){
+	require preg_replace('{\\\\|_(?!.*\\\\)}', DIRECTORY_SEPARATOR, ltrim($class, '\\')).'.php';
+});
 
 # Get Markdown class
 use \Michelf\Markdown;
