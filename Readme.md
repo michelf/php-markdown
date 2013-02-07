@@ -114,6 +114,9 @@ Version History
 
 Current Lib:
 
+*	Added `public` and `protected` protection attributes, plus a section about
+	what is "public API" and what isn't in the Readme.
+
 *	Changed HTML output for footnotes: now instead of adding `rel` and `rev`
 	attributes, footnotes links have the class name `footnote-ref` and
 	backlinks `footnote-backref`. (This change only affect Lib branch.)
