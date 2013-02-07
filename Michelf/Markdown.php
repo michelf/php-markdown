@@ -1550,6 +1550,11 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	var $fn_link_class = "footnote-ref";
 	var $fn_backlink_class = "footnote-backref";
 
+	# Class name for table cell alignment (%% replaced left/center/right)
+	# For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
+	# If empty, the align attribute is used instead of a class name.
+	var $table_align_class_tmpl = '';
+
 	# Optional class prefix for fenced code block.
 	var $code_class_prefix = "";
 	# Class attribute for code blocks goes on the `code` tag;
@@ -2278,6 +2283,14 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		
 		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
 	}
+	function _doTable_makeAlignAttr($alignname)
+	{
+		if (empty($this->table_align_class_tmpl))
+			return " align=\"$alignname\"";
+
+		$classname = str_replace('%%', $alignname, $this->table_align_class_tmpl);
+		return " class=\"$classname\"";
+	}
 	function _doTable_callback($matches) {
 		$head		= $matches[1];
 		$underline	= $matches[2];
@@ -2291,10 +2304,14 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		# Reading alignement from header underline.
 		$separators	= preg_split('/ *[|] */', $underline);
 		foreach ($separators as $n => $s) {
-			if (preg_match('/^ *-+: *$/', $s))		$attr[$n] = ' align="right"';
-			else if (preg_match('/^ *:-+: *$/', $s))$attr[$n] = ' align="center"';
-			else if (preg_match('/^ *:-+ *$/', $s))	$attr[$n] = ' align="left"';
-			else									$attr[$n] = '';
+			if (preg_match('/^ *-+: *$/', $s))
+				$attr[$n] = _doTable_makeAlignAttr('right');
+			else if (preg_match('/^ *:-+: *$/', $s))
+				$attr[$n] = _doTable_makeAlignAttr('center');
+			else if (preg_match('/^ *:-+ *$/', $s))
+				$attr[$n] = _doTable_makeAlignAttr('left');
+			else
+				$attr[$n] = '';
 		}
 		
 		# Parsing span elements, including code spans, character escapes, 
