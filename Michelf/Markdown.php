@@ -1724,7 +1724,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			$text);
 		return $text;
 	}
-	function _stripLinkDefinitions_callback($matches) {
+	protected function _stripLinkDefinitions_callback($matches) {
 		$link_id = strtolower($matches[1]);
 		$url = $matches[2] == '' ? $matches[3] : $matches[2];
 		$this->urls[$link_id] = $url;
@@ -2272,7 +2272,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$this->in_anchor = false;
 		return $text;
 	}
-	function _doAnchors_reference_callback($matches) {
+	protected function _doAnchors_reference_callback($matches) {
 		$whole_match =  $matches[1];
 		$link_text   =  $matches[2];
 		$link_id     =& $matches[3];
@@ -2308,7 +2308,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		}
 		return $result;
 	}
-	function _doAnchors_inline_callback($matches) {
+	protected function _doAnchors_inline_callback($matches) {
 		$whole_match	=  $matches[1];
 		$link_text		=  $this->runSpanGamut($matches[2]);
 		$url			=  $matches[3] == '' ? $matches[4] : $matches[3];
@@ -2332,7 +2332,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	}
 
 
-	function doImages($text) {
+	protected function doImages($text) {
 	#
 	# Turn Markdown image shortcuts into <img> tags.
 	#
@@ -2388,7 +2388,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		return $text;
 	}
-	function _doImages_reference_callback($matches) {
+	protected function _doImages_reference_callback($matches) {
 		$whole_match = $matches[1];
 		$alt_text    = $matches[2];
 		$link_id     = strtolower($matches[3]);
@@ -2418,7 +2418,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		return $result;
 	}
-	function _doImages_inline_callback($matches) {
+	protected function _doImages_inline_callback($matches) {
 		$whole_match	= $matches[1];
 		$alt_text		= $matches[2];
 		$url			= $matches[3] == '' ? $matches[4] : $matches[3];
