@@ -195,6 +195,23 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
+Current Extra:
+
+*	Added optional class and id attributes to images and links using the same
+	syntax as for headers:
+
+		[link](url){#id .class}  
+		![img](url){#id .class}
+	
+	It work too for reference-style links and images. In this case you need
+	to put those attributes at the reference definition:
+
+		[link][linkref] or [linkref]  
+		![img][linkref]
+		
+		[linkref]: url "optional title" {#id .class}
+
+
 Extra 1.2.6 (13 Jan 2013):
 
 *	Headers can now have a class attribute. You can add a class inside the
