@@ -153,6 +153,23 @@ Current Lib:
 *	Corrected namespace capitalization in composer package definition file.
 
 
+Current Extra:
+
+*	Added optional class and id attributes to images and links using the same
+	syntax as for headers:
+
+		[link](url){#id .class}  
+		![img](url){#id .class}
+	
+	It work too for reference-style links and images. In this case you need
+	to put those attributes at the reference definition:
+
+		[link][linkref] or [linkref]  
+		![img][linkref]
+		
+		[linkref]: url "optional title" {#id .class}
+
+
 Lib 1.3-beta4 (21 Jan 2013):
 
 *	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
