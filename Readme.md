@@ -150,8 +150,6 @@ Current Lib:
 	attributes, footnotes links have the class name `footnote-ref` and
 	backlinks `footnote-backref`. (This change only affect Lib branch.)
 
-*	Corrected namespace capitalization in composer package definition file.
-
 
 Current Extra:
 
@@ -168,6 +166,11 @@ Current Extra:
 		![img][linkref]
 		
 		[linkref]: url "optional title" {#id .class}
+
+
+Lib 1.3-beta5 (3 Feb 2013):
+
+*	Corrected namespace capitalization in composer package definition file.
 
 
 Lib 1.3-beta4 (21 Jan 2013):
