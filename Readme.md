@@ -33,8 +33,8 @@ Full documentation of Markdown's syntax is available on John's
 Markdown page: <http://daringfireball.net/projects/markdown/>
 
 
-Installation and Requirement
-----------------------------
+Requirement
+-----------
 
 This library package requires PHP 5.3 or later.
 
@@ -49,29 +49,35 @@ releases defaults to 1 000 000, which is usually fine.
 Usage
 -----
 
-You can use PHP Markdown easily in your PHP program. This library package
-is meant to be used with autoloading, so putting the 'Michelf' folder
-in your include path should be enough for this to work:
+This library package is meant to be used with class autoloading. For autoloading 
+to work, your project needs have setup a PSR-0-compatible autoloader. See the 
+included Readme.php file for a minimal autoloader setup. (If you don't want to 
+use autoloading you can do a classic `require_once` to manually include the 
+files prior use instead.)
+
+With class autoloading in place, putting the 'Michelf' folder in your 
+include path should be enough for this to work:
 
 	use \Michelf\Markdown;
 	$my_html = Markdown::defaultTransform($my_text);
 
-PHP Markdown Extra is also available the same way:
+Markdown Extra syntax is also available the same way:
 
 	use \Michelf\MarkdownExtra;
 	$my_html = MarkdownExtra::defaultTransform($my_text);
 
 If you wish to use PHP Markdown with another text filter function 
-built to parse HTML, you should filter the text *after* the Markdown
+built to parse HTML, you should filter the text *after* the `transform`
 function call. This is an example with [PHP SmartyPants][psp]:
 
 	use \Michelf\Markdown, \Michelf\SmartyPants;
 	$my_html = Markdown::defaultTransform($my_text);
 	$my_html = SmartyPants::defaultTransform($my_html);
 
-All these examples are using the static `markdown` function found inside the 
-parser class. If you want to customize the parser, you can also instantiate
-it directly and change some configuration variables:
+All these examples are using the static `defaultTransform` static function 
+found inside the parser class. If you want to customize the parser 
+configuration, you can also instantiate it directly and change some 
+configuration variables:
 
 	use \Michelf\MarkdownExtra;
 	$parser = new MarkdownExtra;
