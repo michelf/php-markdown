@@ -263,7 +263,7 @@ class Markdown_Parser {
 		$this->titles = $this->predef_titles;
 		$this->html_hashes = array();
 		
-		$in_anchor = false;
+		$this->in_anchor = false;
 	}
 	
 	function teardown() {
