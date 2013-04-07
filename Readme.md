@@ -33,8 +33,8 @@ Full documentation of Markdown's syntax is available on John's
 Markdown page: <http://daringfireball.net/projects/markdown/>
 
 
-Installation and Requirement
-----------------------------
+Requirement
+-----------
 
 This library package requires PHP 5.3 or later.
 
@@ -49,29 +49,35 @@ releases defaults to 1 000 000, which is usually fine.
 Usage
 -----
 
-You can use PHP Markdown easily in your PHP program. This library package
-is meant to be used with autoloading, so putting the 'Michelf' folder
-in your include path should be enough for this to work:
+This library package is meant to be used with class autoloading. For autoloading 
+to work, your project needs have setup a PSR-0-compatible autoloader. See the 
+included Readme.php file for a minimal autoloader setup. (If you don't want to 
+use autoloading you can do a classic `require_once` to manually include the 
+files prior use instead.)
+
+With class autoloading in place, putting the 'Michelf' folder in your 
+include path should be enough for this to work:
 
 	use \Michelf\Markdown;
 	$my_html = Markdown::defaultTransform($my_text);
 
-PHP Markdown Extra is also available the same way:
+Markdown Extra syntax is also available the same way:
 
 	use \Michelf\MarkdownExtra;
 	$my_html = MarkdownExtra::defaultTransform($my_text);
 
 If you wish to use PHP Markdown with another text filter function 
-built to parse HTML, you should filter the text *after* the Markdown
+built to parse HTML, you should filter the text *after* the `transform`
 function call. This is an example with [PHP SmartyPants][psp]:
 
 	use \Michelf\Markdown, \Michelf\SmartyPants;
 	$my_html = Markdown::defaultTransform($my_text);
 	$my_html = SmartyPants::defaultTransform($my_html);
 
-All these examples are using the static `markdown` function found inside the 
-parser class. If you want to customize the parser, you can also instantiate
-it directly and change some configuration variables:
+All these examples are using the static `defaultTransform` static function 
+found inside the parser class. If you want to customize the parser 
+configuration, you can also instantiate it directly and change some 
+configuration variables:
 
 	use \Michelf\MarkdownExtra;
 	$parser = new MarkdownExtra;
@@ -95,6 +101,35 @@ To do this, you must set the `empty_element_suffix` variable of the parser
 object to ">".
 
 
+Public API and Versionning Policy
+---------------------------------
+
+Version numbers are of the form *major*.*minor*.*patch*.
+
+The public API of PHP Markdown consist of the two parser classes `Markdown`
+and `MarkdownExtra`, their constructors, the `transform` and `defaultTransform`
+functions and their configuration variables. The public API is stable for
+a given major version number. It might get additions when the minor version
+number increments.
+
+**Protected members are not considered public API.** This is unconventionnal 
+and deserves an explanation. Incrementing the major version number every time 
+the underlying implementation of something changes is going to give nonsential 
+version numbers for the vast majority of people who just use the parser. 
+Protected members are meant to create parser subclasses that behave in 
+different ways. Very few people create parser subclasses. I don't want to 
+discourage it by making everything private, but at the same time I can't 
+guarenty any stable hook between versions if you use protected members.
+
+**Syntax changes** will increment the minor number for new features, and the 
+patch number for small corrections. A *new feature* is something that needs a 
+change in the syntax documentation. Note that since PHP Markdown Lib includes
+two parsers, a syntax change for either of them will increment the minor 
+number. Also note that there is nothigng perfectly backward-compatible with the
+Markdown syntax: all inputs are always valid, so new features always replace
+something that was previously legal, although generally non-sensial to do.
+
+
 Bugs
 ----
 
@@ -114,11 +149,12 @@ Version History
 
 Current Lib:
 
+*	Added `public` and `protected` protection attributes, plus a section about
+	what is "public API" and what isn't in the Readme.
+
 *	Changed HTML output for footnotes: now instead of adding `rel` and `rev`
 	attributes, footnotes links have the class name `footnote-ref` and
 	backlinks `footnote-backref`. (This change only affect Lib branch.)
-
-*	Corrected namespace capitalization in composer package definition file.
 
 
 Current Extra:
@@ -141,6 +177,11 @@ Current Extra:
 	markers are missing on the separator line below column headers.
 
 
+Lib 1.3-beta5 (3 Feb 2013):
+
+*	Corrected namespace capitalization in composer package definition file.
+
+
 Lib 1.3-beta4 (21 Jan 2013):
 
 *	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
@@ -153,6 +194,8 @@ Lib 1.3-beta2 (14 Jan 2013):
 
 *	Fixed missing autoloading information for composer.
 
+
+Lib 1.3-beta1 (13 Jan 2013):
 
 Extra 1.2.6 (13 Jan 2013):
 
