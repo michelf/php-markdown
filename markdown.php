@@ -2743,6 +2743,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		$head		= $this->parseSpan($head);
 		$headers	= preg_split('/ *[|] */', $head);
 		$col_count	= count($headers);
+		$attr       = array_pad($attr, $col_count, '');
 		
 		# Write column headers.
 		$text = "<table>\n";

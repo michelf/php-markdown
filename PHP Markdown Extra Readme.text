@@ -211,6 +211,9 @@ Current Extra:
 		
 		[linkref]: url "optional title" {#id .class}
 
+*	Fixed a PHP notice message triggered when some table column separator 
+	markers are missing on the separator line below column headers.
+
 
 Extra 1.2.6 (13 Jan 2013):
 
