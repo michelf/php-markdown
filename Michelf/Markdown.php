@@ -2588,11 +2588,11 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$separators	= preg_split('/ *[|] */', $underline);
 		foreach ($separators as $n => $s) {
 			if (preg_match('/^ *-+: *$/', $s))
-				$attr[$n] = _doTable_makeAlignAttr('right');
+				$attr[$n] = $this->_doTable_makeAlignAttr('right');
 			else if (preg_match('/^ *:-+: *$/', $s))
-				$attr[$n] = _doTable_makeAlignAttr('center');
+				$attr[$n] = $this->_doTable_makeAlignAttr('center');
 			else if (preg_match('/^ *:-+ *$/', $s))
-				$attr[$n] = _doTable_makeAlignAttr('left');
+				$attr[$n] = $this->_doTable_makeAlignAttr('left');
 			else
 				$attr[$n] = '';
 		}
@@ -3016,7 +3016,8 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			} else {
 				$ref_count_mark = $this->footnotes_ref_count[$node_id] += 1;
 			}
-			
+
+			$attr = "";
 			if ($this->fn_link_class != "") {
 				$class = $this->fn_link_class;
 				$class = $this->encodeAttribute($class);
