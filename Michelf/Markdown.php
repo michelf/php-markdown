@@ -143,7 +143,7 @@ class Markdown {
 	}
 
 
-	protected function transform($text) {
+	public function transform($text) {
 	#
 	# Main function. Performs some preprocessing on the input text
 	# and pass it through the document gamut.
