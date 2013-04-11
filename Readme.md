@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.3-rc2 - Mon 8 Apr 2013
+PHP Markdown Lib 1.3 - 11 Apr 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -147,17 +147,24 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Lib 1.3-rc2 (Mon 8 Apr 2013):
+Lib 1.3 (11 Apr 2013):
+
+*	First release of PHP Markdown Lib. This package requires PHP version 4.3
+	or later and is designed to work with PSR-0 autoloading and, optionally
+	with Composer.
 
 *	Added `public` and `protected` protection attributes, plus a section about
-	what is "public API" and what isn't in the Readme.
+	what is "public API" and what isn't in the Readme file.
 
 *	Changed HTML output for footnotes: now instead of adding `rel` and `rev`
 	attributes, footnotes links have the class name `footnote-ref` and
 	backlinks `footnote-backref`. (This change only affect Lib branch.)
 
+*	Fixed some regular expressions to make PCRE not shout warnings about POSIX
+	collation classes (dependent on your version of PCRE).
 
-Current Extra:
+
+Extra 1.2.7 (11 Apr 2013):
 
 *	Added optional class and id attributes to images and links using the same
 	syntax as for headers:
@@ -177,25 +184,12 @@ Current Extra:
 	markers are missing on the separator line below column headers.
 
 
-Lib 1.3-beta5 (3 Feb 2013):
+1.0.1q (11 Apr 2013):
 
-*	Corrected namespace capitalization in composer package definition file.
+*	Fixed a small mistake that could cause the parser to retain an invalid
+	state related to parsing links across multiple runs. This was never 
+	observed (that I know of), but it's still worth fixing.
 
-
-Lib 1.3-beta4 (21 Jan 2013):
-
-*	Changed namespace name from michelf (lowercase) to Michelf (capitalized).
-
-*	Fixed some regular expressions to make PCRE not shout warnings about POSIX
-	collation classes (dependent on your version of PCRE).
-
-
-Lib 1.3-beta2 (14 Jan 2013):
-
-*	Fixed missing autoloading information for composer.
-
-
-Lib 1.3-beta1 (13 Jan 2013):
 
 Extra 1.2.6 (13 Jan 2013):
 
