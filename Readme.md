@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.3-rc1 - Mon 8 Apr 2013
+PHP Markdown Lib 1.3-rc2 - Mon 8 Apr 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -147,7 +147,7 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Lib 1.3-rc1 (Mon 8 Apr 2013):
+Lib 1.3-rc2 (Mon 8 Apr 2013):
 
 *	Added `public` and `protected` protection attributes, plus a section about
 	what is "public API" and what isn't in the Readme.

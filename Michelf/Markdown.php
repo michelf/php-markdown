@@ -32,7 +32,7 @@ class Markdown {
 
 	### Version ###
 
-	const  MARKDOWNLIB_VERSION  =  "1.3-rc1";
+	const  MARKDOWNLIB_VERSION  =  "1.3-rc2";
 
 	### Simple Function Interface ###
 
