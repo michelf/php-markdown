@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1p - Sun 13 Jan 2013
+Version 1.0.1p - 11 Apr 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -190,6 +190,13 @@ See Installation and Requirement above for details.
 
 Version History
 ---------------
+
+1.0.1q (11 Apr 2013):
+
+*	Fixed a small mistake that could cause the parser to retain an invalid
+	state related to parsing links across multiple runs. This was never 
+	observed (that I know of), but it's still worth fixing.
+
 
 1.0.1p (13 Jan 2013):
 
