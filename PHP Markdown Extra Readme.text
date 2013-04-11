@@ -1,7 +1,11 @@
 PHP Markdown Extra
 ==================
 
+<<<<<<< HEAD:PHP Markdown Extra Readme.text
 Version 1.2.6 - Sun 13 Jan 2013
+=======
+Version 1.0.1p - 11 Apr 2013
+>>>>>>> master:PHP Markdown Readme.text
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -213,6 +217,12 @@ Current Extra:
 
 *	Fixed a PHP notice message triggered when some table column separator 
 	markers are missing on the separator line below column headers.
+
+1.0.1q (11 Apr 2013):
+
+*	Fixed a small mistake that could cause the parser to retain an invalid
+	state related to parsing links across multiple runs. This was never 
+	observed (that I know of), but it's still worth fixing.
 
 
 Extra 1.2.6 (13 Jan 2013):
