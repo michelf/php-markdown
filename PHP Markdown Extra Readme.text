@@ -1,11 +1,7 @@
 PHP Markdown Extra
 ==================
 
-<<<<<<< HEAD:PHP Markdown Extra Readme.text
-Version 1.2.6 - Sun 13 Jan 2013
-=======
-Version 1.0.1p - 11 Apr 2013
->>>>>>> master:PHP Markdown Readme.text
+Version 1.2.7 - 11 Apr 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -199,7 +195,7 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
-Current Extra:
+Extra 1.2.7 (11 Apr 2013):
 
 *	Added optional class and id attributes to images and links using the same
 	syntax as for headers:
@@ -217,6 +213,7 @@ Current Extra:
 
 *	Fixed a PHP notice message triggered when some table column separator 
 	markers are missing on the separator line below column headers.
+
 
 1.0.1q (11 Apr 2013):
 
