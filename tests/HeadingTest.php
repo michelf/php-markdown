@@ -4,10 +4,10 @@ require __DIR__ . '/../Michelf/Markdown.php';
 
 class HeadingTest extends PHPUnit_Framework_TestCase
 {
-	private static $_unicode_string = "Testing åäö ❤ ☀ ☆ ☂ ☻ ♞ ☯ ";
+	private static $_unicode_string = "Testing åäö ❤ ☀ ☆ ☂ ☻ ♞ ☯";
 	private static $_latin_string = "Testing åäö";
 	
-    /*public function testUnicode()
+    public function testUnicode()
     {
     	$nl = "\n";
         $markdown = \Michelf\Markdown::defaultTransform(
@@ -16,7 +16,7 @@ class HeadingTest extends PHPUnit_Framework_TestCase
         );
         
         $this->assertEquals('<h1>' . self::$_unicode_string . '</h1>' . $nl, $markdown);
-    }*/
+    }
 	
     public function testLatin()
     {
