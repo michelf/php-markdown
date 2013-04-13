@@ -128,7 +128,7 @@ To learn more, see the full list of [configuration variables].
  [configuration variables]: http://michelf.ca/project/php-markdown/configuration/
 
 
-Public API and Versionning Policy
+Public API and Versioning Policy
 ---------------------------------
 
 Version numbers are of the form *major*.*minor*.*patch*.
@@ -139,22 +139,22 @@ functions and their configuration variables. The public API is stable for
 a given major version number. It might get additions when the minor version
 number increments.
 
-**Protected members are not considered public API.** This is unconventionnal 
+**Protected members are not considered public API.** This is unconventional 
 and deserves an explanation. Incrementing the major version number every time 
-the underlying implementation of something changes is going to give nonsential 
-version numbers for the vast majority of people who just use the parser. 
-Protected members are meant to create parser subclasses that behave in 
+the underlying implementation of something changes is going to give
+nonessential version numbers for the vast majority of people who just use the
+parser.  Protected members are meant to create parser subclasses that behave in
 different ways. Very few people create parser subclasses. I don't want to 
 discourage it by making everything private, but at the same time I can't 
-guarenty any stable hook between versions if you use protected members.
+guarantee any stable hook between versions if you use protected members.
 
 **Syntax changes** will increment the minor number for new features, and the 
 patch number for small corrections. A *new feature* is something that needs a 
 change in the syntax documentation. Note that since PHP Markdown Lib includes
 two parsers, a syntax change for either of them will increment the minor 
-number. Also note that there is nothigng perfectly backward-compatible with the
+number. Also note that there is nothing perfectly backward-compatible with the
 Markdown syntax: all inputs are always valid, so new features always replace
-something that was previously legal, although generally non-sensial to do.
+something that was previously legal, although generally nonsensical to do.
 
 
 Bugs
@@ -181,7 +181,7 @@ version 4.3 or later and is designed to work with PSR-0 autoloading and,
 optionally with Composer. Here is a list of the changes since 
 PHP Markdown Extra 1.2.6:
 
-*	Plugin interface for Wordpress and other systems is no longer present in
+*	Plugin interface for WordPress and other systems is no longer present in
 	the Lib package. The classic package is still available if you need it:
 	<http://michelf.ca/projects/php-markdown/classic/>
 
