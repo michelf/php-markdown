@@ -84,45 +84,6 @@ configuration variables:
 	$parser->fn_id_prefix = "post22-";
 	$my_html = $parser->transform($my_text);
 
-
-Usage
------
-
-This library package is meant to be used with class autoloading. For autoloading 
-to work, your project needs have setup a PSR-0-compatible autoloader. See the 
-included Readme.php file for a minimal autoloader setup. (If you don't want to 
-use autoloading you can do a classic `require_once` to manually include the 
-files prior use instead.)
-
-With class autoloading in place, putting the 'Michelf' folder in your 
-include path should be enough for this to work:
-
-	use \Michelf\Markdown;
-	$my_html = Markdown::defaultTransform($my_text);
-
-Markdown Extra syntax is also available the same way:
-
-	use \Michelf\MarkdownExtra;
-	$my_html = MarkdownExtra::defaultTransform($my_text);
-
-If you wish to use PHP Markdown with another text filter function 
-built to parse HTML, you should filter the text *after* the `transform`
-function call. This is an example with [PHP SmartyPants][psp]:
-
-	use \Michelf\Markdown, \Michelf\SmartyPants;
-	$my_html = Markdown::defaultTransform($my_text);
-	$my_html = SmartyPants::defaultTransform($my_html);
-
-All these examples are using the static `defaultTransform` static function 
-found inside the parser class. If you want to customize the parser 
-configuration, you can also instantiate it directly and change some 
-configuration variables:
-
-	use \Michelf\MarkdownExtra;
-	$parser = new MarkdownExtra;
-	$parser->fn_id_prefix = "post22-";
-	$my_html = $parser->transform($my_text);
-
 To learn more, see the full list of [configuration variables].
 
  [configuration variables]: http://michelf.ca/project/php-markdown/configuration/
