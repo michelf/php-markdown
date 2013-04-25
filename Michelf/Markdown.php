@@ -788,7 +788,7 @@ class Markdown {
 
 		# Re-usable patterns to match list item bullets and number markers:
 		$marker_ul_re  = '[*+-]';
-		$marker_ol_re  = '\d+[\.][0-9A-Za-z\.]*';
+		$marker_ol_re  = '\d+[\.][0-9\.]*';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 
 		$markers_relist = array(
@@ -849,7 +849,7 @@ class Markdown {
 	protected function _doLists_callback($matches) {
 		# Re-usable patterns to match list item bullets and number markers:
 		$marker_ul_re  = '[*+-]';
-		$marker_ol_re  = '\d+[\.][0-9A-Za-z\.]*';
+		$marker_ol_re  = '\d+[\.][0-9\.]*';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
 		
 		$list = $matches[1];
