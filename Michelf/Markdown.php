@@ -2598,7 +2598,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header) {
-			$tmp = @$attr[$n];
+			$tmp = isset($attr[$n])?$attr[$n]:'';
 			$text .= "  <th$tmp>".$this->runSpanGamut(trim($header))."</th>\n";
 		}
 		$text .= "</tr>\n";
@@ -2619,7 +2619,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			
 			$text .= "<tr>\n";
 			foreach ($row_cells as $n => $cell) {
-				$tmp = @$attr[$n];
+				$tmp = isset($attr[$n])?$attr[$n]:'';
 				$text .= "  <td$tmp>".$this->runSpanGamut(trim($cell))."</td>\n";
 			}
 			$text .= "</tr>\n";
