@@ -2597,8 +2597,10 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$text = "<table>\n";
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
-		foreach ($headers as $n => $header)
-			$text .= "  <th$attr[$n]>".$this->runSpanGamut(trim($header))."</th>\n";
+		foreach ($headers as $n => $header) {
+			$tmp = @$attr[$n];
+			$text .= "  <th$tmp>".$this->runSpanGamut(trim($header))."</th>\n";
+		}
 		$text .= "</tr>\n";
 		$text .= "</thead>\n";
 
@@ -2616,8 +2618,10 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			$row_cells = array_pad($row_cells, $col_count, '');
 
 			$text .= "<tr>\n";
-			foreach ($row_cells as $n => $cell)
-				$text .= "  <td$attr[$n]>".$this->runSpanGamut(trim($cell))."</td>\n";
+			foreach ($row_cells as $n => $cell) {
+				$tmp = @$attr[$n];
+				$text .= "  <td$tmp>".$this->runSpanGamut(trim($cell))."</td>\n";
+			}
 			$text .= "</tr>\n";
 		}
 		$text .= "</tbody>\n";
