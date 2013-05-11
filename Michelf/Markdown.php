@@ -17,7 +17,7 @@ namespace Michelf;
 # Markdown Parser Class
 #
 
-class Markdown {
+class Markdown implements MarkdownInterface {
 
 	### Version ###
 
