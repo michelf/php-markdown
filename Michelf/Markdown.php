@@ -1,62 +1,132 @@
 <?php
-#
-# Markdown  -  A text-to-HTML conversion tool for web writers
-#
-# PHP Markdown  
-# Copyright (c) 2004-2013 Michel Fortin  
-# <http://michelf.com/projects/php-markdown/>
-#
-# Original Markdown  
-# Copyright (c) 2004-2006 John Gruber  
-# <http://daringfireball.net/projects/markdown/>
-#
+
+/**
+ * Markdown - A text-to-HTML conversion tool for web writers
+ *
+ * @copyright 2004-2013 Michel Fortin <http://michelf.com/projects/php-markdown/>
+ * @copyright (Original Markdown) 2004-2006 John Gruber <http://daringfireball.net/projects/markdown/>
+ *
+ * @license http://michelf.ca/projects/php-markdown/#license
+ */
+
 namespace Michelf;
 
-
-#
-# Markdown Parser Class
-#
-
+/**
+ * Markdown Parser Class
+ */
 class Markdown {
 
-	### Version ###
-
+	/**
+	 * Version
+	 * @var string
+	 */
 	const  MARKDOWNLIB_VERSION  =  "1.3";
 
 	### Simple Function Interface ###
 
+	/**
+	 * Initialize the parser and return the result of its transform method.
+	 *
+	 * This will work fine for derived classes too.
+	 *
+	 * @api
+	 *
+	 * @param string $text The Markdown text to transform.
+	 *
+	 * @return string The transformed string in HTML.
+	 */
 	public static function defaultTransform($text) {
-	#
-	# Initialize the parser and return the result of its transform method.
-	# This will work fine for derived classes too.
-	#
-		# Take parser class on which this function was called.
+		// Take parser class on which this function was called.
 		$parser_class = \get_called_class();
 
-		# try to take parser from the static parser list
+		// Try to take parser from the static parser list.
 		static $parser_list;
 		$parser =& $parser_list[$parser_class];
 
-		# create the parser it not already set
+		// Create the parser it not already set.
 		if (!$parser)
 			$parser = new $parser_class;
 
-		# Transform text using parser.
+		// Transform text using parser.
 		return $parser->transform($text);
 	}
 
 	### Configuration Variables ###
 
-	# Change to ">" for HTML output.
+	/**
+	 * Suffix for empty elements.
+	 *
+	 * This is the string used to close tags for HTML elements with no content
+	 * such as <code><br></code> and <code><hr></code>. The default value
+	 * creates XML-style empty element tags which are also valid in HTML 5.
+	 *
+	 * Change to ">" for HTML output.
+	 * @var string
+	 */
 	public $empty_element_suffix = " />";
+	/**
+	 * The width of indentation of the output markup.
+	 *
+	 * Changing this will affect how many spaces a tab character represents.
+	 *
+	 * Note: Keep in mind that when the Markdown syntax spec says “four spaces
+	 * or one tab”, it actually means “four spaces after tabs are expanded to
+	 * spaces”. So setting tab_width to 8 will make parser treat a tab character
+	 * as two levels of indentation.
+	 * @var int
+	 */
 	public $tab_width = 4;
 	
-	# Change to `true` to disallow markup or entities.
+	/**
+	 * Disallow markup.
+	 *
+	 * Setting this variable to true will prevent HTML tags in the input from
+	 * being passed to the output.
+	 *
+	 * <b>Important:</b> This is not a protection against malicious JavaScript
+	 * being injected in a document. See why in
+	 * {@link http://michelf.ca/blog/2010/markdown-and-xss/ Markdown and XSS}.
+	 * @var boolean
+	 */
 	public $no_markup = false;
+	/**
+	 * Disallow entities.
+	 *
+	 * Setting this variable to true will prevent HTML entities (such as
+	 * <code>&lt;</code>) from being passed verbatim in the output as it is the
+	 * standard with Markdown. Instead, the HTML output will be
+	 * <code>&amp;tl;</code> and once shown in shown the browser it will match
+	 * perfectly what was written.
+	 * @var boolean
+	 */
 	public $no_entities = false;
 	
-	# Predefined urls and titles for reference links and images.
+	/**
+	 * Predefined urls reference links and images.
+	 *
+	 * You can predefine reference links by setting <var>predef_urls</var> to a
+	 * list of urls where the key is the name of the reference. For instance:
+	 *
+	 * <code>
+	 * $parser->predef_urls = array('ref' => 'http://michelf.ca/');
+	 * </code>
+	 *
+	 * will make this Markdown input to create a link:
+	 *
+	 * <code>
+	 * This is [my website][ref].
+	 * </code>
+	 * @var string[]
+	 */
 	public $predef_urls = array();
+	/**
+	 * Predefined titles reference links and images.
+	 *
+	 * Use <var>predef_titles</var> to set the title of the link references
+	 * passed in <var>predef_urls</var>. As for <var>predef_urls</var>, the key
+	 * is the reference name.
+	 * @var string[]
+	 */
 	public $predef_titles = array();
 
 
@@ -75,10 +145,10 @@ class Markdown {
 	protected $escape_chars_re;
 
 
+	/**
+	 * Initialize appropriate member variables.
+	 */
 	public function __construct() {
-	#
-	# Constructor function. Initialize appropriate member variables.
-	#
 		$this->_initDetab();
 		$this->prepareItalicsAndBold();
 	
@@ -92,7 +162,7 @@ class Markdown {
 		
 		$this->escape_chars_re = '['.preg_quote($this->escape_chars).']';
 		
-		# Sort document, block, and span gamut in ascendent priority order.
+		// Sort document, block, and span gamut in ascendent priority order.
 		asort($this->document_gamut);
 		asort($this->block_gamut);
 		asort($this->span_gamut);
@@ -132,36 +202,44 @@ class Markdown {
 	}
 
 
+	/**
+	 * Main function.
+	 *
+	 * Performs some preprocessing on the input text and pass it through the
+	 * document gamut.
+	 *
+	 * @api
+	 *
+	 * @param string $text The Markdown text to transform.
+	 *
+	 * @return string The transformed string in HTML.
+	 */
 	public function transform($text) {
-	#
-	# Main function. Performs some preprocessing on the input text
-	# and pass it through the document gamut.
-	#
 		$this->setup();
 	
-		# Remove UTF-8 BOM and marker character in input, if present.
+		// Remove UTF-8 BOM and marker character in input, if present.
 		$text = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $text);
 
-		# Standardize line endings:
-		#   DOS to Unix and Mac to Unix
+		// Standardize line endings:
+		//   DOS to Unix and Mac to Unix
 		$text = preg_replace('{\r\n?}', "\n", $text);
 
-		# Make sure $text ends with a couple of newlines:
+		// Make sure $text ends with a couple of newlines:
 		$text .= "\n\n";
 
-		# Convert all tabs to spaces.
+		// Convert all tabs to spaces.
 		$text = $this->detab($text);
 
-		# Turn block-level HTML blocks into hash entries
+		// Turn block-level HTML blocks into hash entries
 		$text = $this->hashHTMLBlocks($text);
 
-		# Strip any lines consisting only of spaces and tabs.
-		# This makes subsequent regexen easier to write, because we can
-		# match consecutive blank lines with /\n+/ instead of something
-		# contorted like /[ ]*\n+/ .
+		// Strip any lines consisting only of spaces and tabs.
+		// This makes subsequent regexen easier to write, because we can
+		// match consecutive blank lines with /\n+/ instead of something
+		// contorted like /[ ]*\n+/ .
 		$text = preg_replace('/^[ ]+$/m', '', $text);
 
-		# Run document gamut methods.
+		// Run document gamut methods.
 		foreach ($this->document_gamut as $method => $priority) {
 			$text = $this->$method($text);
 		}
@@ -1512,56 +1590,125 @@ class Markdown {
 }
 
 
-#
-# Temporary Markdown Extra Parser Implementation Class
-#
-# NOTE: DON'T USE THIS CLASS
-# Currently the implementation of of Extra resides here in this temporary class.
-# This makes it easier to propagate the changes between the three different
-# packaging styles of PHP Markdown. When this issue is resolved, this
-# MarkdownExtra_TmpImpl class here will disappear and \Michelf\MarkdownExtra
-# will contain the code. So please use \Michelf\MarkdownExtra and ignore this
-# one.
-#
-
+/**
+ * Temporary Markdown Extra Parser Implementation Class
+ *
+ * Currently the implementation of of Extra resides here in this temporary class.
+ * This makes it easier to propagate the changes between the three different
+ * packaging styles of PHP Markdown. When this issue is resolved, this
+ * MarkdownExtra_TmpImpl class here will disappear and \Michelf\MarkdownExtra
+ * will contain the code. So please use \Michelf\MarkdownExtra and ignore this
+ * one.
+ *
+ * @see Michelf\MarkdownExtra
+ *
+ * @internal
+ * @deprecated
+ */
 class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 	### Configuration Variables ###
 
-	# Prefix for footnote ids.
+	/**
+	 * A prefix for the id attributes generated by footnotes.
+	 * 
+	 * This is useful if you have multiple Markdown documents displayed inside
+	 * one HTML document to avoid
+	 * {@link http://michelf.ca/projects/php-markdown/extra/#footnotes footnote}
+	 * ids to clash each other.
+	 * @var string
+	 */
 	public $fn_id_prefix = "";
 	
-	# Optional title attribute for footnote links and backlinks.
+	/**
+	 * Optional title attribute for footnote links.
+	 *
+	 * Browsers usually show this as a tooltip when the mouse is over the link.
+	 * @var string
+	 */
 	public $fn_link_title = "";
+	/**
+	 * Optional title attribute for backlinks.
+	 *
+	 * Browsers usually show this as a tooltip when the mouse is over the link.
+	 * @var string
+	 */
 	public $fn_backlink_title = "";
 	
-	# Optional class attribute for footnote links and backlinks.
+	/**
+	 * Optional class attribute for footnote links.
+	 * @var string
+	 */
 	public $fn_link_class = "footnote-ref";
+	/**
+	 * Optional class attribute for backlinks.
+	 * @var string
+	 */
 	public $fn_backlink_class = "footnote-backref";
 
-	# Class name for table cell alignment (%% replaced left/center/right)
-	# For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
-	# If empty, the align attribute is used instead of a class name.
+	/**
+	 * Class name for table cell alignment (%% replaced left/center/right).
+	 *
+	 * For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
+	 * If empty, the align attribute is used instead of a class name.
+	 * @var string
+	 */
 	public $table_align_class_tmpl = '';
 
-	# Optional class prefix for fenced code block.
+	/**
+	 * An optional prefix for the class names associated with fenced code blocks.
+	 *
+	 * This will be prepended to the class name if you write your
+	 * {@link http://michelf.ca/projects/php-markdown/extra/#fenced-code-blocks fenced code block}
+	 * this way:
+	 *
+	 * <code>
+	 * ~~~~ .html
+	 * <br>
+	 * ~~~~
+	 * </code>
+	 *
+	 * Note however that it has <i>no effect</i> if you add a class name using
+	 * the more generic extra syntax that uses braces:
+	 *
+	 * <code>
+	 * ~~~~ {.html .flashy}
+	 * <br>
+	 * ~~~~
+	 * </code>
+	 * @var string
+	 */
 	public $code_class_prefix = "";
-	# Class attribute for code blocks goes on the `code` tag;
-	# setting this to true will put attributes on the `pre` tag instead.
+	/**
+	 * Class attribute for code blocks goes on the <code><code></code> tag.
+	 *
+	 * When set to false (the default), attributes for code blocks will go on
+	 * the <code><code></code> tag; setting this to true will put attributes on
+	 * the <code><pre></code> tag instead.
+	 * @var boolean
+	 */
 	public $code_attr_on_pre = false;
 	
-	# Predefined abbreviations.
+	/**
+	 * Predefined abbreviations.
+	 *
+	 * You can predefine
+	 * {@link http://michelf.ca/projects/php-markdown/extra/#abbr abbreviations}
+	 * by setting <var>predef_abbr</var> to a list of abbreviations where the
+	 * key is the text of the abbreviation and the value is the expanded name.
+	 * @var string[]
+	 */
 	public $predef_abbr = array();
 
 
 	### Parser Implementation ###
 
+	/**
+	 * Initialize the parser object.
+	 */
 	public function __construct() {
-	#
-	# Constructor function. Initialize the parser object.
-	#
-		# Add extra escapable characters before parent constructor 
-		# initialize the table.
+		// Add extra escapable characters before parent constructor
+		// initialize the table.
 		$this->escape_chars .= ':|';
 		
 		# Insert extra document, block, and span transformations. 
