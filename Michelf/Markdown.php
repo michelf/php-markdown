@@ -50,6 +50,14 @@ class Markdown {
 	# Change to ">" for HTML output.
 	public $empty_element_suffix = " />";
 	public $tab_width = 4;
+	public $heading_elements = array(
+		1 => 'h1',
+		2 => 'h2',
+		3 => 'h3',
+		4 => 'h4',
+		5 => 'h5',
+		6 => 'h6',
+	);
 	
 	# Change to `true` to disallow markup or entities.
 	public $no_markup = false;
@@ -58,8 +66,7 @@ class Markdown {
 	# Predefined urls and titles for reference links and images.
 	public $predef_urls = array();
 	public $predef_titles = array();
-
-
+	
 	### Parser Implementation ###
 
 	# Regex to match balanced [brackets].
@@ -770,12 +777,14 @@ class Markdown {
 			return $matches[0];
 		
 		$level = $matches[2]{0} == '=' ? 1 : 2;
-		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
+		$element = $this->heading_elements[$level];
+		$block = "<$element>".$this->runSpanGamut($matches[1])."</$element>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$block = "<h$level>".$this->runSpanGamut($matches[2])."</h$level>";
+		$element = $this->heading_elements[$level];
+		$block = "<$element>".$this->runSpanGamut($matches[2])."</$element>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
