@@ -86,7 +86,7 @@ configuration variables:
 
 To learn more, see the full list of [configuration variables].
 
- [configuration variables]: http://michelf.ca/project/php-markdown/configuration/
+ [configuration variables]: http://michelf.ca/projects/php-markdown/configuration/
 
 
 Public API and Versioning Policy
