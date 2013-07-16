@@ -847,31 +847,20 @@ class Markdown {
 		return $text;
 	}
 	protected function _doLists_callback($matches) {
-		# Re-usable patterns to match list item bullets and number markers:
-		$marker_ul_re  = '[*+-]';
-		$marker_ol_re  = '\d+[\.]';
+	# Re-usable patterns to match list item bullets and number markers:
+		$marker_ul_re = '[*+-]';
+		$marker_ol_re = '\d+[\.]';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
-		$marker_ol_start_re = '[0-9]+';
-		
+
 		$list = $matches[1];
 		$list_type = preg_match("/$marker_ul_re/", $matches[4]) ? "ul" : "ol";
-		
+
 		$marker_any_re = ( $list_type == "ul" ? $marker_ul_re : $marker_ol_re );
-		
-		# Get the start number for ordered list.
-		$ol_start = 1;
-		if ($list_type == 'ol') {
-			$ol_start_array = array();
-			$ol_start_check = preg_match("/$marker_ol_start_re/", $matches[4], $ol_start_array);
-			if ($ol_start_check){
-				$ol_start = $ol_start_array[0];
-			}
-		}
 
 		$list .= "\n";
 		$result = $this->processListItems($list, $marker_any_re);
-		
-		$result = $this->hashBlock("<$list_type start=\"$ol_start\">\n" . $result . "</$list_type>");
+
+		$result = $this->hashBlock("<$list_type>\n" . $result . "</$list_type>");
 		return "\n". $result ."\n\n";
 	}
 
@@ -1564,6 +1553,18 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# Predefined abbreviations.
 	public $predef_abbr = array();
 
+	# Class attribute to toggle "enhanced ordered list" behaviour
+	# setting this to true will allow ordered lists to start from the index
+	# number that is defined first.  For example:
+	# 2. List item two
+	# 3. List item three
+	# 
+	# becomes
+	# <ol start="2">
+	# <li>List item two</li>
+	# <li>List item three</li>
+	# </ol>
+	public $enhanced_ordered_list = false;
 
 	### Parser Implementation ###
 
@@ -3099,6 +3100,45 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		} else {
 			return $matches[0];
 		}
+	}
+
+	protected function _doLists_callback($matches) {
+		# Re-usable patterns to match list item bullets and number markers:
+		$marker_ul_re  = '[*+-]';
+		$marker_ol_re  = '\d+[\.]';
+		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
+		$marker_ol_start_re = '[0-9]+';
+
+		$list = $matches[1];
+		$list_type = preg_match("/$marker_ul_re/", $matches[4]) ? "ul" : "ol";
+
+		$marker_any_re = ( $list_type == "ul" ? $marker_ul_re : $marker_ol_re );
+
+		$list .= "\n";
+		$result = $this->processListItems($list, $marker_any_re);
+
+		print "OVERRIDE ";
+		var_dump($this->enhanced_ordered_list);
+
+		$ol_start = 1;
+		if ($this->enhanced_ordered_list) {
+			print "OVERRIDE";
+			# Get the start number for ordered list.
+			if ($list_type == 'ol') {
+				$ol_start_array = array();
+				$ol_start_check = preg_match("/$marker_ol_start_re/", $matches[4], $ol_start_array);
+				if ($ol_start_check){
+					$ol_start = $ol_start_array[0];
+				}
+			}
+		}
+
+		if ($ol_start > 1 && $list_type == 'ol'){
+			$result = $this->hashBlock("<$list_type start=\"$ol_start\">\n" . $result . "</$list_type>");
+		} else {
+			$result = $this->hashBlock("<$list_type>\n" . $result . "</$list_type>");
+		}
+		return "\n". $result ."\n\n";
 	}
 
 }
