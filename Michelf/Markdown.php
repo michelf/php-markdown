@@ -3117,12 +3117,8 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$list .= "\n";
 		$result = $this->processListItems($list, $marker_any_re);
 
-		print "OVERRIDE ";
-		var_dump($this->enhanced_ordered_list);
-
 		$ol_start = 1;
 		if ($this->enhanced_ordered_list) {
-			print "OVERRIDE";
 			# Get the start number for ordered list.
 			if ($list_type == 'ol') {
 				$ol_start_array = array();
