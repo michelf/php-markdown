@@ -1,0 +1,1 @@
+`&#8212;` is the decimal-encoded equivalent of `&mdash;`.
