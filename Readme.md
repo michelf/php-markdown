@@ -25,10 +25,6 @@ tool, written in Perl, that converts the plain text markup to HTML.
 PHP Markdown is a port to PHP of the original Markdown program by 
 John Gruber.
 
-PHP Markdown can work as a plug-in for WordPress, as a modifier for
-the Smarty templating engine, or as a replacement for Textile
-formatting in any software that supports Textile.
-
 Full documentation of Markdown's syntax is available on John's 
 Markdown page: <http://daringfireball.net/projects/markdown/>
 
