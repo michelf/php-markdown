@@ -2475,13 +2475,13 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	protected function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
-		$level = $matches[3]{0} == '=' ? 1 : 2;
+		$level = $matches[3]{0} == '=' ? 1 : 2 + $this->header_offset;
 		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
-		$level = strlen($matches[1]);
+		$level = strlen($matches[1]) + $this->header_offset;
 		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3]);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
