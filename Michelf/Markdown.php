@@ -58,6 +58,10 @@ class Markdown {
 	# Predefined urls and titles for reference links and images.
 	public $predef_urls = array();
 	public $predef_titles = array();
+	
+	# Offset for header levels, i.e., if you want the first heading to be H2,
+	# make the offset 1
+	public $header_offset = 0;
 
 
 	### Parser Implementation ###
@@ -769,12 +773,12 @@ class Markdown {
 		if ($matches[2] == '-' && preg_match('{^-(?: |$)}', $matches[1]))
 			return $matches[0];
 		
-		$level = $matches[2]{0} == '=' ? 1 : 2;
+		$level = $matches[2]{0} == '=' ? 1 : 2 + $this->header_offset;
 		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
-		$level = strlen($matches[1]);
+		$level = strlen($matches[1]) + $this->header_offset;
 		$block = "<h$level>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
