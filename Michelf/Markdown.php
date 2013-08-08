@@ -2801,9 +2801,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
 		if ($classname != "") {
-			if ($classname{0} == '.')
-				$classname = substr($classname, 1);
-			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
+			$attr_str = ' class="'.$this->code_class_prefix.ltrim($classname, '.').'"';
 		} else {
 			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
 		}
