@@ -2761,6 +2761,11 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# Code block
 	# ~~~
 	#
+	# OR
+	#
+	# ```
+	# Code block
+	# ```
 		$less_than_tab = $this->tab_width;
 		
 		$text = preg_replace_callback('{
@@ -2768,6 +2773,8 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				# 1: Opening marker
 				(
 					~{3,} # Marker: three tilde or more.
+					|
+					`{3,} # Or marker: three backticks or more (GFM)
 				)
 				[ ]*
 				(?:
