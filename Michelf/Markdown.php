@@ -2760,6 +2760,12 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# ~~~
 	# Code block
 	# ~~~
+	# 
+	# or
+	# 
+	# ```
+	# Code block
+	# ```
 	#
 		$less_than_tab = $this->tab_width;
 		
@@ -2768,6 +2774,8 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				# 1: Opening marker
 				(
 					~{3,} # Marker: three tilde or more.
+					|
+					`{3,} # Marker: three or more grave accents (github flavored markdown).
 				)
 				[ ]*
 				(?:
