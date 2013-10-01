@@ -2010,7 +2010,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				|
 					# Fenced code block marker
 					(?<= ^ | \n )
-					[ ]{0,'.($indent+3).'}[`~]{3,}
+					[ ]{0,'.($indent+3).'}(?:~{3,}|`{3,})
 					[A-Za-z0-9_\-]* # Language (optional).
 									[ ]*
 					(?:
@@ -2083,7 +2083,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			#
 			# Check for: Fenced code block marker.
 			#
-			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})([`~]+)}', $tag, $capture)) {
+			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+|`+)}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
 				$fence_indent = strlen($capture[1]); # use captured indent in re
 				$fence_re = $capture[2]; # use captured fence in re
@@ -2924,7 +2924,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(?:\n|\A)
 				# 1: Opening marker
 				(
-					[`~]{3,} # 3 or more backticks/tildes.
+					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
 				# 2: Code language marker (optional).
 				(
@@ -2963,7 +2963,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
 		
 		$attr_str = ''; # Initialize string of attributes.
-		if($language != '') $attr_str .= ' lang="'.$language.'"';
+		if($language != '') $attr_str .= ' data-lang="'.$language.'"';
 
 		if ($classname != "") {
 			if ($classname{0} == '.')
