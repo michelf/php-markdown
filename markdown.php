@@ -2011,7 +2011,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					# Fenced code block marker
 					(?<= ^ | \n )
 					[ ]{0,'.($indent+3).'}(?:~{3,}|`{3,})
-					[A-Za-z0-9_\-]* # Language (optional).
 									[ ]*
 					(?:
 					\.?[-_:a-zA-Z0-9]+ # standalone class name
@@ -2914,10 +2913,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 	# Code block
 	# ~~~
 	#
-	# ```
-	# Code block
-	# ```
-	#
 		$less_than_tab = $this->tab_width;
 		
 		$text = preg_replace_callback('{
@@ -2926,19 +2921,15 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				(
 					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
-				# 2: Code language marker (optional).
-				(
-					[A-Za-z0-9_\-]* # Word chars and/or `-`.
-				)
 				[ ]*
 				(?:
-					\.?([-_:a-zA-Z0-9]+) # 3: Stand-alone class name.
+					\.?([-_:a-zA-Z0-9]+) # 2: standalone class name
 				|
-					'.$this->id_class_attr_catch_re.' # 4: Extra attributes.
+					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
 				)?
 				[ ]* \n # Whitespace and newline following marker.
 				
-				# 5: Content
+				# 4: Content
 				(
 					(?>
 						(?!\1 [ ]* \n)	# Not a closing marker.
@@ -2954,23 +2945,19 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 		return $text;
 	}
 	function _doFencedCodeBlocks_callback($matches) {
-		$language  = $matches[2];
-		$classname = $matches[3];
-		$attrs     = $matches[4];
-		$codeblock = $matches[5];
+		$classname =& $matches[2];
+		$attrs     =& $matches[3];
+		$codeblock = $matches[4];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
-		
-		$attr_str = ''; # Initialize string of attributes.
-		if($language != '') $attr_str .= ' data-lang="'.$language.'"';
 
 		if ($classname != "") {
 			if ($classname{0} == '.')
 				$classname = substr($classname, 1);
-			$attr_str .= ' class="'.$this->code_class_prefix.$classname.'"';
+			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
 		} else {
-			$attr_str .= $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
+			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
 		}
 		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
