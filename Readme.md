@@ -134,7 +134,7 @@ Version History
 PHP Markdown Lib 1.3 (11 Apr 2013):
 
 This is the first release of PHP Markdown Lib. This package requires PHP 
-version 4.3 or later and is designed to work with PSR-0 autoloading and, 
+version 5.3 or later and is designed to work with PSR-0 autoloading and, 
 optionally with Composer. Here is a list of the changes since 
 PHP Markdown Extra 1.2.6:
 
