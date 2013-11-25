@@ -12,7 +12,7 @@ spl_autoload_register(function($class){
 # Get Markdown class
 use \Michelf\Markdown;
 
-# Read file and pass content through the Markdown praser
+# Read file and pass content through the Markdown parser
 $text = file_get_contents('Readme.md');
 $html = Markdown::defaultTransform($text);
 
