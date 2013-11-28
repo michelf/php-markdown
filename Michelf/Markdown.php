@@ -1846,7 +1846,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				|
 					# Fenced code block marker
 					(?<= ^ | \n )
-					[ ]{0,'.($indent+3).'}~{3,}
+					[ ]{0,'.($indent+3).'}(?:~{3,}|`{3,})
 									[ ]*
 					(?:
 					\.?[-_:a-zA-Z0-9]+ # standalone class name
@@ -1918,7 +1918,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			#
 			# Check for: Fenced code block marker.
 			#
-			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+)}', $tag, $capture)) {
+			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+|`+)}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
 				$fence_indent = strlen($capture[1]); # use captured indent in re
 				$fence_re = $capture[2]; # use captured fence in re
@@ -2767,7 +2767,7 @@ class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				(?:\n|\A)
 				# 1: Opening marker
 				(
-					~{3,} # Marker: three tilde or more.
+					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
 				[ ]*
 				(?:
