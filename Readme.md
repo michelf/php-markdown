@@ -128,6 +128,21 @@ that the backtrack limit is not too low by running `php --info | grep pcre`.
 See Installation and Requirement above for details.
 
 
+Development and Testing
+-----------------------
+
+Pull requests for fixing bugs are welcome. Proposed new features are
+going meticulously reviewed -- taking into account backward compatibility, 
+potential side effects, and future extensibility -- before deciding on
+acceptance or rejection.
+
+If you make a pull request that includes changes to the parser please add 
+tests for what is being changed to [MDTest][] and make a pull request there 
+too.
+
+ [MDTest]: https://github.com/michelf/mdtest/
+
+
 Version History
 ---------------
 
