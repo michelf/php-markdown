@@ -1996,9 +1996,6 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					<\?.*?\?> | <%.*?%>	# Processing instruction
 				|
 					<!\[CDATA\[.*?\]\]>	# CData Block
-				|
-					# Code span marker
-					`+
 				'. ( !$span ? ' # If not in span.
 				|
 					# Indented code block
@@ -2018,8 +2015,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						'.$this->id_class_attr_nocatch_re.' # extra attributes
 					)?
 					[ ]*
-					\n
+					(?= \n )
 				' : '' ). ' # End (if not is span).
+				|
+					# Code span marker
+					# Note, this regex needs to go after backtick fenced
+					# code blocks but it should also be kept outside of the
+					# "if not in span" condition adding backticks to the parser
+					`+
 				)
 			}xs';
 
@@ -2062,27 +2065,11 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			$tag_re = preg_quote($tag); # For use in a regular expression.
 			
 			#
-			# Check for: Code span marker
-			#
-			if ($tag{0} == "`") {
-				# Find corresponding end marker.
-				$tag_re = preg_quote($tag);
-				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)'.$tag_re.'(?!`)}',
-					$text, $matches))
-				{
-					# End marker found: pass text unchanged until marker.
-					$parsed .= $tag . $matches[0];
-					$text = substr($text, strlen($matches[0]));
-				}
-				else {
-					# Unmatched marker: just skip it.
-					$parsed .= $tag;
-				}
-			}
-			#
 			# Check for: Fenced code block marker.
+			# Note: need to recheck the whole tag to disambiguate backtick
+			# fences from code spans
 			#
-			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+|`+)}', $tag, $capture)) {
+			if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~{3,}|`{3,})[ ]*(?:\.?[-_:a-zA-Z0-9]+|'.$this->id_class_attr_nocatch_re.')?[ ]*\n?$}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
 				$fence_indent = strlen($capture[1]); # use captured indent in re
 				$fence_re = $capture[2]; # use captured fence in re
@@ -2105,6 +2092,25 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				# Indented code block: pass it unchanged, will be handled 
 				# later.
 				$parsed .= $tag;
+			}
+			#
+			# Check for: Code span marker
+			# Note: need to check this after backtick fenced code blocks
+			#
+			else if ($tag{0} == "`") {
+				# Find corresponding end marker.
+				$tag_re = preg_quote($tag);
+				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)'.$tag_re.'(?!`)}',
+					$text, $matches))
+				{
+					# End marker found: pass text unchanged until marker.
+					$parsed .= $tag . $matches[0];
+					$text = substr($text, strlen($matches[0]));
+				}
+				else {
+					# Unmatched marker: just skip it.
+					$parsed .= $tag;
+				}
 			}
 			#
 			# Check for: Opening Block level tag or
@@ -2938,7 +2944,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				)
 				
 				# Closing marker.
-				\1 [ ]* \n
+				\1 [ ]* (?= \n )
 			}xm',
 			array(&$this, '_doFencedCodeBlocks_callback'), $text);
 
