@@ -162,6 +162,19 @@ too.
 Version History
 ---------------
 
+Current Version:
+
+*	Added backtick fenced code blocks, originally from Github-flavored Markdown.
+
+*	Added support for the `tel:` URL scheme in automatic links.
+
+		<tel:+1-111-111-1111>
+	
+	is converted to:
+	
+		<a href="tel:+1-111-111-1111">+1-111-111-1111</a>
+
+
 PHP Markdown Lib 1.3 (11 Apr 2013):
 
 This is the first release of PHP Markdown Lib. This package requires PHP 
