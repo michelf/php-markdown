@@ -49,9 +49,8 @@ Usage
 
 This library package is meant to be used with class autoloading. For autoloading 
 to work, your project needs have setup a PSR-0-compatible autoloader. See the 
-included Readme.php file for a minimal autoloader setup. (If you don't want to 
-use autoloading you can do a classic `require_once` to manually include the 
-files prior use instead.)
+included Readme.php file for a minimal autoloader setup. (If you cannot use 
+autoloading, see below.)
 
 With class autoloading in place, putting the 'Michelf' folder in your 
 include path should be enough for this to work:
