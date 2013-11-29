@@ -176,7 +176,7 @@ PHP Markdown Lib 1.4.0 (29 Nov 2013)
 *	Added backtick fenced code blocks to MarkdownExtra, originally from
 	Github-Flavored Markdown.
 
-*	Added an interface called MarkdownInterface interface implemented by both 
+*	Added an interface called MarkdownInterface implemented by both
 	the Markdown and MarkdownExtra parsers. You can use the interface if
 	you want to create a mockup parser object for unit testing.
 
