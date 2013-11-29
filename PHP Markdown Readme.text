@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-Version 1.0.1p - 11 Apr 2013
+Version 1.0.2 - 29 Nov 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -190,6 +190,17 @@ See Installation and Requirement above for details.
 
 Version History
 ---------------
+
+1.0.2 (29 Nov 2013)
+
+*	Added support for the `tel:` URL scheme in automatic links.
+
+		<tel:+1-111-111-1111>
+
+	It gets converted to this (note the `tel:` prefix becomes invisible):
+
+		<a href="tel:+1-111-111-1111">+1-111-111-1111</a>
+
 
 1.0.1q (11 Apr 2013):
 
