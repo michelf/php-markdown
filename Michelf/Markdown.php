@@ -1531,7 +1531,7 @@ class Markdown implements MarkdownInterface {
 # one.
 #
 
-class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
+abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 	### Configuration Variables ###
 
