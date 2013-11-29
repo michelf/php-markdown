@@ -14,19 +14,21 @@ Introduction
 ------------
 
 This is a library package that includes the PHP Markdown parser and its 
-sibling PHP Markdown Extra which additional features.
+sibling PHP Markdown Extra with additional features.
 
 Markdown is a text-to-HTML conversion tool for web writers. Markdown
 allows you to write using an easy-to-read, easy-to-write plain text
 format, then convert it to structurally valid XHTML (or HTML).
 
-"Markdown" is two things: a plain text markup syntax, and a software 
-tool, written in Perl, that converts the plain text markup to HTML. 
-PHP Markdown is a port to PHP of the original Markdown program by 
-John Gruber.
+"Markdown" is actually two things: a plain text markup syntax, and a 
+software tool, originally written in Perl, that converts the plain text 
+markup to HTML. PHP Markdown is a port to PHP of the original Markdown 
+program by John Gruber.
 
-Full documentation of Markdown's syntax is available on John's 
-Markdown page: <http://daringfireball.net/projects/markdown/>
+*	[Full documentation of the Markdown syntax](<http://daringfireball.net/projects/markdown/>)
+	- Daring Fireball (John Gruber)
+*	[Markdown Extra syntax additions](<http://michelf.ca/projects/php-markdown/extra/>)
+	- Michel Fortin
 
 
 Requirement
