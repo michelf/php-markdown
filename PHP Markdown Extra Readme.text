@@ -195,6 +195,19 @@ See Installation and Requirement above for details.
 Version History
 ---------------
 
+Current Extra:
+
+*	Added backtick fenced code blocks, originally from Github-flavored Markdown.
+
+*	Added support for the `tel:` URL scheme in automatic links.
+
+		<tel:+1-111-111-1111>
+	
+	is converted to:
+	
+		<a href="tel:+1-111-111-1111">+1-111-111-1111</a>
+
+
 Extra 1.2.7 (11 Apr 2013):
 
 *	Added optional class and id attributes to images and links using the same
