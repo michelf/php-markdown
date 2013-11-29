@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.3 - 11 Apr 2013
+PHP Markdown Lib 1.4.0 - 29 Nov 2013
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -162,20 +162,30 @@ too.
 Version History
 ---------------
 
-Current Version:
-
-*	Added backtick fenced code blocks, originally from Github-flavored Markdown.
+PHP Markdown Lib 1.4.0 (29 Nov 2013)
 
 *	Added support for the `tel:` URL scheme in automatic links.
 
 		<tel:+1-111-111-1111>
 	
-	is converted to:
+	It gets converted to this (note the `tel:` prefix becomes invisible):
 	
 		<a href="tel:+1-111-111-1111">+1-111-111-1111</a>
 
+*	Added backtick fenced code blocks to MarkdownExtra, originally from
+	Github-Flavored Markdown.
 
-PHP Markdown Lib 1.3 (11 Apr 2013):
+*	Added an interface called MarkdownInterface interface implemented by both 
+	the Markdown and MarkdownExtra parsers. You can use the interface if
+	you want to create a mockup parser object for unit testing.
+
+*	For those of you who cannot use class autoloading, you can now
+	include `Michelf/Markdown.inc.php` or `Michelf/MarkdownExtra.inc.php` (note 
+	the 	`.inc.php` extension) to automatically include other files required
+	by the parser.
+
+
+PHP Markdown Lib 1.3 (11 Apr 2013)
 
 This is the first release of PHP Markdown Lib. This package requires PHP 
 version 5.3 or later and is designed to work with PSR-0 autoloading and, 

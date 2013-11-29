@@ -21,7 +21,7 @@ class Markdown implements MarkdownInterface {
 
 	### Version ###
 
-	const  MARKDOWNLIB_VERSION  =  "1.3";
+	const  MARKDOWNLIB_VERSION  =  "1.4.0";
 
 	### Simple Function Interface ###
 
