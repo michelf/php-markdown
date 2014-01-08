@@ -16,7 +16,7 @@ $code .= str_replace(array('?>', '<?php', 'namespace Michelf;'), '', file_get_co
 $code .= 'if ($argc < 2) exit("Usage: markdownextra input1.md [input2.md ...] > output.html\n");';
 $code .= 'for ($i = 1; $i < $argc; $i++) echo MarkdownExtra::defaultTransform(file_get_contents($argv[$i]));';
 
-$filename = '/usr/bin/markdownextra';
+$filename = '/usr/local/bin/markdownextra';
 
 file_put_contents($filename, $code);
 chmod($filename, 0755);
