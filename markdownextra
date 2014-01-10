@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+# Install PSR-0-compatible class autoloader
+spl_autoload_register(function($class){
+	require preg_replace('{\\\\|_(?!.*\\\\)}', DIRECTORY_SEPARATOR, ltrim($class, '\\')).'.php';
+});
+
+# Get Markdown class
+use \Michelf\MarkdownExtra;
+
+# Read options
+if ($argc == 2) {
+    switch ($argv[1]) {
+        case '-v':
+        case '--version':
+            echo MarkdownExtra::MARKDOWNLIB_VERSION, PHP_EOL;
+            exit;
+        case '-h':
+        case '--help':
+            echo 'Usage: markdownextra [input1.md [input2.md ...]]', PHP_EOL;
+            echo 'If no input file is specified, it reads stdin.', PHP_EOL;
+            exit;
+    }
+}
+
+# Read stdin or input files and pass content through the Markdown parser
+if ($argc == 1) {
+    echo MarkdownExtra::defaultTransform(file_get_contents('php://stdin'));
+} else {
+    for ($i = 1; $i < $argc; $i++) {
+        echo MarkdownExtra::defaultTransform(file_get_contents($argv[$i]));
+    }
+}
