@@ -3,4 +3,4 @@
 
 require_once 'Michelf/MarkdownConsole.php';
 
-Michelf\runTransform('Michelf\\MarkdownExtra');
+Michelf\runTransform('Michelf\\Markdown');
