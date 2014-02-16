@@ -1733,7 +1733,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	### HTML Block Parser ###
 	
 	# Tags that are always treated as block tags:
-	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption';
+	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure';
 						   
 	# Tags treated as block tags only if the opening tag is alone on its line:
 	protected $context_block_tags_re = 'script|noscript|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
