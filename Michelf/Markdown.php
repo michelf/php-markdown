@@ -59,6 +59,9 @@ class Markdown implements MarkdownInterface {
 	public $predef_urls = array();
 	public $predef_titles = array();
 
+	# Protocols allows for link targets
+	public $links_protocols = array('http', 'https', 'ftp', 'mailto');
+	public $links_relative = true;
 
 	### Parser Implementation ###
 
@@ -1522,8 +1525,92 @@ class Markdown implements MarkdownInterface {
 
 
 	protected function filterUrl($url){
+	#
+	# There is lots of trickery that can be done to disguise 'javascript:'. We only
+	# need to worry about that if we're allowing relative URLs, otherwise we can just
+	# ensure it starts with a protocol we explicitly allow.
+	#
+		$allowed = implode('|', $this->links_protocols);
+		if (preg_match("!^({$allowed}):!i", $url)) return $url;
+
+		if (!$this->links_relative) return '#'.$url;
+
+		$test = $url;
+		$test = preg_replace_callback('!(&)#(\d+);?!',		array($this, '_filterUrl_dec_entity'), $test);
+		$test = preg_replace_callback('!(&)#x([0-9a-f]+);?!i',	array($this, '_filterUrl_hex_entity'), $test);
+		$test = preg_replace_callback('!(%)([0-9a-f]{2});?!i',	array($this, '_filterUrl_hex_entity'), $test);
+		$test = preg_replace_callback('!&([^&;]*)(?=(;|&|$))!',	array($this, '_filterUrl_named_entity'), $test);
+
+		if (strpos($test, ':') !== false) return '#'.$url;
 
 		return $url;
+	}
+
+	function _filterUrl_hex_entity($m){
+
+		return $this->_filterUrl_num_entity($m[1], hexdec($m[2]));
+	}
+
+	function _filterUrl_dec_entity($m){
+
+		return $this->_filterUrl_num_entity($m[1], intval($m[2]));
+	}
+
+	function _filterUrl_num_entity($orig_type, $d){
+
+		if ($d < 0){ $d = 32; } # treat control characters as spaces
+
+		#
+		# don't mess with high characters - what to replace them with is
+		# character-set independant, so we leave them as entities. besides,
+		# you can't use them to pass 'javascript:' etc (at present)
+		#
+
+		if ($d > 127){
+			if ($orig_type == '%'){ return '%'.dechex($d); }
+			if ($orig_type == '&'){ return "&#$d;"; }
+		}
+
+
+		#
+		# we want to convert this escape sequence into a real character.
+		# we call HtmlSpecialChars() incase it's one of [<>"&]
+		#
+
+		return HtmlSpecialChars(chr($d));
+	}
+
+	function _filterUrl_named_entity($m){
+
+		$preamble = $m[1];
+		$term = $m[2];
+
+		#
+		# if the terminating character is not a semi-colon, treat
+		# this as a non-entity
+		#
+
+		if ($term != ';'){
+
+			return '&amp;'.$preamble;
+		}
+
+
+		#
+		# if it's an allowed entity, go for it
+		#
+
+		if (in_array(StrToLower($entity), array('lt','gt','quot','amp'))){
+
+			return '&'.$preamble;
+		}
+
+
+		#
+		# not an allowed antity, so escape the ampersand
+		#
+
+		return '&amp;'.$preamble;
 	}
 }
 
