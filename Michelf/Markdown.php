@@ -703,7 +703,8 @@ class Markdown implements MarkdownInterface {
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
-			$url = $this->encodeAttribute($this->urls[$link_id]);
+			$url = $this->filterUrl($this->urls[$link_id]);
+			$url = $this->encodeAttribute($url);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
@@ -727,6 +728,7 @@ class Markdown implements MarkdownInterface {
 		$title			=& $matches[7];
 
 		$alt_text = $this->encodeAttribute($alt_text);
+		$url = $this->filterUrl($url);
 		$url = $this->encodeAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
@@ -2498,7 +2500,8 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
-			$url = $this->encodeAttribute($this->urls[$link_id]);
+			$url = $this->filterUrl($this->urls[$link_id]);
+			$url = $this->encodeAttribute($url);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
@@ -2525,6 +2528,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$attr  = $this->doExtraAttributes("img", $dummy =& $matches[8]);
 
 		$alt_text = $this->encodeAttribute($alt_text);
+		$url = $this->filterUrl($url);
 		$url = $this->encodeAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
