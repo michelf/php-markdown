@@ -593,6 +593,7 @@ class Markdown implements MarkdownInterface {
 
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
+			$url = $this->filterUrl($url);
 			$url = $this->encodeAttribute($url);
 			
 			$result = "<a href=\"$url\"";
@@ -617,6 +618,7 @@ class Markdown implements MarkdownInterface {
 		$url			=  $matches[3] == '' ? $matches[4] : $matches[3];
 		$title			=& $matches[7];
 
+		$url = $this->filterUrl($url);
 		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
@@ -1307,13 +1309,15 @@ class Markdown implements MarkdownInterface {
 		return $text;
 	}
 	protected function _doAutoLinks_tel_callback($matches) {
-		$url = $this->encodeAttribute($matches[1]);
+		$url = $this->filterUrl($matches[1]);
+		$url = $this->encodeAttribute($url);
 		$tel = $this->encodeAttribute($matches[2]);
 		$link = "<a href=\"$url\">$tel</a>";
 		return $this->hashPart($link);
 	}
 	protected function _doAutoLinks_url_callback($matches) {
-		$url = $this->encodeAttribute($matches[1]);
+		$url = $this->filterUrl($matches[1]);
+		$url = $this->encodeAttribute($url);
 		$link = "<a href=\"$url\">$url</a>";
 		return $this->hashPart($link);
 	}
@@ -1516,6 +1520,11 @@ class Markdown implements MarkdownInterface {
 		return $this->html_hashes[$matches[0]];
 	}
 
+
+	protected function filterUrl($url){
+
+		return $url;
+	}
 }
 
 
@@ -2290,6 +2299,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
+			$url = $this->filterUrl($url);
 			$url = $this->encodeAttribute($url);
 			
 			$result = "<a href=\"$url\"";
@@ -2317,7 +2327,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("a", $dummy =& $matches[8]);
 
-
+		$url = $this->filterUrl($url);
 		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
