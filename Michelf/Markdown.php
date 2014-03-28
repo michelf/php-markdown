@@ -618,6 +618,10 @@ class Markdown implements MarkdownInterface {
 		$title			=& $matches[7];
 
 		$url = $this->encodeAttribute($url);
+		
+		if(!preg_match('#^\s*(https?|ftp)://#i', $url))
+			$url = '';
+			
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
