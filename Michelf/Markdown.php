@@ -209,7 +209,7 @@ class Markdown implements MarkdownInterface {
 							)?	# title is optional
 							(?:\n+|\Z)
 			}xm',
-			array(&$this, '_stripLinkDefinitions_callback'),
+			array($this, '_stripLinkDefinitions_callback'),
 			$text);
 		return $text;
 	}
@@ -356,7 +356,7 @@ class Markdown implements MarkdownInterface {
 					
 			)
 			)}Sxmi',
-			array(&$this, '_hashHTMLBlocks_callback'),
+			array($this, '_hashHTMLBlocks_callback'),
 			$text);
 
 		return $text;
@@ -500,7 +500,7 @@ class Markdown implements MarkdownInterface {
 	protected function doHardBreaks($text) {
 		# Do hard breaks:
 		return preg_replace_callback('/ {2,}\n/', 
-			array(&$this, '_doHardBreaks_callback'), $text);
+			array($this, '_doHardBreaks_callback'), $text);
 	}
 	protected function _doHardBreaks_callback($matches) {
 		return $this->hashPart("<br$this->empty_element_suffix\n");
@@ -531,7 +531,7 @@ class Markdown implements MarkdownInterface {
 			  \]
 			)
 			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+			array($this, '_doAnchors_reference_callback'), $text);
 
 		#
 		# Next, inline-style links: [link text](url "optional title")
@@ -558,7 +558,7 @@ class Markdown implements MarkdownInterface {
 			  \)
 			)
 			}xs',
-			array(&$this, '_doAnchors_inline_callback'), $text);
+			array($this, '_doAnchors_inline_callback'), $text);
 
 		#
 		# Last, handle reference-style shortcuts: [link text]
@@ -572,7 +572,7 @@ class Markdown implements MarkdownInterface {
 			  \]
 			)
 			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+			array($this, '_doAnchors_reference_callback'), $text);
 
 		$this->in_anchor = false;
 		return $text;
@@ -654,7 +654,7 @@ class Markdown implements MarkdownInterface {
 
 			)
 			}xs', 
-			array(&$this, '_doImages_reference_callback'), $text);
+			array($this, '_doImages_reference_callback'), $text);
 
 		#
 		# Next, handle inline images:  ![alt text](url "optional title")
@@ -683,7 +683,7 @@ class Markdown implements MarkdownInterface {
 			  \)
 			)
 			}xs',
-			array(&$this, '_doImages_inline_callback'), $text);
+			array($this, '_doImages_inline_callback'), $text);
 
 		return $text;
 	}
@@ -743,7 +743,7 @@ class Markdown implements MarkdownInterface {
 		#	  --------
 		#
 		$text = preg_replace_callback('{ ^(.+?)[ ]*\n(=+|-+)[ ]*\n+ }mx',
-			array(&$this, '_doHeaders_callback_setext'), $text);
+			array($this, '_doHeaders_callback_setext'), $text);
 
 		# atx-style headers:
 		#	# Header 1
@@ -760,7 +760,7 @@ class Markdown implements MarkdownInterface {
 				\#*			# optional closing #\'s (not counted)
 				\n+
 			}xm',
-			array(&$this, '_doHeaders_callback_atx'), $text);
+			array($this, '_doHeaders_callback_atx'), $text);
 
 		return $text;
 	}
@@ -833,14 +833,14 @@ class Markdown implements MarkdownInterface {
 						^
 						'.$whole_list_re.'
 					}mx',
-					array(&$this, '_doLists_callback'), $text);
+					array($this, '_doLists_callback'), $text);
 			}
 			else {
 				$text = preg_replace_callback('{
 						(?:(?<=\n)\n|\A\n?) # Must eat the newline
 						'.$whole_list_re.'
 					}mx',
-					array(&$this, '_doLists_callback'), $text);
+					array($this, '_doLists_callback'), $text);
 			}
 		}
 
@@ -907,7 +907,7 @@ class Markdown implements MarkdownInterface {
 			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
 			(?= \n* (\z | \2 ('.$marker_any_re.') (?:[ ]+|(?=\n))))
 			}xm',
-			array(&$this, '_processListItems_callback'), $list_str);
+			array($this, '_processListItems_callback'), $list_str);
 
 		$this->list_level--;
 		return $list_str;
@@ -951,7 +951,7 @@ class Markdown implements MarkdownInterface {
 				)
 				((?=^[ ]{0,'.$this->tab_width.'}\S)|\Z)	# Lookahead for non-space at line-start, or end of doc
 			}xm',
-			array(&$this, '_doCodeBlocks_callback'), $text);
+			array($this, '_doCodeBlocks_callback'), $text);
 
 		return $text;
 	}
@@ -1151,7 +1151,7 @@ class Markdown implements MarkdownInterface {
 				)+
 			  )
 			/xm',
-			array(&$this, '_doBlockQuotes_callback'), $text);
+			array($this, '_doBlockQuotes_callback'), $text);
 
 		return $text;
 	}
@@ -1165,7 +1165,7 @@ class Markdown implements MarkdownInterface {
 		# These leading spaces cause problem with <pre> content, 
 		# so we need to fix that:
 		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', 
-			array(&$this, '_doBlockQuotes_callback2'), $bq);
+			array($this, '_doBlockQuotes_callback2'), $bq);
 
 		return "\n". $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
 	}
@@ -1280,7 +1280,7 @@ class Markdown implements MarkdownInterface {
 
 	protected function doAutoLinks($text) {
 		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
-			array(&$this, '_doAutoLinks_url_callback'), $text);
+			array($this, '_doAutoLinks_url_callback'), $text);
 
 		# Email addresses: <address@domain.foo>
 		$text = preg_replace_callback('{
@@ -1301,8 +1301,8 @@ class Markdown implements MarkdownInterface {
 			)
 			>
 			}xi',
-			array(&$this, '_doAutoLinks_email_callback'), $text);
-		$text = preg_replace_callback('{<(tel:([^\'">\s]+))>}i',array(&$this, '_doAutoLinks_tel_callback'), $text);
+			array($this, '_doAutoLinks_email_callback'), $text);
+		$text = preg_replace_callback('{<(tel:([^\'">\s]+))>}i',array($this, '_doAutoLinks_tel_callback'), $text);
 
 		return $text;
 	}
@@ -1470,7 +1470,7 @@ class Markdown implements MarkdownInterface {
 		# appropriate number of space between each blocks.
 		
 		$text = preg_replace_callback('/^.*\t.*$/m',
-			array(&$this, '_detab_callback'), $text);
+			array($this, '_detab_callback'), $text);
 
 		return $text;
 	}
@@ -1510,7 +1510,7 @@ class Markdown implements MarkdownInterface {
 	# Swap back in all the tags hashed by _HashHTMLBlocks.
 	#
 		return preg_replace_callback('/(.)\x1A[0-9]+\1/', 
-			array(&$this, '_unhash_callback'), $text);
+			array($this, '_unhash_callback'), $text);
 	}
 	protected function _unhash_callback($matches) {
 		return $this->html_hashes[$matches[0]];
@@ -1716,7 +1716,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 					(?:[ ]* '.$this->id_class_attr_catch_re.' )?  # $5 = extra id & class attr
 							(?:\n+|\Z)
 			}xm',
-			array(&$this, '_stripLinkDefinitions_callback'),
+			array($this, '_stripLinkDefinitions_callback'),
 			$text);
 		return $text;
 	}
@@ -2227,7 +2227,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			  \]
 			)
 			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+			array($this, '_doAnchors_reference_callback'), $text);
 
 		#
 		# Next, inline-style links: [link text](url "optional title")
@@ -2255,7 +2255,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			  (?:[ ]? '.$this->id_class_attr_catch_re.' )?	 # $8 = id/class attributes
 			)
 			}xs',
-			array(&$this, '_doAnchors_inline_callback'), $text);
+			array($this, '_doAnchors_inline_callback'), $text);
 
 		#
 		# Last, handle reference-style shortcuts: [link text]
@@ -2269,7 +2269,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			  \]
 			)
 			}xs',
-			array(&$this, '_doAnchors_reference_callback'), $text);
+			array($this, '_doAnchors_reference_callback'), $text);
 
 		$this->in_anchor = false;
 		return $text;
@@ -2356,7 +2356,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 			)
 			}xs', 
-			array(&$this, '_doImages_reference_callback'), $text);
+			array($this, '_doImages_reference_callback'), $text);
 
 		#
 		# Next, handle inline images:  ![alt text](url "optional title")
@@ -2386,7 +2386,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			  (?:[ ]? '.$this->id_class_attr_catch_re.' )?	 # $8 = id/class attributes
 			)
 			}xs',
-			array(&$this, '_doImages_inline_callback'), $text);
+			array($this, '_doImages_inline_callback'), $text);
 
 		return $text;
 	}
@@ -2458,7 +2458,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				(?:[ ]+ '.$this->id_class_attr_catch_re.' )?	 # $3 = id/class attributes
 				[ ]*\n(=+|-+)[ ]*\n+				# $3: Header footer
 			}mx',
-			array(&$this, '_doHeaders_callback_setext'), $text);
+			array($this, '_doHeaders_callback_setext'), $text);
 
 		# atx-style headers:
 		#	# Header 1        {#header1}
@@ -2477,7 +2477,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				[ ]*
 				\n+
 			}xm',
-			array(&$this, '_doHeaders_callback_atx'), $text);
+			array($this, '_doHeaders_callback_atx'), $text);
 
 		return $text;
 	}
@@ -2528,7 +2528,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				)
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
-			array(&$this, '_doTable_leadingPipe_callback'), $text);
+			array($this, '_doTable_leadingPipe_callback'), $text);
 		
 		#
 		# Find tables without leading pipe.
@@ -2554,7 +2554,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				)
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
-			array(&$this, '_DoTable_callback'), $text);
+			array($this, '_DoTable_callback'), $text);
 
 		return $text;
 	}
@@ -2678,7 +2678,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				(?>\A\n?|(?<=\n\n))
 				'.$whole_list_re.'
 			}mx',
-			array(&$this, '_doDefLists_callback'), $text);
+			array($this, '_doDefLists_callback'), $text);
 
 		return $text;
 	}
@@ -2716,7 +2716,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			(?=\n?[ ]{0,3}:[ ])				# lookahead for following line feed 
 											#   with a definition mark.
 			}xm',
-			array(&$this, '_processDefListItems_callback_dt'), $list_str);
+			array($this, '_processDefListItems_callback_dt'), $list_str);
 
 		# Process actual definitions.
 		$list_str = preg_replace_callback('{
@@ -2733,7 +2733,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				)						
 			)					
 			}xm',
-			array(&$this, '_processDefListItems_callback_dd'), $list_str);
+			array($this, '_processDefListItems_callback_dd'), $list_str);
 
 		return $list_str;
 	}
@@ -2801,7 +2801,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				# Closing marker.
 				\1 [ ]* (?= \n )
 			}xm',
-			array(&$this, '_doFencedCodeBlocks_callback'), $text);
+			array($this, '_doFencedCodeBlocks_callback'), $text);
 
 		return $text;
 	}
@@ -2811,7 +2811,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$codeblock = $matches[4];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
-			array(&$this, '_doFencedCodeBlocks_newlines'), $codeblock);
+			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
 		if ($classname != "") {
 			if ($classname{0} == '.')
@@ -2914,7 +2914,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				)*
 			)		
 			}xm',
-			array(&$this, '_stripFootnotes_callback'),
+			array($this, '_stripFootnotes_callback'),
 			$text);
 		return $text;
 	}
@@ -2942,7 +2942,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# Append footnote list to text.
 	#
 		$text = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-			array(&$this, '_appendFootnotes_callback'), $text);
+			array($this, '_appendFootnotes_callback'), $text);
 	
 		if (!empty($this->footnotes_ordered)) {
 			$text .= "\n\n";
@@ -2974,7 +2974,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				$footnote .= "\n"; # Need to append newline before parsing.
 				$footnote = $this->runBlockGamut("$footnote\n");				
 				$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-					array(&$this, '_appendFootnotes_callback'), $footnote);
+					array($this, '_appendFootnotes_callback'), $footnote);
 				
 				$attr = str_replace("%%", ++$num, $attr);
 				$note_id = $this->encodeAttribute($note_id);
@@ -3057,7 +3057,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			^[ ]{0,'.$less_than_tab.'}\*\[(.+?)\][ ]?:	# abbr_id = $1
 			(.*)					# text = $2 (no blank lines allowed)	
 			}xm',
-			array(&$this, '_stripAbbreviations_callback'),
+			array($this, '_stripAbbreviations_callback'),
 			$text);
 		return $text;
 	}
@@ -3084,7 +3084,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				'(?:'.$this->abbr_word_re.')'.
 				'(?![\w\x1A])'.
 				'}', 
-				array(&$this, '_doAbbreviations_callback'), $text);
+				array($this, '_doAbbreviations_callback'), $text);
 		}
 		return $text;
 	}
