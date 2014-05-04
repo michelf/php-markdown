@@ -297,9 +297,9 @@ class Markdown implements MarkdownInterface {
 		# match will start at the first `<div>` and stop at the first `</div>`.
 		$text = preg_replace_callback('{(?>
 			(?>
-				(?<=\n\n)		# Starting after a blank line
+				(?<=\n)			# Starting on its own line
 				|				# or
-				\A\n?			# the beginning of the doc
+				\A\n?			# the at beginning of the doc
 			)
 			(						# save in $1
 
