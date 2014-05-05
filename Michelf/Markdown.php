@@ -2909,7 +2909,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 					.+				# actual text
 				|
 					\n				# newlines but 
-					(?!\[\^.+?\]:\s)# negative lookahead for footnote marker.
+					(?!\[.+?\][ ]?:\s)# negative lookahead for footnote or link definition marker.
 					(?!\n+[ ]{0,3}\S)# ensure line is not blank and followed 
 									# by non-indented content
 				)*
