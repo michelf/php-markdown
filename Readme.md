@@ -160,6 +160,17 @@ too.
  [MDTest]: https://github.com/michelf/mdtest/
 
 
+Donations
+---------
+
+If you wish to make a donation that will help me devote more time to 
+PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
+[1HiuX34czvVPPdhXbUAsAu7pZcesniDCGH].
+
+ [michelf.ca/donate]: https://michelf.ca/donate/#!Thanks%20for%20PHP%20Markdown
+ [1HiuX34czvVPPdhXbUAsAu7pZcesniDCGH]: bitcoin:1HiuX34czvVPPdhXbUAsAu7pZcesniDCGH
+
+
 Version History
 ---------------
 
