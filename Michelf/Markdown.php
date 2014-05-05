@@ -1351,7 +1351,8 @@ class Markdown implements MarkdownInterface {
 				$r = ($seed * (1 + $key)) % 100; # Pseudo-random function.
 				# roughly 10% raw, 45% hex, 45% dec
 				# '@' *must* be encoded. I insist.
-				if ($r > 90 && $char != '@') /* do nothing */;
+				# '"' has to be encoded inside the attribute
+				if ($r > 90 && $char != '@' && $char != '"') /* do nothing */;
 				else if ($r < 45) $chars[$key] = '&#x'.dechex($ord).';';
 				else              $chars[$key] = '&#'.$ord.';';
 			}
