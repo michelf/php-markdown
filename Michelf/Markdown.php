@@ -617,6 +617,12 @@ class Markdown implements MarkdownInterface {
 		$url			=  $matches[3] == '' ? $matches[4] : $matches[3];
 		$title			=& $matches[7];
 
+		// if the URL was of the form <s p a c e s> it got caught by the HTML
+		// tag parser and hashed. Need to reverse the process before using the URL.
+		$unhashed = $this->unhash($url);
+		if ($unhashed != $url)
+			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
+
 		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
@@ -2317,6 +2323,11 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("a", $dummy =& $matches[8]);
 
+		// if the URL was of the form <s p a c e s> it got caught by the HTML
+		// tag parser and hashed. Need to reverse the process before using the URL.
+		$unhashed = $this->unhash($url);
+		if ($unhashed != $url)
+			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
 		$url = $this->encodeAttribute($url);
 
