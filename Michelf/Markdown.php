@@ -242,7 +242,7 @@ class Markdown implements MarkdownInterface {
 		#
 		$block_tags_a_re = 'ins|del';
 		$block_tags_b_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|'.
-						   'script|noscript|form|fieldset|iframe|math|svg|'.
+						   'script|noscript|style|form|fieldset|iframe|math|svg|'.
 						   'article|section|nav|aside|hgroup|header|footer|'.
 						   'figure';
 
@@ -1736,14 +1736,14 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure';
 						   
 	# Tags treated as block tags only if the opening tag is alone on its line:
-	protected $context_block_tags_re = 'script|noscript|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
+	protected $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 	
 	# Tags where markdown="1" default to span mode:
 	protected $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
 	
 	# Tags which must not have their contents modified, no matter where 
 	# they appear:
-	protected $clean_tags_re = 'script|math|svg';
+	protected $clean_tags_re = 'script|style|math|svg';
 	
 	# Tags that do not need to be closed.
 	protected $auto_close_tags_re = 'hr|img|param|source|track';
