@@ -3,7 +3,7 @@
 # Markdown  -  A text-to-HTML conversion tool for web writers
 #
 # PHP Markdown  
-# Copyright (c) 2004-2013 Michel Fortin  
+# Copyright (c) 2004-2014 Michel Fortin  
 # <http://michelf.com/projects/php-markdown/>
 #
 # Original Markdown  
@@ -21,7 +21,7 @@ class Markdown implements MarkdownInterface {
 
 	### Version ###
 
-	const  MARKDOWNLIB_VERSION  =  "1.4.0";
+	const  MARKDOWNLIB_VERSION  =  "1.4.1";
 
 	### Simple Function Interface ###
 
