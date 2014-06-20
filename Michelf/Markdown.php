@@ -624,6 +624,10 @@ class Markdown implements MarkdownInterface {
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
 		$url = $this->encodeAttribute($url);
+		
+		if(!preg_match('#^\s*(https?|ftp)://#i', $url))
+			$url = '';
+			
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
