@@ -594,6 +594,7 @@ class Markdown implements MarkdownInterface {
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
 			$url = $this->encodeAttribute($url);
+			$url = $this->encodeMailToAddressInURL($url);
 			
 			$result = "<a href=\"$url\"";
 			if ( isset( $this->titles[$link_id] ) ) {
@@ -624,6 +625,7 @@ class Markdown implements MarkdownInterface {
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
 		$url = $this->encodeAttribute($url);
+		$url = $this->encodeMailToAddressInURL($url);
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
@@ -635,6 +637,15 @@ class Markdown implements MarkdownInterface {
 		$result .= ">$link_text</a>";
 
 		return $this->hashPart($result);
+	}
+
+
+	protected function encodeMailToAddressInURL($url) {
+		return preg_replace_callback('{\Amailto:(?i:[A-Z][A-Z0-9._%+-]+@[A-Z0-9.\-]+\.[A-Z]{2,4})\b}', array($this, '_encodeMailToAddressInURL_callback'), $url);
+	}
+	protected function _encodeMailToAddressInURL_callback($matches)
+	{
+		return $this->entityObfuscateText($matches[0]);
 	}
 
 
@@ -1345,29 +1356,30 @@ class Markdown implements MarkdownInterface {
 	#	Based by a filter by Matthew Wickline, posted to BBEdit-Talk.
 	#   With some optimizations by Milian Wolff.
 	#
-		$addr = "mailto:" . $addr;
-		$chars = preg_split('/(?<!^)(?!$)/', $addr);
-		$seed = (int)abs(crc32($addr) / strlen($addr)); # Deterministic seed.
-		
+		$mailto = $this->entityObfuscateText("mailto:");
+		$email  = $this->entityObfuscateText($addr);
+		return "<a href=\"{$mailto}{$email}\">{$email}</a>";
+	}
+
+
+	private function entityObfuscateText($text) {
+		$chars = preg_split('/(?<!^)(?!$)/', $text);
+		$seed = (int)abs(crc32($text) / strlen($text)); # Deterministic seed.
+
 		foreach ($chars as $key => $char) {
 			$ord = ord($char);
 			# Ignore non-ascii chars.
 			if ($ord < 128) {
-				$r = ($seed * (1 + $key)) % 100; # Pseudo-random function.
+				# If we see any of @"&<> then ensure encoding by setting $r < 90.
+				$modulo = strpos('@"&<>', $char) ? 90 : 100;
+				$r = ($seed * (1 + $key)) % $modulo; # Pseudo-random function.
 				# roughly 10% raw, 45% hex, 45% dec
-				# '@' *must* be encoded. I insist.
-				# '"' has to be encoded inside the attribute
-				if ($r > 90 && $char != '@' && $char != '"') /* do nothing */;
-				else if ($r < 45) $chars[$key] = '&#x'.dechex($ord).';';
-				else              $chars[$key] = '&#'.$ord.';';
+				if ($r < 45)      $chars[$key] = '&#x'.dechex($ord).';';
+				else if ($r < 90) $chars[$key] = '&#'.$ord.';';
 			}
 		}
-		
-		$addr = implode('', $chars);
-		$text = implode('', array_slice($chars, 7)); # text without `mailto:`
-		$addr = "<a href=\"$addr\">$text</a>";
 
-		return $addr;
+		return implode('', $chars);
 	}
 
 
@@ -2297,6 +2309,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
 			$url = $this->encodeAttribute($url);
+			$url = $this->encodeMailToAddressInURL($url);
 			
 			$result = "<a href=\"$url\"";
 			if ( isset( $this->titles[$link_id] ) ) {
@@ -2330,6 +2343,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
 		$url = $this->encodeAttribute($url);
+		$url = $this->encodeMailToAddressInURL($url);
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
