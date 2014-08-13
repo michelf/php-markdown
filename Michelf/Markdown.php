@@ -1586,6 +1586,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 	# Optional class prefix for fenced code block.
 	public $code_class_prefix = "";
+
+	# Optional default class(es) for fenced code block.
+	public $default_code_class = "";
+
 	# Class attribute for code blocks goes on the `code` tag;
 	# setting this to true will put attributes on the `pre` tag instead.
 	public $code_attr_on_pre = false;
@@ -1696,7 +1700,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$elements = $matches[0];
 
 		# handle classes and ids (only first id taken into account)
-		$classes = array();
+		$classes = array($this->default_code_class);
 		$id = false;
 		foreach ($elements as $element) {
 			if ($element{0} == '.') {
