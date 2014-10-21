@@ -53,12 +53,12 @@ Using [Composer](https://getcomposer.org/) (the preferred method) simply run
 composer require michelf/php-markdown
 ```
 
-and the package will be installed into your `./vendor` directory.
+and the package will be installed into your `./vendor` directory and available for use. *Make sure to `require` Composer's `vendor/autoload.php` to enable autoloading throughout your project.*
 
 Usage
 -----
 
-This library package is meant to be used with class autoloading. *This is taken care of automatically if you installed via Composer.* For autoloading 
+This library package is meant to be used with class autoloading. For autoloading 
 to work, your project needs have setup a PSR-0-compatible autoloader. See the 
 included Readme.php file for a minimal autoloader setup. (If you cannot use 
 autoloading, see below.)
