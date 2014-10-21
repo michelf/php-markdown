@@ -48,10 +48,8 @@ Installation
 
 Using [Composer](https://getcomposer.org/) (the preferred method) simply run
 
-```
-# This will ensure you get the latest stable version
-composer require michelf/php-markdown
-```
+    # This will ensure you get the latest stable version
+    composer require michelf/php-markdown
 
 and the package will be installed into your `./vendor` directory and available for use. *Make sure to `require` Composer's `vendor/autoload.php` to enable autoloading throughout your project.*
 
