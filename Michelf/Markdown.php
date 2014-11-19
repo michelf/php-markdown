@@ -2649,7 +2649,9 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$attr       = array_pad($attr, $col_count, '');
 		
 		# Write column headers.
-		$text = "<table>\n";
+		$text = "<table";
+		$text .= $attrs ? $this->doExtraAttributes('', $matches[4]) : '';
+		$text .= ">\n";
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header)
