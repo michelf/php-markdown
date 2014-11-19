@@ -59,9 +59,6 @@ class Markdown implements MarkdownInterface {
 	public $predef_urls = array();
 	public $predef_titles = array();
 
-	# Optional filter function for URLs
-	public $url_filter_func = null;
-
 
 	### Parser Implementation ###
 
@@ -596,7 +593,7 @@ class Markdown implements MarkdownInterface {
 
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
-			$url = $this->encodeURLAttribute($url);
+			$url = $this->encodeAttribute($url);
 			
 			$result = "<a href=\"$url\"";
 			if ( isset( $this->titles[$link_id] ) ) {
@@ -626,7 +623,7 @@ class Markdown implements MarkdownInterface {
 		if ($unhashed != $url)
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
-		$url = $this->encodeURLAttribute($url);
+		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
@@ -707,7 +704,7 @@ class Markdown implements MarkdownInterface {
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
-			$url = $this->encodeURLAttribute($this->urls[$link_id]);
+			$url = $this->encodeAttribute($this->urls[$link_id]);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
@@ -731,7 +728,7 @@ class Markdown implements MarkdownInterface {
 		$title			=& $matches[7];
 
 		$alt_text = $this->encodeAttribute($alt_text);
-		$url = $this->encodeURLAttribute($url);
+		$url = $this->encodeAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
 			$title = $this->encodeAttribute($title);
@@ -1263,33 +1260,6 @@ class Markdown implements MarkdownInterface {
 		$text = str_replace('"', '&quot;', $text);
 		return $text;
 	}
-
-
-	protected function encodeURLAttribute($url, &$text = null) {
-	#
-	# Encode text for a double-quoted HTML attribute containing a URL,
-	# applying the URL filter if set. Also generates the textual
-	# representation for the URL (removing mailto: or tel:) storing it in $text.
-	# This function is *not* suitable for attributes enclosed in single quotes.
-	#
-		if ($this->url_filter_func)
-			$url = call_user_func($this->url_filter_func, $url);
-
-		if (preg_match('{^mailto:}i', $url))
-			$url = $this->encodeEntityObfuscatedAttribute($url, $text, 7);
-		else if (preg_match('{^tel:}i', $url))
-		{
-			$url = $this->encodeAttribute($url);
-			$text = substr($url, 4);
-		}
-		else
-		{
-			$url = $this->encodeAttribute($url);
-			$text = $url;
-		}
-
-		return $url;
-	}
 	
 	
 	protected function encodeAmpsAndAngles($text) {
@@ -1314,7 +1284,7 @@ class Markdown implements MarkdownInterface {
 
 
 	protected function doAutoLinks($text) {
-		$text = preg_replace_callback('{<((https?|ftp|dict|tel):[^\'">\s]+)>}i',
+		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
 			array($this, '_doAutoLinks_url_callback'), $text);
 
 		# Email addresses: <address@domain.foo>
@@ -1337,46 +1307,48 @@ class Markdown implements MarkdownInterface {
 			>
 			}xi',
 			array($this, '_doAutoLinks_email_callback'), $text);
+		$text = preg_replace_callback('{<(tel:([^\'">\s]+))>}i',array($this, '_doAutoLinks_tel_callback'), $text);
 
 		return $text;
 	}
+	protected function _doAutoLinks_tel_callback($matches) {
+		$url = $this->encodeAttribute($matches[1]);
+		$tel = $this->encodeAttribute($matches[2]);
+		$link = "<a href=\"$url\">$tel</a>";
+		return $this->hashPart($link);
+	}
 	protected function _doAutoLinks_url_callback($matches) {
-		$url = $this->encodeURLAttribute($matches[1], $text);
-		$link = "<a href=\"$url\">$text</a>";
+		$url = $this->encodeAttribute($matches[1]);
+		$link = "<a href=\"$url\">$url</a>";
 		return $this->hashPart($link);
 	}
 	protected function _doAutoLinks_email_callback($matches) {
-		$addr = $matches[1];
-		$url = $this->encodeURLAttribute("mailto:$addr", $text);
-		$link = "<a href=\"$url\">$text</a>";
+		$address = $matches[1];
+		$link = $this->encodeEmailAddress($address);
 		return $this->hashPart($link);
 	}
 
 
-	protected function encodeEntityObfuscatedAttribute($text, &$tail = null, $head_length = 0) {
+	protected function encodeEmailAddress($addr) {
 	#
-	#	Input: some text to obfuscate, e.g. "mailto:foo@example.com"
+	#	Input: an email address, e.g. "foo@example.com"
 	#
-	#	Output: the same text but with most characters encoded as either a
-	#		decimal or hex entity, in the hopes of foiling most address
-	#		harvesting spam bots. E.g.:
+	#	Output: the email address as a mailto link, with each character
+	#		of the address encoded as either a decimal or hex entity, in
+	#		the hopes of foiling most address harvesting spam bots. E.g.:
 	#
-	#        &#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x66;o&#111;
+	#	  <p><a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x66;o&#111;
 	#        &#x40;&#101;&#x78;&#97;&#x6d;&#112;&#x6c;&#101;&#46;&#x63;&#111;
-	#        &#x6d;
-	#
-	#	Note: the additional output $tail is assigned the same value as the
-	#	ouput, minus the number of characters specified by $head_length.
+	#        &#x6d;">&#x66;o&#111;&#x40;&#101;&#x78;&#97;&#x6d;&#112;&#x6c;
+	#        &#101;&#46;&#x63;&#111;&#x6d;</a></p>
 	#
 	#	Based by a filter by Matthew Wickline, posted to BBEdit-Talk.
-	#   With some optimizations by Milian Wolff. Forced encoding of HTML
-	#	attribute special characters by Allan Odgaard.
+	#   With some optimizations by Milian Wolff.
 	#
-		if ($text == "") return $tail = "";
-
-		$chars = preg_split('/(?<!^)(?!$)/', $text);
-		$seed = (int)abs(crc32($text) / strlen($text)); # Deterministic seed.
-
+		$addr = "mailto:" . $addr;
+		$chars = preg_split('/(?<!^)(?!$)/', $addr);
+		$seed = (int)abs(crc32($addr) / strlen($addr)); # Deterministic seed.
+		
 		foreach ($chars as $key => $char) {
 			$ord = ord($char);
 			# Ignore non-ascii chars.
@@ -1384,17 +1356,18 @@ class Markdown implements MarkdownInterface {
 				$r = ($seed * (1 + $key)) % 100; # Pseudo-random function.
 				# roughly 10% raw, 45% hex, 45% dec
 				# '@' *must* be encoded. I insist.
-				# '"' and '>' have to be encoded inside the attribute
-				if ($r > 90 && strpos('@"&>', $char) === false) /* do nothing */;
+				# '"' has to be encoded inside the attribute
+				if ($r > 90 && $char != '@' && $char != '"') /* do nothing */;
 				else if ($r < 45) $chars[$key] = '&#x'.dechex($ord).';';
 				else              $chars[$key] = '&#'.$ord.';';
 			}
 		}
+		
+		$addr = implode('', $chars);
+		$text = implode('', array_slice($chars, 7)); # text without `mailto:`
+		$addr = "<a href=\"$addr\">$text</a>";
 
-		$text = implode('', $chars);
-		$tail = $head_length ? implode('', array_slice($chars, $head_length)) : $text;
-
-		return $text;
+		return $addr;
 	}
 
 
@@ -2323,7 +2296,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		if (isset($this->urls[$link_id])) {
 			$url = $this->urls[$link_id];
-			$url = $this->encodeURLAttribute($url);
+			$url = $this->encodeAttribute($url);
 			
 			$result = "<a href=\"$url\"";
 			if ( isset( $this->titles[$link_id] ) ) {
@@ -2356,7 +2329,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		if ($unhashed != $url)
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
-		$url = $this->encodeURLAttribute($url);
+		$url = $this->encodeAttribute($url);
 
 		$result = "<a href=\"$url\"";
 		if (isset($title)) {
@@ -2439,7 +2412,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		if (isset($this->urls[$link_id])) {
-			$url = $this->encodeURLAttribute($this->urls[$link_id]);
+			$url = $this->encodeAttribute($this->urls[$link_id]);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
@@ -2466,7 +2439,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$attr  = $this->doExtraAttributes("img", $dummy =& $matches[8]);
 
 		$alt_text = $this->encodeAttribute($alt_text);
-		$url = $this->encodeURLAttribute($url);
+		$url = $this->encodeAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
 		if (isset($title)) {
 			$title = $this->encodeAttribute($title);
@@ -2564,6 +2537,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 						[|] .* \n			# Row content.
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_doTable_leadingPipe_callback'), $text);
@@ -2590,9 +2564,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 						.* [|] .* \n		# Row content
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
-			array($this, '_DoTable_callback'), $text);
+			array($this, '_doTable_callback'), $text);
 
 		return $text;
 	}
@@ -2600,11 +2575,12 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$attrs 		= (isset($matches[4])) ? $matches[4] : null;
 		
 		# Remove leading pipe for each row.
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 		
-		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
+		return $this->_doTable_callback(array($matches[0], $head, $underline, $content, $attrs));
 	}
 	protected function _doTable_makeAlignAttr($alignname)
 	{
@@ -2618,6 +2594,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$attrs 		= (isset($matches[4])) ? $matches[4] : null;
 
 		# Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);
@@ -2645,7 +2622,9 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$attr       = array_pad($attr, $col_count, '');
 		
 		# Write column headers.
-		$text = "<table>\n";
+		$text = "<table";
+		$text .= $attrs ? $this->doExtraAttributes('', $matches[4]) : '';
+		$text .= ">\n";
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header)
@@ -2673,6 +2652,9 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		}
 		$text .= "</tbody>\n";
 		$text .= "</table>";
+
+		if ($attrs)
+			preg_replace('/(?:[ ]? '.$this->id_class_attr_catch_re.' )/', '', $text);
 		
 		return $this->hashBlock($text) . "\n";
 	}
