@@ -1682,14 +1682,15 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# Expression to use when parsing in a context when no capture is desired
 	protected $id_class_attr_nocatch_re = '\{(?:[ ]*[#.][-_:a-zA-Z0-9]+){1,}[ ]*\}';
 
-	protected function doExtraAttributes($tag_name, $attr) {
+	protected function doExtraAttributes($tag_name, $attr, $text='') {
 	#
 	# Parse attributes caught by the $this->id_class_attr_catch_re expression
 	# and return the HTML-formatted list of attributes.
 	#
 	# Currently supported attributes are .class and #id.
 	#
-		if (empty($attr)) return "";
+		$is_heading = preg_match('/^(h|H)[1-6]{1}/', $tag_name) ? true : false;
+		if (!$is_heading && empty($attr)) return "";
 		
 		# Split on components
 		preg_match_all('/[#.][-_:a-zA-Z0-9]+/', $attr, $matches);
@@ -1704,6 +1705,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			} else if ($element{0} == '#') {
 				if ($id === false) $id = substr($element, 1);
 			}
+		}
+
+		if ($is_heading && $id === false) {
+			$id = preg_replace('/\W/', '-', strtolower($text));
 		}
 
 		# compose attributes as string
@@ -2523,14 +2528,16 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2]);
-		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
+		$text  = $this->runSpanGamut($matches[1]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2], $text);
+		$block = "<h$level$attr>".$text."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3]);
-		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
+		$text  = $this->runSpanGamut($matches[2]);
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3], $text);
+		$block = "<h$level$attr>".$text."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
