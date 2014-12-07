@@ -1718,7 +1718,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		if (!empty($classes)) {
 			$attr_str .= ' class="'.implode(" ", $classes).'"';
 		}
-		if (!empty($attributes)) {
+		if (!$this->no_markup && !empty($attributes)) {
 			$attr_str .= ' '.implode(" ", $attributes);
 		}
 		return $attr_str;
