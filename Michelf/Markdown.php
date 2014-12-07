@@ -1678,9 +1678,9 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	### Extra Attribute Parser ###
 
 	# Expression to use to catch attributes (includes the braces)
-	protected $id_class_attr_catch_re = '\{((?:[ ]*[#.:][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?:[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
 	# Expression to use when parsing in a context when no capture is desired
-	protected $id_class_attr_nocatch_re = '\{(?:[ ]*[#.:][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?:[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
 	protected function doExtraAttributes($tag_name, $attr) {
 	#
@@ -1692,7 +1692,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		if (empty($attr)) return "";
 		
 		# Split on components
-		preg_match_all('/[#.:][-_:a-zA-Z0-9=]+/', $attr, $matches);
+		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
 		$elements = $matches[0];
 
 		# handle classes and ids (only first id taken into account)
@@ -1704,8 +1704,8 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				$classes[] = substr($element, 1);
 			} else if ($element{0} == '#') {
 				if ($id === false) $id = substr($element, 1);
-			} else if ($element{0} == ':') {
-				$parts = explode('=', substr($element, 1));
+			} else if (strpos($element, '=') > 0) {
+				$parts = explode('=', $element);
 				$attributes[] = $parts[0] . '="' . $parts[1] . '"';
 			}
 		}
