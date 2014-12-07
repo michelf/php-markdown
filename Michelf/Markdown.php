@@ -1705,7 +1705,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			} else if ($element{0} == '#') {
 				if ($id === false) $id = substr($element, 1);
 			} else if (strpos($element, '=') > 0) {
-				$parts = explode('=', $element);
+				$parts = explode('=', $element, 2);
 				$attributes[] = $parts[0] . '="' . $parts[1] . '"';
 			}
 		}
