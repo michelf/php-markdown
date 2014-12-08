@@ -2542,6 +2542,33 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	}
 
 
+	protected function _doBlockQuotes_callback($matches) {
+		$bq = $matches[1];
+		# trim one level of quoting - trim whitespace-only lines
+		$bq = preg_replace('/^[ ]*>[ ]?|^[ ]+$/m', '', $bq);
+
+		# If final line of blockquote starts with -- treat it as a footer.
+		$split = preg_split('/\n *--(.*)\n$/', $bq, 0 , PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$bq = $split[0];
+		$footer = isset($split[1]) ? $split[1] : NULL;
+
+		$bq = $this->runBlockGamut($bq);		# recurse
+
+		if (isset($footer)) {
+			$footer = $this->runSpanGamut($footer);
+			$bq .= "\n<footer>\n  $footer\n</footer>";
+		}
+
+		$bq = preg_replace('/^/m', "  ", $bq);
+		# These leading spaces cause problem with <pre> content,
+		# so we need to fix that:
+		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx',
+			array($this, '_doBlockQuotes_callback2'), $bq);
+
+		return "\n". $this->hashBlock("<blockquote>\n$bq\n</blockquote>")."\n\n";
+	}
+
+
 	protected function doTables($text) {
 	#
 	# Form HTML tables.
