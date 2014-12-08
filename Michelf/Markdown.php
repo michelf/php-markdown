@@ -2571,6 +2571,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 						[|] .* \n			# Row content.
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_doTable_leadingPipe_callback'), $text);
@@ -2597,9 +2598,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 						.* [|] .* \n		# Row content
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
-			array($this, '_DoTable_callback'), $text);
+			array($this, '_doTable_callback'), $text);
 
 		return $text;
 	}
@@ -2607,11 +2609,12 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$attrs 		= (isset($matches[4])) ? $matches[4] : null;
 		
 		# Remove leading pipe for each row.
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 		
-		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
+		return $this->_doTable_callback(array($matches[0], $head, $underline, $content, $attrs));
 	}
 	protected function _doTable_makeAlignAttr($alignname)
 	{
@@ -2625,6 +2628,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$attrs 		= (isset($matches[4])) ? $matches[4] : null;
 
 		# Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);
@@ -2652,7 +2656,9 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$attr       = array_pad($attr, $col_count, '');
 		
 		# Write column headers.
-		$text = "<table>\n";
+		$text = "<table";
+		$text .= $attrs ? $this->doExtraAttributes('', $matches[4]) : '';
+		$text .= ">\n";
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header)
