@@ -176,6 +176,10 @@ Version History
 
 Unreleased
 
+*	Added the ability to insert custom HTML attributes everywhere an extra
+	attribute block is allowed (links, images, headers). Credits to
+	Peter Droogmans for providing the implementation.
+
 *	Added a `url_filter_func` configuration variable which takes a function
 	that can rewrite any link or image URL to something different.
 
