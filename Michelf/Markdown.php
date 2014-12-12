@@ -2557,21 +2557,25 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		#
 		$text = preg_replace_callback('
 			{
-				^							# Start of a line
-				[ ]{0,'.$less_than_tab.'}	# Allowed whitespace.
-				[|]							# Optional leading pipe (present)
-				(.+) \n						# $1: Header row (at least one pipe)
+				^										# Start of a line
+				[ ]{0,'.$less_than_tab.'}				# Allowed whitespace.
+				[|]										# Optional leading pipe (present)
+				(.+?)									# $1: Header row (at least one pipe)
+				(?:'.$this->id_class_attr_catch_re.')?	# $2: Extra table attributes
+				[ ]*\n									# Allowed whitespace and newline.
 				
-				[ ]{0,'.$less_than_tab.'}	# Allowed whitespace.
-				[|] ([ ]*[-:]+[-| :]*) \n	# $2: Header underline
+				[ ]{0,'.$less_than_tab.'}				# Allowed whitespace.
+				[|] ([ ]*[-:]+[-| :]*)					# $3: Header underline
+				(?:'.$this->id_class_attr_catch_re.')?	# $4: Extra header row attributes
+				[ ]*\n									# Allowed whitespace and newline.
 				
-				(							# $3: Cells
+				(										# $5: Cells
 					(?>
-						[ ]*				# Allowed whitespace.
-						[|] .* \n			# Row content.
+						[ ]*							# Allowed whitespace.
+						[|] .* \n						# Row content.
 					)*
 				)
-				(?=\n|\Z)					# Stop at final double newline.
+				(?=\n|\Z)								# Stop at final double newline.
 			}xm',
 			array($this, '_doTable_leadingPipe_callback'), $text);
 		
@@ -2585,19 +2589,23 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		#
 		$text = preg_replace_callback('
 			{
-				^							# Start of a line
-				[ ]{0,'.$less_than_tab.'}	# Allowed whitespace.
-				(\S.*[|].*) \n				# $1: Header row (at least one pipe)
+				^										# Start of a line
+				[ ]{0,'.$less_than_tab.'}				# Allowed whitespace.
+				(\S.*[|].*?)							# $1: Header row (at least one pipe)
+				(?:'.$this->id_class_attr_catch_re.')?	# $2: Extra table attributes
+				[ ]*\n									# Allowed whitespace and newline.
 				
-				[ ]{0,'.$less_than_tab.'}	# Allowed whitespace.
-				([-:]+[ ]*[|][-| :]*) \n	# $2: Header underline
+				[ ]{0,'.$less_than_tab.'}				# Allowed whitespace.
+				([-:]+[ ]*[|][-| :]*)					# $3: Header underline
+				(?:'.$this->id_class_attr_catch_re.')?	# $4: Extra header row attributes
+				[ ]*\n									# Allowed whitespace and newline.
 				
-				(							# $3: Cells
+				(										# $5: Cells
 					(?>
-						.* [|] .* \n		# Row content
+						.* [|] .* \n					# Row content
 					)*
 				)
-				(?=\n|\Z)					# Stop at final double newline.
+				(?=\n|\Z)								# Stop at final double newline.
 			}xm',
 			array($this, '_DoTable_callback'), $text);
 
@@ -2605,13 +2613,15 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	}
 	protected function _doTable_leadingPipe_callback($matches) {
 		$head		= $matches[1];
-		$underline	= $matches[2];
-		$content	= $matches[3];
+		$tableAttrs	= $matches[2];
+		$underline	= $matches[3];
+		$headAttrs	= $matches[4];
+		$content	= $matches[5];
 		
 		# Remove leading pipe for each row.
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 		
-		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
+		return $this->_doTable_callback(array($matches[0], $head, $tableAttrs, $underline, $headAttrs, $content));
 	}
 	protected function _doTable_makeAlignAttr($alignname)
 	{
@@ -2623,9 +2633,11 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	}
 	protected function _doTable_callback($matches) {
 		$head		= $matches[1];
-		$underline	= $matches[2];
-		$content	= $matches[3];
-
+		$tableAttrs	= $matches[2];
+		$underline	= $matches[3];
+		$headAttrs	= $matches[4];
+		$content	= $matches[5];
+		
 		# Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);
 		$underline	= preg_replace('/[|] *$/m', '', $underline);
@@ -2651,10 +2663,16 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		$col_count	= count($headers);
 		$attr       = array_pad($attr, $col_count, '');
 		
+		# Process extra table attributes
+		$tableAttrStr = $this->doExtraAttributes(null, $tableAttrs);
+		
+		# Process extra header row attributes
+		$headAttrStr = $this->doExtraAttributes(null, $headAttrs);
+		
 		# Write column headers.
-		$text = "<table>\n";
+		$text = "<table{$tableAttrStr}>\n";
 		$text .= "<thead>\n";
-		$text .= "<tr>\n";
+		$text .= "<tr{$headAttrStr}>\n";
 		foreach ($headers as $n => $header)
 			$text .= "  <th$attr[$n]>".$this->runSpanGamut(trim($header))."</th>\n";
 		$text .= "</tr>\n";
@@ -2665,6 +2683,18 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		
 		$text .= "<tbody>\n";
 		foreach ($rows as $row) {
+			# Find and process any attributes at the end of each row
+			$rowAttrMatches = array();
+			$rowAttrStr = '';
+			if (preg_match('{'.$this->id_class_attr_catch_re.' *$}', $row, $rowAttrMatches))
+			{
+				$rowAttrStr = $this->doExtraAttributes(null, $rowAttrMatches[1]);
+				
+				# If valid attributes were found, remove the attribute tag and any trailing pipe
+				if (strlen($rowAttrStr))
+					$row = preg_replace('{[|]? *'.$this->id_class_attr_nocatch_re.' *$}', '', $row);
+			}
+			
 			# Parsing span elements, including code spans, character escapes, 
 			# and inline HTML tags, so that pipes inside those gets ignored.
 			$row = $this->parseSpan($row);
@@ -2673,7 +2703,7 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 			$row_cells = preg_split('/ *[|] */', $row, $col_count);
 			$row_cells = array_pad($row_cells, $col_count, '');
 			
-			$text .= "<tr>\n";
+			$text .= "<tr{$rowAttrStr}>\n";
 			foreach ($row_cells as $n => $cell)
 				$text .= "  <td$attr[$n]>".$this->runSpanGamut(trim($cell))."</td>\n";
 			$text .= "</tr>\n";
