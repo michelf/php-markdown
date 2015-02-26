@@ -785,7 +785,7 @@ class Markdown implements MarkdownInterface {
 
 		# id attribute generation
 		$idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[1]) : null;
-		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_QUOTES, 'UTF-8') . '"';
+		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
 
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
@@ -794,7 +794,7 @@ class Markdown implements MarkdownInterface {
 
         # id attribute generation
         $idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
-        if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_QUOTES, 'UTF-8') . '"';
+        if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
 
 		$level = strlen($matches[1]);
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
@@ -1731,10 +1731,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		# compose attributes as string
 		$attr_str = "";
 		if (!empty($id)) {
-			$attr_str .= ' id="'.$id.'"';
+			$attr_str .= ' id="'.htmlspecialchars($id, ENT_COMPAT, 'UTF-8') .'"';
 		}
 		if (!empty($classes)) {
-			$attr_str .= ' class="'.implode(" ", $classes).'"';
+			$attr_str .= ' class="'.htmlspecialchars(implode(" ", $classes), ENT_COMPAT, 'UTF-8').'"';
 		}
 		if (!$this->no_markup && !empty($attributes)) {
 			$attr_str .= ' '.implode(" ", $attributes);
