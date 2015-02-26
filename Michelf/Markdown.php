@@ -790,11 +790,11 @@ class Markdown implements MarkdownInterface {
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
-    protected function _doHeaders_callback_atx($matches) {
+	protected function _doHeaders_callback_atx($matches) {
 
-        # id attribute generation
-        $idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
-        if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
+		# id attribute generation
+		$idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
+		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
 
 		$level = strlen($matches[1]);
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
