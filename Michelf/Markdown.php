@@ -62,6 +62,8 @@ class Markdown implements MarkdownInterface {
 	# Optional filter function for URLs
 	public $url_filter_func = null;
 
+	# Optional header id="" generation callback function.
+	public $header_id_func = null;
 
 	### Parser Implementation ###
 
@@ -773,18 +775,29 @@ class Markdown implements MarkdownInterface {
 
 		return $text;
 	}
+
 	protected function _doHeaders_callback_setext($matches) {
 		# Terrible hack to check we haven't found an empty list item.
 		if ($matches[2] == '-' && preg_match('{^-(?: |$)}', $matches[1]))
 			return $matches[0];
 		
 		$level = $matches[2]{0} == '=' ? 1 : 2;
-		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
+
+		# id attribute generation
+		$idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[1]) : null;
+		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_QUOTES, 'UTF-8') . '"';
+
+		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
-	protected function _doHeaders_callback_atx($matches) {
+    protected function _doHeaders_callback_atx($matches) {
+
+        # id attribute generation
+        $idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
+        if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_QUOTES, 'UTF-8') . '"';
+
 		$level = strlen($matches[1]);
-		$block = "<h$level>".$this->runSpanGamut($matches[2])."</h$level>";
+		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
@@ -1682,14 +1695,17 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	# Expression to use when parsing in a context when no capture is desired
 	protected $id_class_attr_nocatch_re = '\{(?:[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
-	protected function doExtraAttributes($tag_name, $attr) {
+	protected function doExtraAttributes($tag_name, $attr, $defaultIdValue = null) {
 	#
 	# Parse attributes caught by the $this->id_class_attr_catch_re expression
 	# and return the HTML-formatted list of attributes.
 	#
 	# Currently supported attributes are .class and #id.
 	#
-		if (empty($attr)) return "";
+	# In addition, this method also supports supplying a default Id value,
+	# which will be used to populate the id attribute in case it was not
+	# overridden.
+		if (empty($attr) && !$defaultIdValue) return "";
 		
 		# Split on components
 		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
@@ -1709,6 +1725,8 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 				$attributes[] = $parts[0] . '="' . $parts[1] . '"';
 			}
 		}
+
+		if (!$id) $id = $defaultIdValue;
 
 		# compose attributes as string
 		$attr_str = "";
@@ -2529,14 +2547,20 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 	protected function _doHeaders_callback_setext($matches) {
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
+
 		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2]);
+
+		$defaultId = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[1]) : null;
+
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[2], $defaultId);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
 		$level = strlen($matches[1]);
-		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3]);
+
+		$defaultId = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
+		$attr  = $this->doExtraAttributes("h$level", $dummy =& $matches[3], $defaultId);
 		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
