@@ -812,7 +812,7 @@ class Markdown implements MarkdownInterface {
 		$idValue = call_user_func($this->header_id_func, $headerValue);
 		if (!$idValue) return "";
 
-		return 'id="' . $this->encodeAttribute($idValue) . '"';
+		return ' id="' . $this->encodeAttribute($idValue) . '"';
 
 	}
 
