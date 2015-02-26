@@ -784,8 +784,7 @@ class Markdown implements MarkdownInterface {
 		$level = $matches[2]{0} == '=' ? 1 : 2;
 
 		# id attribute generation
-		$idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[1]) : null;
-		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
+		$idAtt = $this->_generateIdFromHeaderValue($matches[1]);
 
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
@@ -793,14 +792,29 @@ class Markdown implements MarkdownInterface {
 	protected function _doHeaders_callback_atx($matches) {
 
 		# id attribute generation
-		$idAtt = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[2]) : null;
-		if ($idAtt) $idAtt = ' id="' . htmlspecialchars($idAtt, ENT_COMPAT, 'UTF-8') . '"';
+		$idAtt = $this->_generateIdFromHeaderValue($matches[2]);
 
 		$level = strlen($matches[1]);
 		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
+	protected function _generateIdFromHeaderValue($headerValue) {
+
+		# if a header_id_func property is set, we can use it to automatically
+		# generate an id attribute.
+		#
+		# This method returns a string in the form id="foo", or an empty string
+		# otherwise.
+		if (!is_callable($this->header_id_func)) {
+			return "";
+		}
+		$idValue = call_user_func($this->header_id_func, $headerValue);
+		if (!$idValue) return "";
+
+		return 'id="' . $this->encodeAttribute($idValue) . '"';
+
+	}
 
 	protected function doLists($text) {
 	#
@@ -1731,10 +1745,10 @@ abstract class _MarkdownExtra_TmpImpl extends \Michelf\Markdown {
 		# compose attributes as string
 		$attr_str = "";
 		if (!empty($id)) {
-			$attr_str .= ' id="'.htmlspecialchars($id, ENT_COMPAT, 'UTF-8') .'"';
+			$attr_str .= ' id="'.$this->encodeAttribute($id) .'"';
 		}
 		if (!empty($classes)) {
-			$attr_str .= ' class="'.htmlspecialchars(implode(" ", $classes), ENT_COMPAT, 'UTF-8').'"';
+			$attr_str .= ' class="'. implode(" ", $classes) . '"';
 		}
 		if (!$this->no_markup && !empty($attributes)) {
 			$attr_str .= ' '.implode(" ", $attributes);
