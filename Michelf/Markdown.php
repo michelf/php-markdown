@@ -786,7 +786,7 @@ class Markdown implements MarkdownInterface {
 		# id attribute generation
 		$idAtt = $this->_generateIdFromHeaderValue($matches[1]);
 
-		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[2])."</h$level>";
+		$block = "<h$level$idAtt>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 	protected function _doHeaders_callback_atx($matches) {
