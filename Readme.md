@@ -176,6 +176,12 @@ Version History
 
 Unreleased
 
+*	Added the ability start ordered lists with a number different from 1 and
+	and have that reflected in the HTML output. This can be enabled with
+	the `enhanced_ordered_lists` configuration variable for the Markdown 
+	parser; it is enabled by default for Markdown Extra.
+	Credits to Matt Gorle for providing the implementation.
+
 *	Added the ability to insert custom HTML attributes with simple values 
 	everywhere an extra attribute block is allowed (links, images, headers).
 	The value must be unquoted, cannot contains spaces and is limited to 
