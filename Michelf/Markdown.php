@@ -4,7 +4,7 @@
 #
 # PHP Markdown  
 # Copyright (c) 2004-2015 Michel Fortin  
-# <http://michelf.com/projects/php-markdown/>
+# <https://michelf.ca/projects/php-markdown/>
 #
 # Original Markdown  
 # Copyright (c) 2004-2006 John Gruber  
@@ -21,7 +21,7 @@ class Markdown implements MarkdownInterface {
 
 	### Version ###
 
-	const  MARKDOWNLIB_VERSION  =  "1.5";
+	const  MARKDOWNLIB_VERSION  =  "1.5.0";
 
 	### Simple Function Interface ###
 

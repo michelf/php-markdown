@@ -1,10 +1,10 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.5 - 1 Mar 2015
+PHP Markdown Lib 1.5.0 - 1 Mar 2015
 
 by Michel Fortin  
-<http://michelf.ca/>
+<https://michelf.ca/>
 
 based on Markdown by John Gruber  
 <http://daringfireball.net/>
@@ -27,7 +27,7 @@ program by John Gruber.
 
 *	[Full documentation of the Markdown syntax](<http://daringfireball.net/projects/markdown/>)  
 	— Daring Fireball (John Gruber)
-*	[Markdown Extra syntax additions](<http://michelf.ca/projects/php-markdown/extra/>)  
+*	[Markdown Extra syntax additions](<https://michelf.ca/projects/php-markdown/extra/>)  
 	— Michel Fortin
 
 
@@ -83,7 +83,7 @@ configuration variables:
 
 To learn more, see the full list of [configuration variables].
 
- [configuration variables]: http://michelf.ca/projects/php-markdown/configuration/
+ [configuration variables]: https://michelf.ca/projects/php-markdown/configuration/
 
 
 ### Usage without an autoloader
@@ -174,7 +174,7 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-PHP Markdown Lib 1.5 (1 Mar 2015)
+PHP Markdown Lib 1.5.0 (1 Mar 2015)
 
 *	Added the ability start ordered lists with a number different from 1 and
 	and have that reflected in the HTML output. This can be enabled with
@@ -251,7 +251,7 @@ PHP Markdown Extra 1.2.6:
 
 *	Plugin interface for WordPress and other systems is no longer present in
 	the Lib package. The classic package is still available if you need it:
-	<http://michelf.ca/projects/php-markdown/classic/>
+	<https://michelf.ca/projects/php-markdown/classic/>
 
 *	Added `public` and `protected` protection attributes, plus a section about
 	what is "public API" and what isn't in the Readme file.
@@ -290,7 +290,7 @@ Copyright and License
 
 PHP Markdown Lib
 Copyright (c) 2004-2015 Michel Fortin
-<http://michelf.ca/>  
+<https://michelf.ca/>  
 All rights reserved.
 
 Based on Markdown  

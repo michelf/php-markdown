@@ -1,6 +1,6 @@
 PHP Markdown Lib  
 Copyright (c) 2004-2015 Michel Fortin  
-<http://michelf.ca/>  
+<https://michelf.ca/>  
 All rights reserved.
 
 Based on Markdown  
