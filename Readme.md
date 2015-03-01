@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.4.1 - 4 May 2013
+PHP Markdown Lib 1.5 - 1 Mar 2015
 
 by Michel Fortin  
 <http://michelf.ca/>
@@ -25,10 +25,10 @@ software tool, originally written in Perl, that converts the plain text
 markup to HTML. PHP Markdown is a port to PHP of the original Markdown 
 program by John Gruber.
 
-*	[Full documentation of the Markdown syntax](<http://daringfireball.net/projects/markdown/>)
-	- Daring Fireball (John Gruber)
-*	[Markdown Extra syntax additions](<http://michelf.ca/projects/php-markdown/extra/>)
-	- Michel Fortin
+*	[Full documentation of the Markdown syntax](<http://daringfireball.net/projects/markdown/>)  
+	— Daring Fireball (John Gruber)
+*	[Markdown Extra syntax additions](<http://michelf.ca/projects/php-markdown/extra/>)  
+	— Michel Fortin
 
 
 Requirement
@@ -174,7 +174,7 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-Unreleased
+PHP Markdown Lib 1.5 (1 Mar 2015)
 
 *	Added the ability start ordered lists with a number different from 1 and
 	and have that reflected in the HTML output. This can be enabled with
@@ -289,7 +289,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown Lib
-Copyright (c) 2004-2014 Michel Fortin
+Copyright (c) 2004-2015 Michel Fortin
 <http://michelf.ca/>  
 All rights reserved.
 
