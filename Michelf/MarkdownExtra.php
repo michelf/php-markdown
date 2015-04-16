@@ -43,6 +43,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 	# setting this to true will put attributes on the `pre` tag instead.
 	public $code_attr_on_pre = false;
 	
+	# Optional content function for code blocks
+	public $code_block_content_func = null;
+
 	# Predefined abbreviations.
 	public $predef_abbr = array();
 
@@ -1317,6 +1320,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$classname =& $matches[2];
 		$attrs     =& $matches[3];
 		$codeblock = $matches[4];
+
+		if ($this->code_block_content_func) {
+			$codeblock = call_user_func($this->code_block_content_func, $codeblock, $classname);
+			return "\n\n".$this->hashBlock($codeblock)."\n\n";
+		}
+
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
