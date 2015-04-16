@@ -1324,10 +1324,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 		if ($this->code_block_content_func) {
 			$codeblock = call_user_func($this->code_block_content_func, $codeblock, $classname);
-			return "\n\n".$this->hashBlock($codeblock)."\n\n";
+		} else {
+			$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		}
 
-		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
 		$codeblock = preg_replace_callback('/^\n+/',
 			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
