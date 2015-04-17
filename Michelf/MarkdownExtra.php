@@ -1295,10 +1295,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
 				[ ]*
+				# #2: class name (optional) and #3: attributes (optional)
 				(?:
-					\.?([-_:a-zA-Z0-9]+) # 2: standalone class name
-				|
-					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
+					\.?([-_:a-zA-Z0-9]+)?[ ]*('.$this->id_class_attr_catch_re.')?
 				)?
 				[ ]* \n # Whitespace and newline following marker.
 				
@@ -1320,7 +1319,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function _doFencedCodeBlocks_callback($matches) {
 		$classname =& $matches[2];
 		$attrs     =& $matches[3];
-		$codeblock = $matches[4];
+		$codeblock = $matches[5];
 
 		if ($this->code_block_content_func) {
 			$codeblock = call_user_func($this->code_block_content_func, $codeblock, $classname);
