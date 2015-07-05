@@ -5,7 +5,7 @@ All rights reserved.
 
 Based on Markdown  
 Copyright (c) 2003-2006 John Gruber   
-<http://daringfireball.net/>   
+<https://daringfireball.net/>   
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

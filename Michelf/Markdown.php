@@ -8,7 +8,7 @@
 #
 # Original Markdown  
 # Copyright (c) 2004-2006 John Gruber  
-# <http://daringfireball.net/projects/markdown/>
+# <https://daringfireball.net/projects/markdown/>
 #
 namespace Michelf;
 
@@ -493,7 +493,7 @@ class Markdown implements MarkdownInterface {
 		"doImages"            =>  10,
 		"doAnchors"           =>  20,
 		
-		# Make links out of things like `<http://example.com/>`
+		# Make links out of things like `<https://example.com/>`
 		# Must come after doAnchors, because you can use < and >
 		# delimiters in inline links like [this](<url>).
 		"doAutoLinks"         =>  30,

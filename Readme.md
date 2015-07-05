@@ -7,7 +7,7 @@ by Michel Fortin
 <https://michelf.ca/>
 
 based on Markdown by John Gruber  
-<http://daringfireball.net/>
+<https://daringfireball.net/>
 
 
 Introduction
@@ -25,7 +25,7 @@ software tool, originally written in Perl, that converts the plain text
 markup to HTML. PHP Markdown is a port to PHP of the original Markdown 
 program by John Gruber.
 
-*	[Full documentation of the Markdown syntax](<http://daringfireball.net/projects/markdown/>)  
+*	[Full documentation of the Markdown syntax](<https://daringfireball.net/projects/markdown/>)  
 	— Daring Fireball (John Gruber)
 *	[Markdown Extra syntax additions](<https://michelf.ca/projects/php-markdown/extra/>)  
 	— Michel Fortin
@@ -295,7 +295,7 @@ All rights reserved.
 
 Based on Markdown  
 Copyright (c) 2003-2005 John Gruber   
-<http://daringfireball.net/>   
+<https://daringfireball.net/>   
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
