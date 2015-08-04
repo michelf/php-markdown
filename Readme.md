@@ -174,6 +174,20 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
+Current Version
+
+*	For fenced code blocks in Markdown Extra, can now set a class name for the 
+	code block's language before the special attribute block. Previously, this 
+	class name was only allowed in the absence of the special attribute block.
+
+*	Added a `code_block_content_func` configuration variable which takes a 
+	function that will convert the content of the code block to HTML. This is 
+	most useful for syntax highlighting. For fenced code blocks in Markdown 
+	Extra, the function has access to the language class name (the one outside 
+	of the special attribute block). Credits to Mario Konrad for providing the 
+	implementation.
+
+
 PHP Markdown Lib 1.5.0 (1 Mar 2015)
 
 *	Added the ability start ordered lists with a number different from 1 and
