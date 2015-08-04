@@ -1292,11 +1292,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
 				[ ]*
-				(?:
-					\.?([-_:a-zA-Z0-9]+) # 2: standalone class name
-				|
-					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
-				)?
+				(?: \.?([-_:a-zA-Z0-9]+) )? # 2: standalone class name
+				[ ]*
+				(?:	'.$this->id_class_attr_catch_re.' )? # 3: Extra attributes
+				
 				[ ]* \n # Whitespace and newline following marker.
 				
 				# 4: Content
@@ -1323,9 +1322,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
 		if ($classname != "") {
-			if ($classname{0} == '.')
-				$classname = substr($classname, 1);
-			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
+			if ($classname{0} != '.')
+				$classname = ".$classname";
+			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", "$classname $attrs");
 		} else {
 			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
 		}
