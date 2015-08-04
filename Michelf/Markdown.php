@@ -64,6 +64,9 @@ class Markdown implements MarkdownInterface {
 
 	# Optional header id="" generation callback function.
 	public $header_id_func = null;
+	
+	# Optional function for converting code block content to HTML
+	public $code_block_content_func = null;
 
 	# Class attribute to toggle "enhanced ordered list" behaviour
 	# setting this to true will allow ordered lists to start from the index
@@ -1024,7 +1027,11 @@ class Markdown implements MarkdownInterface {
 		$codeblock = $matches[1];
 
 		$codeblock = $this->outdent($codeblock);
-		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+		if ($this->code_block_content_func) {
+			$codeblock = call_user_func($this->code_block_content_func, $codeblock, "");
+		} else {
+			$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+		}
 
 		# trim leading newlines and trailing newlines
 		$codeblock = preg_replace('/\A\n+|\n+\z/', '', $codeblock);
