@@ -43,6 +43,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 	# setting this to true will put attributes on the `pre` tag instead.
 	public $code_attr_on_pre = false;
 	
+	# Optional content function for code blocks
+	public $code_block_content_func = null;
+
 	# Predefined abbreviations.
 	public $predef_abbr = array();
 
@@ -1294,7 +1297,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				[ ]*
 				(?:
 					\.?([-_:a-zA-Z0-9]+) # 2: standalone class name
-				|
+				)?
+				[ ]*
+				(?:
 					'.$this->id_class_attr_catch_re.' # 3: Extra attributes
 				)?
 				[ ]* \n # Whitespace and newline following marker.
@@ -1318,14 +1323,20 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$classname =& $matches[2];
 		$attrs     =& $matches[3];
 		$codeblock = $matches[4];
-		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+
+		if ($this->code_block_content_func) {
+			$codeblock = call_user_func($this->code_block_content_func, $codeblock, $classname);
+		} else {
+			$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+		}
+
 		$codeblock = preg_replace_callback('/^\n+/',
 			array($this, '_doFencedCodeBlocks_newlines'), $codeblock);
 
 		if ($classname != "") {
-			if ($classname{0} == '.')
-				$classname = substr($classname, 1);
-			$attr_str = ' class="'.$this->code_class_prefix.$classname.'"';
+			if ($classname{0} != '.')
+				$classname = ".$classname";
+			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", "$classname $attrs");
 		} else {
 			$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs);
 		}
