@@ -32,11 +32,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $fn_link_class = "footnote-ref";
 	public $fn_backlink_class = "footnote-backref";
 
-	# Text to be displayed within footnote backlinks. The default is '↩'; the
-	# U+FE0E on the end is a Unicode variant selector used to prevent iOS from
-	# displaying the arrow character as an emoji. Note: This value is inserted
-	# as raw HTML, so dangerous/special characters must be pre-escaped!
-	public $fn_backlink_text = '&#8617;&#xFE0E;';
+	# Content to be displayed within footnote backlinks. The default is '↩';
+	# the U+FE0E on the end is a Unicode variant selector used to prevent iOS
+	# from displaying the arrow character as an emoji.
+	public $fn_backlink_html = '&#8617;&#xFE0E;';
 
 	# Class name for table cell alignment (%% replaced left/center/right)
 	# For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
@@ -1481,7 +1480,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
-			$backlink_text = $this->fn_backlink_text;
+			$backlink_text = $this->fn_backlink_html;
 			$num = 0;
 			
 			while (!empty($this->footnotes_ordered)) {
