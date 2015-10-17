@@ -32,6 +32,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $fn_link_class = "footnote-ref";
 	public $fn_backlink_class = "footnote-backref";
 
+	# Content to be displayed within footnote backlinks. The default is '↩';
+	# the U+FE0E on the end is a Unicode variant selector used to prevent iOS
+	# from displaying the arrow character as an emoji.
+	public $fn_backlink_html = '&#8617;&#xFE0E;';
+
 	# Class name for table cell alignment (%% replaced left/center/right)
 	# For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
 	# If empty, the align attribute is used instead of a class name.
@@ -1475,6 +1480,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
+			$backlink_text = $this->fn_backlink_html;
 			$num = 0;
 			
 			while (!empty($this->footnotes_ordered)) {
@@ -1494,9 +1500,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$note_id = $this->encodeAttribute($note_id);
 
 				# Prepare backlink, multiple backlinks if multiple references
-				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;</a>";
+				$backlink = "<a href=\"#fnref:$note_id\"$attr>$backlink_text</a>";
 				for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
-					$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>&#8617;</a>";
+					$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>$backlink_text</a>";
 				}
 				# Add backlink to last paragraph; create new paragraph if needed.
 				if (preg_match('{</p>$}', $footnote)) {

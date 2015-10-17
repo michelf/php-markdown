@@ -187,6 +187,16 @@ Current Version
 	of the special attribute block). Credits to Mario Konrad for providing the 
 	implementation.
 
+*	The curled arrow character for the backlink in footnotes is now followed
+	by a Unicode variant selector to prevent it from being displayed in emoji
+	form on iOS.
+
+	Note that in older browsers the variant selector is often interpreted as a 
+	separate character, making it visible after the arrow. So there is now a 
+	also a `fn_backlink_html` configuration variable that can be used to set 
+	the link text to something else. Credits to Dana for providing the 
+	implementation.
+
 
 PHP Markdown Lib 1.5.0 (1 Mar 2015)
 
