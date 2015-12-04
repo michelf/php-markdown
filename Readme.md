@@ -197,6 +197,10 @@ Current Version
 	the link text to something else. Credits to Dana for providing the 
 	implementation.
 
+*	Fixed an issue in MarkdownExtra where long header lines followed by a
+	special attribute block would hit the backtrack limit an cause an empty
+	string to be returned.
+
 
 PHP Markdown Lib 1.5.0 (1 Mar 2015)
 

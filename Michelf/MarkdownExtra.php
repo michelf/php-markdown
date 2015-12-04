@@ -136,9 +136,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 	### Extra Attribute Parser ###
 
 	# Expression to use to catch attributes (includes the braces)
-	protected $id_class_attr_catch_re = '\{((?:[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
 	# Expression to use when parsing in a context when no capture is desired
-	protected $id_class_attr_nocatch_re = '\{(?:[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
 	protected function doExtraAttributes($tag_name, $attr, $defaultIdValue = null, $classes = array()) {
 	#
