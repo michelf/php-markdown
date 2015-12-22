@@ -174,7 +174,7 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-Current Version
+PHP Markdown Lib 1.5.1 (22 Dec 2015)
 
 *	For fenced code blocks in Markdown Extra, can now set a class name for the 
 	code block's language before the special attribute block. Previously, this 
