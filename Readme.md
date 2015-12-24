@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.5.0 - 1 Mar 2015
+PHP Markdown Lib 1.6.0 - 23 Dec 2015
 
 by Michel Fortin  
 <https://michelf.ca/>
@@ -174,7 +174,10 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-PHP Markdown Lib 1.5.1 (22 Dec 2015)
+PHP Markdown Lib 1.6.0 (23 Dec 2015)  
+
+Note: this version was incorrectly released as 1.5.1 on Dec 22, a number 
+that contradicted the versioning policy.
 
 *	For fenced code blocks in Markdown Extra, can now set a class name for the 
 	code block's language before the special attribute block. Previously, this 
