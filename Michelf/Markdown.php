@@ -67,6 +67,9 @@ class Markdown implements MarkdownInterface {
 	
 	# Optional function for converting code block content to HTML
 	public $code_block_content_func = null;
+	
+	# Optional function for converting code span content to HTML.
+	public $code_span_content_func = null;
 
 	# Class attribute to toggle "enhanced ordered list" behaviour
 	# setting this to true will allow ordered lists to start from the index
@@ -1045,7 +1048,11 @@ class Markdown implements MarkdownInterface {
 	#
 	# Create a code span markup for $code. Called from handleSpanToken.
 	#
-		$code = htmlspecialchars(trim($code), ENT_NOQUOTES);
+		if ($this->code_span_content_func) {
+			$code = call_user_func($this->code_span_content_func, $code);
+		} else {
+			$code = htmlspecialchars(trim($code), ENT_NOQUOTES);
+		}
 		return $this->hashPart("<code>$code</code>");
 	}
 
