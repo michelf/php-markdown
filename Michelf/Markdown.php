@@ -57,6 +57,7 @@ class Markdown implements MarkdownInterface {
 	
 	# Predefined urls and titles for reference links and images.
 	public $predef_urls = array();
+    public $predef_texts = array();
 	public $predef_titles = array();
 
 	# Optional filter function for URLs
@@ -122,6 +123,7 @@ class Markdown implements MarkdownInterface {
 
 	# Internal hashes used during transformation.
 	protected $urls = array();
+    protected $texts = array();
 	protected $titles = array();
 	protected $html_hashes = array();
 	
@@ -136,7 +138,8 @@ class Markdown implements MarkdownInterface {
 	#
 		# Clear global hashes.
 		$this->urls = $this->predef_urls;
-		$this->titles = $this->predef_titles;
+		$this->texts = $this->predef_texts;
+        $this->titles = $this->predef_titles;
 		$this->html_hashes = array();
 		
 		$this->in_anchor = false;
@@ -148,7 +151,8 @@ class Markdown implements MarkdownInterface {
 	# which may be taking up memory unnecessarly.
 	#
 		$this->urls = array();
-		$this->titles = array();
+		$this->texts = array();
+        $this->titles = array();
 		$this->html_hashes = array();
 	}
 
@@ -622,8 +626,12 @@ class Markdown implements MarkdownInterface {
 				$title = $this->encodeAttribute($title);
 				$result .=  " title=\"$title\"";
 			}
-		
-			$link_text = $this->runSpanGamut($link_text);
+            if ( isset( $this->texts[$link_id] ) ) {
+                $link_text = $this->runSpanGamut($this->texts[$link_id]);
+            } else {
+                $link_text = $this->runSpanGamut($link_text);
+            }
+
 			$result .= ">$link_text</a>";
 			$result = $this->hashPart($result);
 		}
