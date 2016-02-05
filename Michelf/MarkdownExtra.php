@@ -801,6 +801,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 			if (isset($this->ref_attr[$link_id]))
 				$result .= $this->ref_attr[$link_id];
 		
+			if ( isset( $this->texts[$link_id] ) ) {
+				$link_text = $this->runSpanGamut($this->texts[$link_id]);
+			} else {
+				$link_text = $this->runSpanGamut($link_text);
+			}
+			
 			$link_text = $this->runSpanGamut($link_text);
 			$result .= ">$link_text</a>";
 			$result = $this->hashPart($result);
