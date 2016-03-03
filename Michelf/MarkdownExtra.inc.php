@@ -7,7 +7,7 @@
  * in the Readme.php file if you want a simple autoloader setup.
  *
  * @package   php-markdown
- * @author    Michael Fortin <michael.fortin@michaelf.com>
+ * @author    Michel Fortin <michel.fortin@michelf.com>
  * @copyright 2004-2016 Michel Fortin <http://michelf.com/projects/php-markdown/>
  * @copyright (Original Markdown) 2004-2006 John Gruber <http://daringfireball.net/projects/markdown/>
  */
