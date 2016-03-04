@@ -180,7 +180,10 @@ Current Version:
 	function that will convert the content of the code span to HTML. This can
 	be useful to implement syntax highlighting. Although contrary to its 
 	code block equivalent, there is no syntax for specifying a language. 
-	Credits to styxit for the implementation.  
+	Credits to styxit for the implementation.
+
+*	In the parser code, switched to PHPDoc comment format. Thanks to 
+	Robbie Averill for the help.
 
 
 PHP Markdown Lib 1.6.0 (23 Dec 2015)  
