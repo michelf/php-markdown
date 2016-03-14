@@ -174,6 +174,15 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
+Current Version:
+
+*	Added a `code_span_content_func` configuration variable which takes a 
+	function that will convert the content of the code span to HTML. This can
+	be useful to implement syntax highlighting. Although contrary to its 
+	code block equivalent, there is no syntax for specifying a language. 
+	Credits to styxit for the implementation.  
+
+
 PHP Markdown Lib 1.6.0 (23 Dec 2015)  
 
 Note: this version was incorrectly released as 1.5.1 on Dec 22, a number 
