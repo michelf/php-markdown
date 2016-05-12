@@ -318,7 +318,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Tags that do not need to be closed.
 	 * @var string
 	 */
-	protected $auto_close_tags_re = 'hr|img|param|source|track';
+	protected $auto_close_tags_re = 'hr|img|param|source|track|p|li';
 	
 	/**
 	 * Hashify HTML Blocks and "clean tags".
