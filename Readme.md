@@ -149,7 +149,7 @@ Development and Testing
 -----------------------
 
 Pull requests for fixing bugs are welcome. Proposed new features are
-going meticulously reviewed -- taking into account backward compatibility, 
+going to be meticulously reviewed -- taking into account backward compatibility, 
 potential side effects, and future extensibility -- before deciding on
 acceptance or rejection.
 
