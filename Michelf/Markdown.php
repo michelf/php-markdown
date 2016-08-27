@@ -69,6 +69,13 @@ class Markdown implements MarkdownInterface {
 	public $no_markup   = false;
 	public $no_entities = false;
 	
+
+	/**
+	 * Change to `true` to enable line breaks on \n without two trailling spaces
+	 * @var boolean
+	 */
+	public $hard_wrap = false;
+
 	/**
 	 * Predefined URLs and titles for reference links and images.
 	 * @var array
@@ -621,8 +628,13 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function doHardBreaks($text) {
-		return preg_replace_callback('/ {2,}\n/', 
-			array($this, '_doHardBreaks_callback'), $text);
+  	if ($this->hard_wrap) {
+			return preg_replace_callback('/\n/', 
+				array($this, '_doHardBreaks_callback'), $text);
+		} else {
+			return preg_replace_callback('/ {2,}\n/', 
+				array($this, '_doHardBreaks_callback'), $text);
+		}
 	}
 
 	/**
