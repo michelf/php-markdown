@@ -93,6 +93,12 @@ class Markdown implements MarkdownInterface {
 	 * @var callable
 	 */
 	public $code_block_content_func = null;
+	
+	/**
+	 * If we need the code tag (SyntaxHighlighter)
+	 * @var boolean
+	 */
+	public $code_tag_in_pre = true;
 
 	/**
 	 * Optional function for converting code span content to HTML.
@@ -1209,7 +1215,10 @@ class Markdown implements MarkdownInterface {
 		# trim leading newlines and trailing newlines
 		$codeblock = preg_replace('/\A\n+|\n+\z/', '', $codeblock);
 
-		$codeblock = "<pre><code>$codeblock\n</code></pre>";
+		if($this->code_tag_in_pre) {
+	            $codeblock = "<code>$codeblock\n</code>";
+	        }
+		$codeblock = "<pre>$codeblock</pre>";
 		return "\n\n" . $this->hashBlock($codeblock) . "\n\n";
 	}
 
