@@ -66,6 +66,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * @var boolean
 	 */
 	public $code_attr_on_pre = false;
+	
+	/**
+	 * If we need the code tag (SyntaxHighlighter)
+	 * @var boolean
+	 */
+	public $code_tag_in_pre = true;
 
 	/**
 	 * Predefined abbreviations.
@@ -1467,7 +1473,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs, null, $classes);
 		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
-		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
+		
+		if($this->code_tag_in_pre) {
+	            $codeblock = "<code$code_attr_str>$codeblock\n</code>";
+	        }
+	        $codeblock = "<pre$pre_attr_str>$codeblock</pre>";
 		
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
