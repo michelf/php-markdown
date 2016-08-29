@@ -181,6 +181,11 @@ Current Version:
 	to the standard Markdown syntax these newlines are ignored unless they a 
 	preceded by two spaces. Thanks to Jonathan Cohlmeyer for the implementation.
 
+*	Improved the parsing of list items to fix problematic cases that came to 
+	light with the addition of `hard_wrap`. This should have no effect on the 
+	output except span-level list items that ended with two spaces (and thus 
+	ended with a line break).
+
 *	Added a `code_span_content_func` configuration variable which takes a 
 	function that will convert the content of the code span to HTML. This can
 	be useful to implement syntax highlighting. Although contrary to its 

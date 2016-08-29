@@ -1505,10 +1505,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 	/**
 	 * Parse text into paragraphs
-	 * @param  string $text String to process with html <p> tags
+	 * @param  string $text String to process in paragraphs
+	 * @param  boolean $wrap_in_p Whether paragraphs should be wrapped in <p> tags
 	 * @return string       HTML output
 	 */
-	protected function formParagraphs($text) {
+	protected function formParagraphs($text, $wrap_in_p = true) {
 		// Strip leading and trailing lines:
 		$text = preg_replace('/\A\n+|\n+\z/', '', $text);
 
@@ -1520,7 +1521,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			
 			// Check if this should be enclosed in a paragraph.
 			// Clean tag hashes & block tag hashes are left alone.
-			$is_p = !preg_match('/^B\x1A[0-9]+B|^C\x1A[0-9]+C$/', $value);
+			$is_p = $wrap_in_p && !preg_match('/^B\x1A[0-9]+B|^C\x1A[0-9]+C$/', $value);
 			
 			if ($is_p) {
 				$value = "<p>$value</p>";

@@ -1175,8 +1175,7 @@ class Markdown implements MarkdownInterface {
 		} else {
 			// Recursion for sub-lists:
 			$item = $this->doLists($this->outdent($item));
-			$item = preg_replace('/\n+$/', '', $item);
-			$item = $this->runSpanGamut($item);
+			$item = $this->formParagraphs($item, false);
 		}
 
 		return "<li>" . $item . "</li>\n";
@@ -1476,10 +1475,11 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * Parse paragraphs
 	 *
-	 * @param  string $text String to process with HTML <p> tags
+	 * @param  string $text String to process in paragraphs
+	 * @param  boolean $wrap_in_p Whether paragraphs should be wrapped in <p> tags
 	 * @return string
 	 */
-	protected function formParagraphs($text) {
+	protected function formParagraphs($text, $wrap_in_p = true) {
 		// Strip leading and trailing lines:
 		$text = preg_replace('/\A\n+|\n+\z/', '', $text);
 
@@ -1490,8 +1490,10 @@ class Markdown implements MarkdownInterface {
 			if (!preg_match('/^B\x1A[0-9]+B$/', $value)) {
 				// Is a paragraph.
 				$value = $this->runSpanGamut($value);
-				$value = preg_replace('/^([ ]*)/', "<p>", $value);
-				$value .= "</p>";
+				if ($wrap_in_p) {
+					$value = preg_replace('/^([ ]*)/', "<p>", $value);
+					$value .= "</p>";
+				}
 				$grafs[$key] = $this->unhash($value);
 			} else {
 				// Is a block.
