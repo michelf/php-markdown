@@ -176,6 +176,11 @@ Version History
 
 Current Version:
 
+*	Added a `hard_wrap` configuration variable to make all newline characters 
+	in the text become `<br>` tags in the HTML output. By default, according 
+	to the standard Markdown syntax these newlines are ignored unless they a 
+	preceded by two spaces. Thanks to Jonathan Cohlmeyer for the implementation.
+
 *	Added a `code_span_content_func` configuration variable which takes a 
 	function that will convert the content of the code span to HTML. This can
 	be useful to implement syntax highlighting. Although contrary to its 
