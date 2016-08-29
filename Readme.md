@@ -337,7 +337,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown Lib
-Copyright (c) 2004-2015 Michel Fortin
+Copyright (c) 2004-2016 Michel Fortin
 <https://michelf.ca/>  
 All rights reserved.
 
