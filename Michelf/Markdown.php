@@ -628,7 +628,7 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function doHardBreaks($text) {
-  	if ($this->hard_wrap) {
+		if ($this->hard_wrap) {
 			return preg_replace_callback('/\n/', 
 				array($this, '_doHardBreaks_callback'), $text);
 		} else {
