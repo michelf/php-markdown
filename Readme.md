@@ -192,6 +192,10 @@ Current Version:
 	code block equivalent, there is no syntax for specifying a language. 
 	Credits to styxit for the implementation.
 
+*	Fixed a Markdwon Extra issue where two-space-at-end-of-line hard breaks 
+	wouldn't work inside of HTML block elements such as `<p markdown="1">` 
+	where the element expects only span-level content.
+
 *	In the parser code, switched to PHPDoc comment format. Thanks to 
 	Robbie Averill for the help.
 

@@ -466,7 +466,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			// after each newline to prevent triggering any block element.
 			if ($span) {
 				$void = $this->hashPart("", ':');
-				$newline = "$void\n";
+				$newline = "\n$void";
 				$parts[0] = $void . str_replace("\n", $newline, $parts[0]) . $void;
 			}
 			
