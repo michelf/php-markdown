@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.6.0 - 23 Dec 2015
+PHP Markdown Lib 1.7.0 - 29 Oct 2016
 
 by Michel Fortin  
 <https://michelf.ca/>
@@ -174,7 +174,7 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-Current Version:
+PHP Markdown Lib 1.7.0 (29 Oct 2016)
 
 *	Added a `hard_wrap` configuration variable to make all newline characters 
 	in the text become `<br>` tags in the HTML output. By default, according 

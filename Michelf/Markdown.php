@@ -18,7 +18,7 @@ class Markdown implements MarkdownInterface {
 	 * Define the package version
 	 * @var string
 	 */
-	const MARKDOWNLIB_VERSION = "1.6.0";
+	const MARKDOWNLIB_VERSION = "1.7.0";
 
 	/**
 	 * Simple function interface - Initialize the parser and return the result
