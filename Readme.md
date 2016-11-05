@@ -192,7 +192,7 @@ PHP Markdown Lib 1.7.0 (29 Oct 2016)
 	code block equivalent, there is no syntax for specifying a language. 
 	Credits to styxit for the implementation.
 
-*	Fixed a Markdwon Extra issue where two-space-at-end-of-line hard breaks 
+*	Fixed a Markdown Extra issue where two-space-at-end-of-line hard breaks 
 	wouldn't work inside of HTML block elements such as `<p markdown="1">` 
 	where the element expects only span-level content.
 
