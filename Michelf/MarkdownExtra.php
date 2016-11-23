@@ -118,7 +118,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected $footnotes_ref_count = array();
 	protected $footnotes_numbers = array();
 	protected $abbr_desciptions = array();
-	/** @var @string */
+	/** @var string */
 	protected $abbr_word_re = '';
 	
 	/**
