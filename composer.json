@@ -1,0 +1,26 @@
+{
+    "name": "michelf/php-markdown",
+    "type": "library",
+    "description": "PHP Markdown",
+    "homepage": "http://michelf.com/projects/php-markdown",
+    "keywords": ["markdown"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Michel Fortin",
+            "homepage": "http://michelf.com"
+        },
+        {
+            "name": "John Gruber",
+            "homepage": "http://daringfireball.net"
+        }
+    ],
+    "require": {
+        "php": ">=4.0.5"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
