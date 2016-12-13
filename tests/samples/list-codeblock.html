@@ -1,0 +1,6 @@
+<ul>
+<li><p>A list item with a code block:</p>
+
+<pre><code>&lt;code goes here&gt;
+</code></pre></li>
+</ul>
