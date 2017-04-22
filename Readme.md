@@ -55,19 +55,19 @@ autoloading, see below.)
 With class autoloading in place, putting the 'Michelf' folder in your 
 include path should be enough for this to work:
 
-	use \Michelf\Markdown;
+	use Michelf\Markdown;
 	$my_html = Markdown::defaultTransform($my_text);
 
 Markdown Extra syntax is also available the same way:
 
-	use \Michelf\MarkdownExtra;
+	use Michelf\MarkdownExtra;
 	$my_html = MarkdownExtra::defaultTransform($my_text);
 
 If you wish to use PHP Markdown with another text filter function 
 built to parse HTML, you should filter the text *after* the `transform`
 function call. This is an example with [PHP SmartyPants][psp]:
 
-	use \Michelf\Markdown, \Michelf\SmartyPants;
+	use Michelf\Markdown, Michelf\SmartyPants;
 	$my_html = Markdown::defaultTransform($my_text);
 	$my_html = SmartyPants::defaultTransform($my_html);
 
@@ -76,7 +76,7 @@ found inside the parser class. If you want to customize the parser
 configuration, you can also instantiate it directly and change some 
 configuration variables:
 
-	use \Michelf\MarkdownExtra;
+	use Michelf\MarkdownExtra;
 	$parser = new MarkdownExtra;
 	$parser->fn_id_prefix = "post22-";
 	$my_html = $parser->transform($my_text);
