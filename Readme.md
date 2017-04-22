@@ -43,17 +43,28 @@ Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
 in many situations. You might need to set it to higher values. Later PHP
 releases defaults to 1 000 000, which is usually fine.
 
+Installation
+------------
+
+Install this library with composer:
+
+	$ composer require michelf/php-markdown
 
 Usage
 -----
 
-This library package is meant to be used with class autoloading. For autoloading
-to work, your project needs have setup a PSR-0-compatible autoloader. See the
-included Readme.php file for a minimal autoloader setup. (If you cannot use
-autoloading, see below.)
+This library package is meant to be used with
+composer's
+[autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading). Simply
+include composer's generated `vendor/autoload.php`:
 
-With class autoloading in place, putting the 'Michelf' folder in your
-include path should be enough for this to work:
+	require 'vendor/autoload.php';
+
+Without composer, for autoloading to work, your project needs a
+PSR-4-compatible autoloader. See the included Readme.php file for a minimal
+autoloader setup. (If you cannot use autoloading, see below.)
+
+With class autoloading in place:
 
 	use Michelf\Markdown;
 	$my_html = Markdown::defaultTransform($my_text);
