@@ -11,7 +11,7 @@
 namespace Michelf;
 
 /**
- * Markdown Parser Interface 
+ * Markdown Parser Interface
  */
 interface MarkdownInterface {
 	/**
