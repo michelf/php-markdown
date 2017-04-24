@@ -97,11 +97,11 @@ To learn more, see the full list of [configuration variables].
 ### Usage without an autoloader
 
 If you cannot use class autoloading, you can still use `include` or `require`
-to access the parser. To load the `\Michelf\Markdown` parser, do it this way:
+to access the parser. To load the `Michelf\Markdown` parser, do it this way:
 
 	require_once 'Michelf/Markdown.inc.php';
 
-Or, if you need the `\Michelf\MarkdownExtra` parser:
+Or, if you need the `Michelf\MarkdownExtra` parser:
 
 	require_once 'Michelf/MarkdownExtra.inc.php';
 
