@@ -37,7 +37,8 @@ Requirement
 This library package requires PHP 5.3 or later.
 
 Note: The older plugin/library hybrid package for PHP Markdown and
-PHP Markdown Extra is still maintained and will work with PHP 4.0.5 and later.
+PHP Markdown Extra is no longer maintained but will work with PHP 4.0.5 and
+later.
 
 Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
 in many situations. You might need to set it to higher values. Later PHP
