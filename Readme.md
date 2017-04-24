@@ -43,25 +43,20 @@ Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
 in many situations. You might need to set it to higher values. Later PHP
 releases defaults to 1 000 000, which is usually fine.
 
-Installation
-------------
-
-Install this library with composer:
-
-	$ composer require michelf/php-markdown
 
 Usage
 -----
 
-This library package is meant to be used with
-composer's
-[autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading). Simply
-include composer's generated `vendor/autoload.php`:
+To use this library with Composer, first install it with:
+
+	$ composer require michelf/php-markdown
+
+Then include Composer's generated vendor/autoload.php to [enable autoloading]:
 
 	require 'vendor/autoload.php';
 
-Without composer, for autoloading to work, your project needs a
-PSR-4-compatible autoloader. See the included Readme.php file for a minimal
+Without Composer, for autoloading to work, your project needs an autoloader
+compatible with PSR-4 or PSR-0. See the included Readme.php file for a minimal
 autoloader setup. (If you cannot use autoloading, see below.)
 
 With class autoloading in place:
@@ -76,7 +71,7 @@ Markdown Extra syntax is also available the same way:
 
 If you wish to use PHP Markdown with another text filter function
 built to parse HTML, you should filter the text *after* the `transform`
-function call. This is an example with [PHP SmartyPants][psp]:
+function call. This is an example with [PHP SmartyPants]:
 
 	use Michelf\Markdown, Michelf\SmartyPants;
 	$my_html = Markdown::defaultTransform($my_text);
@@ -94,6 +89,8 @@ configuration variables:
 
 To learn more, see the full list of [configuration variables].
 
+ [enable autoloading]: https://getcomposer.org/doc/01-basic-usage.md#autoloading
+ [PHP SmartyPants]: https://michelf.ca/projects/php-smartypants/
  [configuration variables]: https://michelf.ca/projects/php-markdown/configuration/
 
 
@@ -184,6 +181,11 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 
 Version History
 ---------------
+
+Current (unreleased)
+
+*	Autoloading with Composer now uses PSR-4.
+
 
 PHP Markdown Lib 1.7.0 (29 Oct 2016)
 
