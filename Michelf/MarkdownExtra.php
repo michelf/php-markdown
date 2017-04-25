@@ -101,6 +101,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		);
 		$this->span_gamut += array(
 			"doFootnotes"        => 5,
+			"doStrikethrough"    => 55,
 			"doAbbreviations"    => 70,
 		);
 
@@ -1782,4 +1783,32 @@ class MarkdownExtra extends \Michelf\Markdown {
 			return $matches[0];
 		}
 	}
+	
+	protected function doStrikethrough($text) {
+	#
+	# Strikethrough:
+	#    in:  text ~~deleted~~ from doc
+	#    out: text <del>deleted</del> from doc
+	#
+		$parts = preg_split('/(?<![~])(~~)(?![~])/', $text, null, PREG_SPLIT_DELIM_CAPTURE);
+		
+		//don't bother if nothing to do...
+		if(count($parts) <= 1)
+			return $text;
+		
+		$inTag = false;
+		foreach($parts as &$part) {
+			if($part == '~~') {
+				$part = ($inTag ? '</del>' : '<del>');
+				$inTag = !$inTag;
+			}
+		}
+		
+		//no hanging delimiter
+		if($inTag)
+			$parts[] = '</del>';
+		
+		return implode('', $parts);
+	}
+	
 }
