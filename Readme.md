@@ -44,6 +44,15 @@ Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
 in many situations. You might need to set it to higher values. Later PHP
 releases defaults to 1 000 000, which is usually fine.
 
+Installation
+------------
+
+Using [Composer](https://getcomposer.org/) (the preferred method) simply run
+
+    # This will ensure you get the latest stable version
+    composer require michelf/php-markdown
+
+and the package will be installed into your `./vendor` directory and available for use. *Make sure to `require` Composer's `vendor/autoload.php` to enable autoloading throughout your project.*
 
 Usage
 -----
