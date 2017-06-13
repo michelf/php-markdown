@@ -74,6 +74,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $predef_abbr = array();
 
 	/**
+	 * Only convert atx-style headers if there's a space between the header and #
+	 * @var boolean
+	 */
+	public $enforce_space_atx_style_headers = false;
+
+	/**
 	 * Parser implementation
 	 */
 
@@ -1042,7 +1048,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		//
 		$text = preg_replace_callback('{
 				^(\#{1,6})	# $1 = string of #\'s
-				[ ]*
+				[ ]'.($this->enforce_space_atx_style_headers ? '+' : '*').'
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
