@@ -77,7 +77,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Only convert atx-style headers if there's a space between the header and #
 	 * @var boolean
 	 */
-	public $enforce_space_atx_style_headers = false;
+	public $hashtag_protection = false;
 
 	/**
 	 * Parser implementation
@@ -1048,7 +1048,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		//
 		$text = preg_replace_callback('{
 				^(\#{1,6})	# $1 = string of #\'s
-				[ ]'.($this->enforce_space_atx_style_headers ? '+' : '*').'
+				[ ]'.($this->hashtag_protection ? '+' : '*').'
 				(.+?)		# $2 = Header text
 				[ ]*
 				\#*			# optional closing #\'s (not counted)
