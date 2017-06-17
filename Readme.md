@@ -187,6 +187,12 @@ Current (unreleased)
 
 *	Autoloading with Composer now uses PSR-4.
 
+*	In Markdown Extra, added the `hashtag_protection` configuration variable.
+	When set to `true` it prevents ATX-style headers with no space after the initial
+	hash from being interpreted as headers. This way your precious hashtags
+	are preserved.
+	(Thanks to Jaussoin Timothée for the implementation.)
+
 
 PHP Markdown Lib 1.7.0 (29 Oct 2016)
 
