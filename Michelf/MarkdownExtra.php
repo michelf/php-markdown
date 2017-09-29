@@ -1473,7 +1473,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr_str = $this->doExtraAttributes($this->code_attr_on_pre ? "pre" : "code", $attrs, null, $classes);
 		$pre_attr_str  = $this->code_attr_on_pre ? $attr_str : '';
 		$code_attr_str = $this->code_attr_on_pre ? '' : $attr_str;
-		$codeblock = trim($codeblock);
+		$codeblock = rtrim($codeblock, "\r\n");
 		$codeblock  = "<pre$pre_attr_str><code$code_attr_str>$codeblock</code></pre>";
 
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
