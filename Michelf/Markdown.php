@@ -1395,6 +1395,7 @@ class Markdown implements MarkdownInterface {
 					if (strlen($token_stack[0]) == 1) {
 						$text_stack[1] .= array_shift($token_stack);
 						$text_stack[0] .= array_shift($text_stack);
+						$em = '';
 					}
 					// Closing strong marker:
 					array_shift($token_stack);
