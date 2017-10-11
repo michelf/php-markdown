@@ -188,6 +188,12 @@ class Markdown implements MarkdownInterface {
 	protected $in_anchor = false;
 
 	/**
+	 * Status flag to avoid invalid nesting.
+	 * @var boolean
+	 */
+	protected $in_emphasis_processing = false;
+
+	/**
 	 * Called before the transformation process starts to setup parser states.
 	 * @return void
 	 */
@@ -197,6 +203,7 @@ class Markdown implements MarkdownInterface {
 		$this->titles      = $this->predef_titles;
 		$this->html_hashes = array();
 		$this->in_anchor   = false;
+		$this->in_emphasis_processing = false;
 	}
 
 	/**
@@ -1303,6 +1310,11 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function doItalicsAndBold($text) {
+		if ($this->in_emphasis_processing) {
+			return $text; // avoid reentrency
+		}
+		$this->in_emphasis_processing = true;
+
 		$token_stack = array('');
 		$text_stack = array('');
 		$em = '';
@@ -1417,6 +1429,7 @@ class Markdown implements MarkdownInterface {
 				}
 			}
 		}
+		$this->in_emphasis_processing = false;
 		return $text_stack[0];
 	}
 
