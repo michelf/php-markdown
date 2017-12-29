@@ -1610,7 +1610,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 		if (!empty($this->footnotes_ordered)) {
 			$text .= "\n\n";
-			$text .= "<div class=\"footnotes\">\n";
+			$text .= "<div class=\"footnotes\" role=\"doc-endnotes\">\n";
 			$text .= "<hr" . $this->empty_element_suffix . "\n";
 			$text .= "<ol>\n\n";
 
@@ -1625,6 +1625,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
+			$attr .= " role=\"doc-backlink\"";
 			$backlink_text = $this->fn_backlink_html;
 			$num = 0;
 
@@ -1656,7 +1657,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 					$footnote .= "\n\n<p>$backlink</p>";
 				}
 
-				$text .= "<li id=\"fn:$note_id\">\n";
+				$text .= "<li id=\"fn:$note_id\" role=\"doc-endnote\">\n";
 				$text .= $footnote . "\n";
 				$text .= "</li>\n\n";
 			}
@@ -1701,6 +1702,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
+			$attr .= " role=\"doc-reflink\"";
 
 			$attr = str_replace("%%", $num, $attr);
 			$node_id = $this->encodeAttribute($node_id);
