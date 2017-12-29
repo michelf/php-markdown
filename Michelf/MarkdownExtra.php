@@ -1702,7 +1702,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
-			$attr .= " role=\"doc-reflink\"";
+			$attr .= " role=\"doc-noteref\"";
 
 			$attr = str_replace("%%", $num, $attr);
 			$node_id = $this->encodeAttribute($node_id);
