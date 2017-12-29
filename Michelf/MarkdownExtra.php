@@ -1624,6 +1624,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$title = $this->fn_backlink_title;
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
+				$attr .= " aria-label=\"$title\"";
 			}
 			$attr .= " role=\"doc-backlink\"";
 			$backlink_text = $this->fn_backlink_html;
