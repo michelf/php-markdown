@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.7.0 - 29 Oct 2016
+PHP Markdown Lib 1.8.0 - 14 Jan 2018
 
 by Michel Fortin  
 <https://michelf.ca/>
@@ -183,13 +183,14 @@ PHP Markdown, please visit [michelf.ca/donate] or send Bitcoin to
 Version History
 ---------------
 
-Current (unreleased)
+PHP Markdown Lib 1.8.0 (14 Jan 2018)
 
 *	Autoloading with Composer now uses PSR-4.
 
 *	HTML output for Markdown Extra footnotes now include `role` attributes
 	with values from [WAI-ARIA](https://www.w3.org/TR/dpub-aria/) to
 	make them more accessible.
+	(Thanks to Tobias Bengfort)
 
 *	In Markdown Extra, added the `hashtag_protection` configuration variable.
 	When set to `true` it prevents ATX-style headers with no space after the initial
