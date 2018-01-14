@@ -187,6 +187,10 @@ Current (unreleased)
 
 *	Autoloading with Composer now uses PSR-4.
 
+*	HTML output for Markdown Extra footnotes now include `role` attributes
+	with values from [WAI-ARIA](https://www.w3.org/TR/dpub-aria/) to
+	make them more accessible.
+
 *	In Markdown Extra, added the `hashtag_protection` configuration variable.
 	When set to `true` it prevents ATX-style headers with no space after the initial
 	hash from being interpreted as headers. This way your precious hashtags
