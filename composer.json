@@ -22,5 +22,8 @@
 	},
 	"autoload": {
  		"psr-4": { "Michelf\\": "Michelf/" }
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5.7"
 	}
 }
