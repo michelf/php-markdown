@@ -21,13 +21,13 @@ $html = Markdown::defaultTransform($text);
 ?>
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>PHP Markdown Lib - Readme</title>
-    </head>
-    <body>
+	<head>
+		<title>PHP Markdown Lib - Readme</title>
+	</head>
+	<body>
 		<?php
 			// Put HTML content in the document
 			echo $html;
 		?>
-    </body>
+	</body>
 </html>
