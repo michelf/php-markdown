@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Michelf\Markdown;
+use Michelf\MarkdownExtra;
 
 class PhpMarkdownTest extends TestCase
 {
@@ -19,17 +20,20 @@ class PhpMarkdownTest extends TestCase
 	 * @param string $inputPath Input markdown path
 	 * @param string $htmlPath File path of expected transformed output (X)HTML
 	 *
+	 * @param bool $xhtml True if XHTML. Otherwise, HTML is assumed.
+	 *
 	 * @return void
 	 */
-	public function testTransformingOfPhpMarkdown($inputPath, $htmlPath) {
+	public function testTransformingOfPhpMarkdown($inputPath, $htmlPath, $xhtml = false) {
 		$inputMarkdown = file_get_contents($inputPath);
 		$expectedHtml = file_get_contents($htmlPath);
 		$result = Markdown::defaultTransform($inputMarkdown);
 
-		$this->assertSame(
+		MarkdownTestHelper::assertSameNormalized(
 			$expectedHtml,
 			$result,
-			"Markdown in $inputPath converts exactly to expected $htmlPath"
+			"Markdown in $inputPath converts exactly to expected $htmlPath",
+			$xhtml
 		);
 	}
 
@@ -47,17 +51,20 @@ class PhpMarkdownTest extends TestCase
 	 * @param string $inputPath Input markdown path
 	 * @param string $htmlPath File path of expected transformed output (X)HTML
 	 *
+	 * @param bool $xhtml True if XHTML. Otherwise, HTML is assumed.
+	 *
 	 * @return void
 	 */
-	public function testTransformingOfMarkdownExtra($inputPath, $htmlPath) {
+	public function testTransformingOfMarkdownExtra($inputPath, $htmlPath, $xhtml = false) {
 		$inputMarkdown = file_get_contents($inputPath);
 		$expectedHtml = file_get_contents($htmlPath);
-		$result = Markdown::defaultTransform($inputMarkdown);
+		$result = MarkdownExtra::defaultTransform($inputMarkdown);
 
-		$this->assertSame(
+		MarkdownTestHelper::assertSameNormalized(
 			$expectedHtml,
 			$result,
-			"Markdown in $inputPath converts exactly to expected $htmlPath"
+			"Markdown in $inputPath converts exactly to expected $htmlPath",
+			$xhtml
 		);
 	}
 
@@ -76,18 +83,21 @@ class PhpMarkdownTest extends TestCase
 	 * @param string $inputPath Input markdown path
 	 * @param string $htmlPath File path of expected transformed output (X)HTML
 	 *
+	 * @param bool $xhtml True if XHTML. Otherwise, HTML is assumed.
+	 *
 	 * @return void
 	 */
-	public function testTransformingOfRegularMarkdown($inputPath, $htmlPath)
+	public function testTransformingOfRegularMarkdown($inputPath, $htmlPath, $xhtml = false)
 	{
 		$inputMarkdown = file_get_contents($inputPath);
 		$expectedHtml = file_get_contents($htmlPath);
 		$result = Markdown::defaultTransform($inputMarkdown);
 
-		$this->assertSame(
+		MarkdownTestHelper::assertSameNormalized(
 			$expectedHtml,
 			$result,
-			"Markdown in $inputPath converts exactly to expected $htmlPath"
+			"Markdown in $inputPath converts exactly to expected $htmlPath",
+			$xhtml
 		);
 	}
 }
