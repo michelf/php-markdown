@@ -80,6 +80,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $hashtag_protection = false;
 
 	/**
+	 * Determines whether footnotes should be appended to the end of the document.
+	 * Footnotes can also be retrieved via the getFootnotes() function.
+	 * @var boolean
+	 */
+	public $append_footnotes = true;
+
+	/**
 	 * Parser implementation
 	 */
 
@@ -121,6 +128,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 */
 	protected $footnotes = array();
 	protected $footnotes_ordered = array();
+	protected $footnotes_assembled = null;
 	protected $footnotes_ref_count = array();
 	protected $footnotes_numbers = array();
 	protected $abbr_desciptions = array();
@@ -1608,12 +1616,23 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$text = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}',
 			array($this, '_appendFootnotes_callback'), $text);
 
-		if (!empty($this->footnotes_ordered)) {
+		if (!empty($this->footnotes_ordered) && $this->append_footnotes) {
 			$text .= "\n\n";
 			$text .= "<div class=\"footnotes\" role=\"doc-endnotes\">\n";
 			$text .= "<hr" . $this->empty_element_suffix . "\n";
-			$text .= "<ol>\n\n";
+			$text .= $this->getFootnotes();
+			$text .= "</div>";
+		}
+		return $text;
+	}
 
+
+	/**
+	 * Generates and returns the HTML for footnotes.  Called by appendFootnotes.
+	 * @return string
+	 */
+	public function getFootnotes() {
+		if ($this->footnotes_assembled === null) {
 			$attr = "";
 			if ($this->fn_backlink_class != "") {
 				$class = $this->fn_backlink_class;
@@ -1630,6 +1649,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$backlink_text = $this->fn_backlink_html;
 			$num = 0;
 
+			$text = "<ol>\n\n";
 			while (!empty($this->footnotes_ordered)) {
 				$footnote = reset($this->footnotes_ordered);
 				$note_id = key($this->footnotes_ordered);
@@ -1662,11 +1682,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$text .= $footnote . "\n";
 				$text .= "</li>\n\n";
 			}
-
 			$text .= "</ol>\n";
-			$text .= "</div>";
+
+			$this->footnotes_assembled = $text;
 		}
-		return $text;
+		return $this->footnotes_assembled;
 	}
 
 	/**
