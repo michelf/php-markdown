@@ -81,10 +81,18 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 	/**
 	 * Determines whether footnotes should be appended to the end of the document.
-	 * Footnotes can also be retrieved via the getFootnotes() function.
+	 * If true, footnote html can be retrieved from $this->footnotes_assembled.
 	 * @var boolean
 	 */
-	public $append_footnotes = true;
+	public $omit_footnotes = false;
+
+
+	/**
+	 * After parsing, the HTML for the list of footnotes appears here.
+	 * This is available only if $omit_footnotes == true.
+	 * @var null|string
+	 */
+	public $footnotes_assembled = null;
 
 	/**
 	 * Parser implementation
@@ -128,7 +136,6 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 */
 	protected $footnotes = array();
 	protected $footnotes_ordered = array();
-	protected $footnotes_assembled = null;
 	protected $footnotes_ref_count = array();
 	protected $footnotes_numbers = array();
 	protected $abbr_desciptions = array();
@@ -154,6 +161,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
 		$this->footnote_counter = 1;
+		$this->footnotes_assembled = null;
 
 		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
 			if ($this->abbr_word_re)
@@ -173,6 +181,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$this->footnotes_numbers = array();
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
+
+		if ( ! $this->omit_footnotes )
+			$this->footnotes_assembled = null;
 
 		parent::teardown();
 	}
@@ -1616,77 +1627,77 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$text = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}',
 			array($this, '_appendFootnotes_callback'), $text);
 
-		if (!empty($this->footnotes_ordered) && $this->append_footnotes) {
-			$text .= "\n\n";
-			$text .= "<div class=\"footnotes\" role=\"doc-endnotes\">\n";
-			$text .= "<hr" . $this->empty_element_suffix . "\n";
-			$text .= $this->getFootnotes();
-			$text .= "</div>";
+		if ( ! empty( $this->footnotes_ordered ) ) {
+			$this->_doFootnotes();
+			if ( ! $this->omit_footnotes ) {
+				$text .= "\n\n";
+				$text .= "<div class=\"footnotes\" role=\"doc-endnotes\">\n";
+				$text .= "<hr" . $this->empty_element_suffix . "\n";
+				$text .= $this->footnotes_assembled;
+				$text .= "</div>";
+			}
 		}
 		return $text;
 	}
 
 
 	/**
-	 * Generates and returns the HTML for footnotes.  Called by appendFootnotes.
-	 * @return string
+	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if footnotes are not being appended.
+	 * @return void
 	 */
-	public function getFootnotes() {
-		if ($this->footnotes_assembled === null) {
-			$attr = "";
-			if ($this->fn_backlink_class != "") {
-				$class = $this->fn_backlink_class;
-				$class = $this->encodeAttribute($class);
-				$attr .= " class=\"$class\"";
-			}
-			if ($this->fn_backlink_title != "") {
-				$title = $this->fn_backlink_title;
-				$title = $this->encodeAttribute($title);
-				$attr .= " title=\"$title\"";
-				$attr .= " aria-label=\"$title\"";
-			}
-			$attr .= " role=\"doc-backlink\"";
-			$backlink_text = $this->fn_backlink_html;
-			$num = 0;
-
-			$text = "<ol>\n\n";
-			while (!empty($this->footnotes_ordered)) {
-				$footnote = reset($this->footnotes_ordered);
-				$note_id = key($this->footnotes_ordered);
-				unset($this->footnotes_ordered[$note_id]);
-				$ref_count = $this->footnotes_ref_count[$note_id];
-				unset($this->footnotes_ref_count[$note_id]);
-				unset($this->footnotes[$note_id]);
-
-				$footnote .= "\n"; // Need to append newline before parsing.
-				$footnote = $this->runBlockGamut("$footnote\n");
-				$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}',
-					array($this, '_appendFootnotes_callback'), $footnote);
-
-				$attr = str_replace("%%", ++$num, $attr);
-				$note_id = $this->encodeAttribute($note_id);
-
-				// Prepare backlink, multiple backlinks if multiple references
-				$backlink = "<a href=\"#fnref:$note_id\"$attr>$backlink_text</a>";
-				for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
-					$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>$backlink_text</a>";
-				}
-				// Add backlink to last paragraph; create new paragraph if needed.
-				if (preg_match('{</p>$}', $footnote)) {
-					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
-				} else {
-					$footnote .= "\n\n<p>$backlink</p>";
-				}
-
-				$text .= "<li id=\"fn:$note_id\" role=\"doc-endnote\">\n";
-				$text .= $footnote . "\n";
-				$text .= "</li>\n\n";
-			}
-			$text .= "</ol>\n";
-
-			$this->footnotes_assembled = $text;
+	protected function _doFootnotes() {
+		$attr = "";
+		if ($this->fn_backlink_class != "") {
+			$class = $this->fn_backlink_class;
+			$class = $this->encodeAttribute($class);
+			$attr .= " class=\"$class\"";
 		}
-		return $this->footnotes_assembled;
+		if ($this->fn_backlink_title != "") {
+			$title = $this->fn_backlink_title;
+			$title = $this->encodeAttribute($title);
+			$attr .= " title=\"$title\"";
+			$attr .= " aria-label=\"$title\"";
+		}
+		$attr .= " role=\"doc-backlink\"";
+		$backlink_text = $this->fn_backlink_html;
+		$num = 0;
+
+		$text = "<ol>\n\n";
+		while (!empty($this->footnotes_ordered)) {
+			$footnote = reset($this->footnotes_ordered);
+			$note_id = key($this->footnotes_ordered);
+			unset($this->footnotes_ordered[$note_id]);
+			$ref_count = $this->footnotes_ref_count[$note_id];
+			unset($this->footnotes_ref_count[$note_id]);
+			unset($this->footnotes[$note_id]);
+
+			$footnote .= "\n"; // Need to append newline before parsing.
+			$footnote = $this->runBlockGamut("$footnote\n");
+			$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}',
+				array($this, '_appendFootnotes_callback'), $footnote);
+
+			$attr = str_replace("%%", ++$num, $attr);
+			$note_id = $this->encodeAttribute($note_id);
+
+			// Prepare backlink, multiple backlinks if multiple references
+			$backlink = "<a href=\"#fnref:$note_id\"$attr>$backlink_text</a>";
+			for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
+				$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>$backlink_text</a>";
+			}
+			// Add backlink to last paragraph; create new paragraph if needed.
+			if (preg_match('{</p>$}', $footnote)) {
+				$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
+			} else {
+				$footnote .= "\n\n<p>$backlink</p>";
+			}
+
+			$text .= "<li id=\"fn:$note_id\" role=\"doc-endnote\">\n";
+			$text .= $footnote . "\n";
+			$text .= "</li>\n\n";
+		}
+		$text .= "</ol>\n";
+
+		$this->footnotes_assembled = $text;
 	}
 
 	/**
