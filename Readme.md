@@ -181,6 +181,15 @@ PHP Markdown, please visit [michelf.ca/donate].
 Version History
 ---------------
 
+Current
+
+*	Added configuration variable `omit_footnotes`. When `true` footnotes are not
+	appended at the end of the generated HTML and the `footnotes_assembled`
+	variable will contain the HTML for the footnote list, allowing footnotes to be
+	moved somewhere else on the page.
+	(Thanks to James K. for the implementation.)
+
+
 PHP Markdown Lib 1.8.0 (14 Jan 2018)
 
 *	Autoloading with Composer now uses PSR-4.
