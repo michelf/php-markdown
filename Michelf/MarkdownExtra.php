@@ -90,6 +90,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * After parsing, the HTML for the list of footnotes appears here.
 	 * This is available only if $omit_footnotes == true.
+	 *
+	 * Note: when placing the content of `footnotes_assembled` on the page,
+	 * consider adding the attribute `role="doc-endnotes"` to the `div` or
+	 * `section` that will enclose the list of footnotes so they are
+	 * reachable to accessibility tools the same way they would be with the
+	 * default HTML output.
 	 * @var null|string
 	 */
 	public $footnotes_assembled = null;
