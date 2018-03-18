@@ -1,0 +1,30 @@
+language: php
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/
+
+# Run tests against all these PHP versions
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - hhvm
+
+before_script:
+  - composer install --prefer-dist
+
+script:
+  - vendor/bin/phpunit --coverage-clover=coverage.clover
+
+# Uncomment out to submit code coverage report to scrutinizer
+#after_script:
+#  - wget https://scrutinizer-ci.com/ocular.phar; php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+notifications:
+  email: false
