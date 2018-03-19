@@ -163,10 +163,12 @@ potential side effects, and future extensibility -- before deciding on
 acceptance or rejection.
 
 If you make a pull request that includes changes to the parser please add
-tests for what is being changed to [MDTest][] and make a pull request there
-too.
+tests for what is being changed to the `test/` directory. This can be as
+simple as adding a `.text` (input) file with a corresponding `.xhtml`
+(output) file to proper category under `./test/resources/`.
 
- [MDTest]: https://github.com/michelf/mdtest/
+Traditionally tests were in a separate repository, [MDTest](https://github.com/michelf/mdtest)
+but they are now located here, alongside the source code.
 
 
 Donations
