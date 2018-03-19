@@ -1,12 +1,14 @@
 PHP Markdown
 ============
 
+[![Build Status](https://travis-ci.org/michelf/php-markdown.svg?branch=lib)](https://travis-ci.org/michelf/php-markdown)
+
 PHP Markdown Lib 1.8.0 - 14 Jan 2018
 
-by Michel Fortin  
+by Michel Fortin
 <https://michelf.ca/>
 
-based on Markdown by John Gruber  
+based on Markdown by John Gruber
 <https://daringfireball.net/>
 
 
@@ -25,9 +27,9 @@ software tool, originally written in Perl, that converts the plain text
 markup to HTML. PHP Markdown is a port to PHP of the original Markdown
 program by John Gruber.
 
-*	[Full documentation of the Markdown syntax](<https://daringfireball.net/projects/markdown/>)  
+*	[Full documentation of the Markdown syntax](<https://daringfireball.net/projects/markdown/>)
 	— Daring Fireball (John Gruber)
-*	[Markdown Extra syntax additions](<https://michelf.ca/projects/php-markdown/extra/>)  
+*	[Markdown Extra syntax additions](<https://michelf.ca/projects/php-markdown/extra/>)
 	— Michel Fortin
 
 
@@ -163,10 +165,12 @@ potential side effects, and future extensibility -- before deciding on
 acceptance or rejection.
 
 If you make a pull request that includes changes to the parser please add
-tests for what is being changed to [MDTest][] and make a pull request there
-too.
+tests for what is being changed to the `test/` directory. This can be as
+simple as adding a `.text` (input) file with a corresponding `.xhtml`
+(output) file to proper category under `./test/resources/`.
 
- [MDTest]: https://github.com/michelf/mdtest/
+Traditionally tests were in a separate repository, [MDTest](https://github.com/michelf/mdtest)
+but they are now located here, alongside the source code.
 
 
 Donations
@@ -384,12 +388,12 @@ Copyright and License
 
 PHP Markdown Lib
 Copyright (c) 2004-2018 Michel Fortin
-<https://michelf.ca/>  
+<https://michelf.ca/>
 All rights reserved.
 
-Based on Markdown  
-Copyright (c) 2003-2005 John Gruber  
-<https://daringfireball.net/>  
+Based on Markdown
+Copyright (c) 2003-2005 John Gruber
+<https://daringfireball.net/>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
