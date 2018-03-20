@@ -20,7 +20,7 @@ before_script:
   - composer install --prefer-dist
 
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --log-junit=phpunit.log
 
 # Uncomment out to submit code coverage report to scrutinizer
 #after_script:
