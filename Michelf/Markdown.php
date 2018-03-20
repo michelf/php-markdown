@@ -164,6 +164,7 @@ class Markdown implements MarkdownInterface {
 			str_repeat('(?>[^()\s]+|\(', $this->nested_url_parenthesis_depth).
 			str_repeat('(?>\)))*', $this->nested_url_parenthesis_depth);
 
+		// Test change
 		$this->escape_chars_re = '['.preg_quote($this->escape_chars).']';
 
 		// Sort document, block, and span gamut in ascendent priority order.
