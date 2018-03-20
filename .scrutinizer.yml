@@ -1,7 +1,7 @@
 build:
   environment:
     php:
-      version: 7.0
+      version: '7.0.20'
   nodes:
     analysis:
       project_setup:
