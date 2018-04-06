@@ -22,9 +22,5 @@ before_script:
 script:
   - vendor/bin/phpunit --log-junit=phpunit.log
 
-# Uncomment out to submit code coverage report to scrutinizer
-#after_script:
-#  - wget https://scrutinizer-ci.com/ocular.phar; php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-
 notifications:
   email: false
