@@ -767,16 +767,15 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function _doAnchors_inline_callback($matches) {
-		$whole_match	=  $matches[1];
 		$link_text		=  $this->runSpanGamut($matches[2]);
-		$url			=  $matches[3] == '' ? $matches[4] : $matches[3];
+		$url			=  $matches[3] === '' ? $matches[4] : $matches[3];
 		$title			=& $matches[7];
 
 		// If the URL was of the form <s p a c e s> it got caught by the HTML
 		// tag parser and hashed. Need to reverse the process before using
 		// the URL.
 		$unhashed = $this->unhash($url);
-		if ($unhashed != $url)
+		if ($unhashed !== $url)
 			$url = preg_replace('/^<(.*)>$/', '\1', $unhashed);
 
 		$url = $this->encodeURLAttribute($url);
