@@ -85,25 +85,25 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Optional filter function for URLs
-	 * @var callable
+	 * @var callable|null
 	 */
 	public $url_filter_func = null;
 
 	/**
 	 * Optional header id="" generation callback function.
-	 * @var callable
+	 * @var callable|null
 	 */
 	public $header_id_func = null;
 
 	/**
 	 * Optional function for converting code block content to HTML
-	 * @var callable
+	 * @var callable|null
 	 */
 	public $code_block_content_func = null;
 
 	/**
 	 * Optional function for converting code span content to HTML.
-	 * @var callable
+	 * @var callable|null
 	 */
 	public $code_span_content_func = null;
 
@@ -1217,7 +1217,7 @@ class Markdown implements MarkdownInterface {
 		$codeblock = $matches[1];
 
 		$codeblock = $this->outdent($codeblock);
-		if ($this->code_block_content_func) {
+		if (is_callable($this->code_block_content_func)) {
 			$codeblock = call_user_func($this->code_block_content_func, $codeblock, "");
 		} else {
 			$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
@@ -1236,7 +1236,7 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function makeCodeSpan($code) {
-		if ($this->code_span_content_func) {
+		if (is_callable($this->code_span_content_func)) {
 			$code = call_user_func($this->code_span_content_func, $code);
 		} else {
 			$code = htmlspecialchars(trim($code), ENT_NOQUOTES);
@@ -1575,11 +1575,11 @@ class Markdown implements MarkdownInterface {
 	 * This function is *not* suitable for attributes enclosed in single quotes.
 	 *
 	 * @param  string $url
-	 * @param  string &$text Passed by reference
+	 * @param  string $text Passed by reference
 	 * @return string        URL
 	 */
 	protected function encodeURLAttribute($url, &$text = null) {
-		if ($this->url_filter_func) {
+		if (is_callable($this->url_filter_func)) {
 			$url = call_user_func($this->url_filter_func, $url);
 		}
 
@@ -1693,7 +1693,7 @@ class Markdown implements MarkdownInterface {
 	 * attribute special characters by Allan Odgaard.
 	 *
 	 * @param  string  $text
-	 * @param  string  &$tail
+	 * @param  string  $tail Passed by reference
 	 * @param  integer $head_length
 	 * @return string
 	 */
@@ -1791,7 +1791,7 @@ class Markdown implements MarkdownInterface {
 	 * Handle $token provided by parseSpan by determining its nature and
 	 * returning the corresponding value that should replace it.
 	 * @param  string $token
-	 * @param  string &$str
+	 * @param  string $str Passed by reference
 	 * @return string
 	 */
 	protected function handleSpanToken($token, &$str) {
