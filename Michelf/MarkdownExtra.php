@@ -96,9 +96,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * `section` that will enclose the list of footnotes so they are
 	 * reachable to accessibility tools the same way they would be with the
 	 * default HTML output.
-	 * @var string
+	 * @var null|string
 	 */
-	public $footnotes_assembled = "";
+	public $footnotes_assembled = null;
 
 	/**
 	 * Parser implementation
@@ -173,7 +173,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$this->abbr_desciptions = array();
 		$this->abbr_word_re = '';
 		$this->footnote_counter = 1;
-		$this->footnotes_assembled = "";
+		$this->footnotes_assembled = null;
 
 		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
 			if ($this->abbr_word_re)
@@ -195,7 +195,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$this->abbr_word_re = '';
 
 		if ( ! $this->omit_footnotes )
-			$this->footnotes_assembled = "";
+			$this->footnotes_assembled = null;
 
 		parent::teardown();
 	}
