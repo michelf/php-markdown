@@ -154,6 +154,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 */
 	protected $footnote_counter = 1;
 
+    /**
+     * Ref attribute for links
+     * @var array
+     */
 	protected $ref_attr = array();
 
 	/**
@@ -733,8 +737,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 					$tag = preg_replace($markdown_attr_re, '', $tag);
 
 					// Check if text inside this tag must be parsed in span mode.
-					$this->mode = $attr_m[2] . $attr_m[3];
-					$span_mode = $this->mode === 'span' || ($this->mode !== 'block' &&
+					$mode = $attr_m[2] . $attr_m[3];
+					$span_mode = $mode === 'span' || ($mode !== 'block' &&
 						preg_match('{^<(?:' . $this->contain_span_tags_re . ')\b}', $tag));
 
 					// Calculate indent before tag.
