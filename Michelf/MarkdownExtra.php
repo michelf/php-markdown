@@ -1711,11 +1711,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$note_id = $this->encodeAttribute($note_id);
 
 			// Prepare backlink, multiple backlinks if multiple references
-			$label = !empty($this->fn_backlink_label) ? ' aria-label="'.$this->encodeAttribute(str_replace(array('{ref}', '{fn}'), array('1', $note_id), $this->fn_backlink_label)).'"' : '';
+			$label = !empty($this->fn_backlink_label)
+				? ' aria-label="'.$this->buildFootnoteLabel($num, 1).'"'
+				: '';
 			$backlink = "<a href=\"#fnref:$note_id\"{$attr}{$label}>$backlink_text</a>";
 			for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
 				if (!empty($this->fn_backlink_label)) {
-					$label = ' aria-label="'.$this->encodeAttribute(str_replace(array('{ref}', '{fn}'), array($ref_num, $note_id), $this->fn_backlink_label)).'"';
+					$label = ' aria-label="'.$this->buildFootnoteLabel($num, $ref_num).'"';
 				}
 				$backlink .= " <a href=\"#fnref$ref_num:$note_id\"{$attr}{$label}>$backlink_text</a>";
 			}
@@ -1781,6 +1783,17 @@ class MarkdownExtra extends \Michelf\Markdown {
 		}
 
 		return "[^" . $matches[1] . "]";
+	}
+
+	/**
+	 * Build an encoded footnote label from {@see $fn_footnote_label} by
+	 * evaluating any '{fn}' and '{ref}' placeholders.
+	 * @param  int $footnote_number
+	 * @param  int $reference_number
+	 * @return string
+	 */
+	protected function buildFootnoteLabel($footnote_number, $reference_number) {
+		return $this->encodeAttribute(str_replace(array('{fn}', '{ref}'), array($footnote_number, $reference_number), $this->fn_backlink_label));
 	}
 
 
