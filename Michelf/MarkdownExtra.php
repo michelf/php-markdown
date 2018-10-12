@@ -47,6 +47,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $fn_backlink_html = '&#8617;&#xFE0E;';
 
 	/**
+	 * Optional aria-label attribute for footnote backlinks. Use '{ref}' and
+	 * '{fn}' to refer to the reference number and footnote number respectively.
+	 * @var string
+	 */
+	public $fn_backlink_label = "";
+
+	/**
 	 * Class name for table cell alignment (%% replaced left/center/right)
 	 * For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
 	 * If empty, the align attribute is used instead of a class name.
@@ -1681,7 +1688,6 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$title = $this->fn_backlink_title;
 			$title = $this->encodeAttribute($title);
 			$attr .= " title=\"$title\"";
-			$attr .= " aria-label=\"$title\"";
 		}
 		$attr .= " role=\"doc-backlink\"";
 		$backlink_text = $this->fn_backlink_html;
@@ -1705,9 +1711,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$note_id = $this->encodeAttribute($note_id);
 
 			// Prepare backlink, multiple backlinks if multiple references
-			$backlink = "<a href=\"#fnref:$note_id\"$attr>$backlink_text</a>";
+			$label = !empty($this->fn_backlink_label) ? ' aria-label="'.$this->encodeAttribute(str_replace(array('{ref}', '{fn}'), array('1', $note_id), $this->fn_backlink_label)).'"' : '';
+			$backlink = "<a href=\"#fnref:$note_id\"{$attr}{$label}>$backlink_text</a>";
 			for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
-				$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>$backlink_text</a>";
+				if (!empty($this->fn_backlink_label)) {
+					$label = ' aria-label="'.$this->encodeAttribute(str_replace(array('{ref}', '{fn}'), array($ref_num, $note_id), $this->fn_backlink_label)).'"';
+				}
+				$backlink .= " <a href=\"#fnref$ref_num:$note_id\"{$attr}{$label}>$backlink_text</a>";
 			}
 			// Add backlink to last paragraph; create new paragraph if needed.
 			if (preg_match('{</p>$}', $footnote)) {
