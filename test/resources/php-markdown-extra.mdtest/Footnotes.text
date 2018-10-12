@@ -68,3 +68,9 @@ Footnotes mixed with images[^image-mixed]
 [img6]: images/MGR-1800-travel.jpeg "Travel Speeds in 1800"
 [^image-mixed]: Footnote Content
 [img7]: images/MGR-1830-travel.jpeg "Travel Speeds in 1830"
+
+ - - -
+
+This is not a valid footnote name because it has whitespace.[^invalid fn]
+
+[^invalid fn]: an invalid footnote name
