@@ -1645,7 +1645,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 */
 	protected function doFootnotes($text) {
 		if (!$this->in_anchor) {
-			$text = preg_replace('{\[\^(\S+?)\]}', "F\x1Afn:\\1\x1A:", $text);
+			$text = preg_replace('{\[\^(.+?)\]}', "F\x1Afn:\\1\x1A:", $text);
 		}
 		return $text;
 	}
