@@ -1224,8 +1224,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * @param  string $alignname
 	 * @return string
 	 */
-	protected function _doTable_makeAlignAttr($alignname)
-	{
+	protected function _doTable_makeAlignAttr($alignname) {
 		if (empty($this->table_align_class_tmpl)) {
 			return " align=\"$alignname\"";
 		}
@@ -1674,7 +1673,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 
 	/**
-	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if footnotes are not being appended.
+	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if
+	 * footnotes are not being appended.
 	 * @return void
 	 */
 	protected function _doFootnotes() {
