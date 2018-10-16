@@ -185,6 +185,16 @@ Version History
 
 Current Version
 
+*	Added `fn_backlink_label` configuration variable to put some text in the
+	`aria-label` attribute.
+	(Thanks to Sunny Walker for the implementation.)
+
+*	Occurances of "`^^`" in `fn_backlink_html`, `fn_backlink_class`,
+	`fn_backlink_title`, and `fn_backlink_label` will be replaced by the 
+	corresponding footnote number in the HTML output. Occurances of "`%%`" will be 
+	replaced by a number for the reference (footnotes can have multiple references).
+	(Thanks to Sunny Walker for the implementation.)
+
 *	Added configuration variable `omit_footnotes`. When `true` footnotes are not
 	appended at the end of the generated HTML and the `footnotes_assembled`
 	variable will contain the HTML for the footnote list, allowing footnotes to be
