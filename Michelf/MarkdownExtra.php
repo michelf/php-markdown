@@ -25,11 +25,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 	public $fn_id_prefix = "";
 
 	/**
-	 * Optional title attribute for footnote links and backlinks.
+	 * Optional title attribute for footnote links.
 	 * @var string
 	 */
-	public $fn_link_title     = "";
-	public $fn_backlink_title = "";
+	public $fn_link_title = "";
 
 	/**
 	 * Optional class attribute for footnote links and backlinks.
@@ -42,9 +41,21 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Content to be displayed within footnote backlinks. The default is '↩';
 	 * the U+FE0E on the end is a Unicode variant selector used to prevent iOS
 	 * from displaying the arrow character as an emoji.
+	 * Optionally use '^^' and '%%' to refer to the footnote number and
+	 * reference number respectively. {@see parseFootnotePlaceholders()}
 	 * @var string
 	 */
 	public $fn_backlink_html = '&#8617;&#xFE0E;';
+
+	/**
+	 * Optional title and aria-label attributes for footnote backlinks for
+	 * added accessibility (to ensure backlink uniqueness).
+	 * Use '^^' and '%%' to refer to the footnote number and reference number
+	 * respectively. {@see parseFootnotePlaceholders()}
+	 * @var string
+	 */
+	public $fn_backlink_title = "";
+	public $fn_backlink_label = "";
 
 	/**
 	 * Class name for table cell alignment (%% replaced left/center/right)
@@ -1217,8 +1228,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * @param  string $alignname
 	 * @return string
 	 */
-	protected function _doTable_makeAlignAttr($alignname)
-	{
+	protected function _doTable_makeAlignAttr($alignname) {
 		if (empty($this->table_align_class_tmpl)) {
 			return " align=\"$alignname\"";
 		}
@@ -1667,24 +1677,18 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 
 	/**
-	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if footnotes are not being appended.
+	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if
+	 * footnotes are not being appended.
 	 * @return void
 	 */
 	protected function _doFootnotes() {
-		$attr = "";
+		$attr = array();
 		if ($this->fn_backlink_class !== "") {
 			$class = $this->fn_backlink_class;
 			$class = $this->encodeAttribute($class);
-			$attr .= " class=\"$class\"";
+			$attr['class'] = " class=\"$class\"";
 		}
-		if ($this->fn_backlink_title !== "") {
-			$title = $this->fn_backlink_title;
-			$title = $this->encodeAttribute($title);
-			$attr .= " title=\"$title\"";
-			$attr .= " aria-label=\"$title\"";
-		}
-		$attr .= " role=\"doc-backlink\"";
-		$backlink_text = $this->fn_backlink_html;
+		$attr['role'] = " role=\"doc-backlink\"";
 		$num = 0;
 
 		$text = "<ol>\n\n";
@@ -1701,19 +1705,43 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}',
 				array($this, '_appendFootnotes_callback'), $footnote);
 
-			$attr = str_replace("%%", ++$num, $attr);
+			$num++;
 			$note_id = $this->encodeAttribute($note_id);
 
 			// Prepare backlink, multiple backlinks if multiple references
-			$backlink = "<a href=\"#fnref:$note_id\"$attr>$backlink_text</a>";
-			for ($ref_num = 2; $ref_num <= $ref_count; ++$ref_num) {
-				$backlink .= " <a href=\"#fnref$ref_num:$note_id\"$attr>$backlink_text</a>";
+			// Do not create empty backlinks if the html is blank
+			$backlink = "";
+			if (!empty($this->fn_backlink_html)) {
+				for ($ref_num = 1; $ref_num <= $ref_count; ++$ref_num) {
+					if (!empty($this->fn_backlink_title)) {
+						$attr['title'] = ' title="' . $this->encodeAttribute($this->fn_backlink_title) . '"';
+					}
+					if (!empty($this->fn_backlink_label)) {
+						$attr['label'] = ' aria-label="' . $this->encodeAttribute($this->fn_backlink_label) . '"';
+					}
+					$parsed_attr = $this->parseFootnotePlaceholders(
+						implode('', $attr),
+						$num,
+						$ref_num
+					);
+					$backlink_text = $this->parseFootnotePlaceholders(
+						$this->fn_backlink_html,
+						$num,
+						$ref_num
+					);
+					$ref_count_mark = $ref_num > 1 ? $ref_num : '';
+					$backlink .= " <a href=\"#fnref$ref_count_mark:$note_id\"$parsed_attr>$backlink_text</a>";
+				}
+				$backlink = trim($backlink);
 			}
+
 			// Add backlink to last paragraph; create new paragraph if needed.
-			if (preg_match('{</p>$}', $footnote)) {
-				$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
-			} else {
-				$footnote .= "\n\n<p>$backlink</p>";
+			if (!empty($backlink)) {
+				if (preg_match('{</p>$}', $footnote)) {
+					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
+				} else {
+					$footnote .= "\n\n<p>$backlink</p>";
+				}
 			}
 
 			$text .= "<li id=\"fn:$note_id\" role=\"doc-endnote\">\n";
@@ -1771,6 +1799,23 @@ class MarkdownExtra extends \Michelf\Markdown {
 		}
 
 		return "[^" . $matches[1] . "]";
+	}
+
+	/**
+	 * Build footnote label by evaluating any placeholders.
+	 * - ^^  footnote number
+	 * - %%  footnote reference number (Nth reference to footnote number)
+	 * @param  string $label
+	 * @param  int    $footnote_number
+	 * @param  int    $reference_number
+	 * @return string
+	 */
+	protected function parseFootnotePlaceholders($label, $footnote_number, $reference_number) {
+		return str_replace(
+			array('^^', '%%'),
+			array($footnote_number, $reference_number),
+			$label
+		);
 	}
 
 
