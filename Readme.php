@@ -15,14 +15,27 @@ spl_autoload_register(function($class){
 use Michelf\Markdown;
 
 // Read file and pass content through the Markdown parser
-$text = file_get_contents('Readme.md');
+
+// Added $file variable for clarity
+$file = 'readme.md';
+$text = file_get_contents($file);
 $html = Markdown::defaultTransform($text);
 
+// variable $title: Contains the first line of $file. 
+// Set the Webpage title dynamically so this can be used for any readme.md in any repo ... 
+// ... or other markdown documents at some point ... 
+
+$title = (new SplFileObject($file))->fgets();
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>PHP Markdown Lib - Readme</title>
+		<title>
+			<? 
+				// Put title content in the document
+				echo $title 
+			?>
+		</title>
 	</head>
 	<body>
 		<?php
