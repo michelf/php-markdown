@@ -7,6 +7,7 @@ cache:
     - $HOME/.composer/
 
 # Run tests against all these PHP versions
+# TODO: When it becomes possible in TravisCI, switch 7.4snapshot to plain 7.4
 php:
   - 5.4
   - 5.5
@@ -14,6 +15,8 @@ php:
   - 7.0
   - 7.1
   - 7.2
+  - 7.3
+  - 7.4snapshot
   - hhvm
 
 before_script:
