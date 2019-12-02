@@ -205,6 +205,10 @@ Current Version
 	adding the attribute `role="doc-endnotes"` to the `<div>` or `<section>` that will
 	enclose the list of footnotes so they are reachable to accessibility tools the
 	same way they would be with the default HTML output.
+	
+*	Fixed deprecation warnings from PHP about usage of curly braces to access
+	characters in text strings.
+	(Thanks to Remi Collet and Frans-Willem Post.)
 
 
 PHP Markdown Lib 1.8.0 (14 Jan 2018)
