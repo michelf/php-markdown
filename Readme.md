@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.8.0 - 14 Jan 2018
+PHP Markdown Lib 1.9.0 - 1 Dec 2019
 
 by Michel Fortin  
 <https://michelf.ca/>
@@ -183,7 +183,7 @@ PHP Markdown, please visit [michelf.ca/donate].
 Version History
 ---------------
 
-Current Version
+PHP Markdown Lib 1.9.0 (1 Dec 2019)
 
 *	Added `fn_backlink_label` configuration variable to put some text in the
 	`aria-label` attribute.
