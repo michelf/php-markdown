@@ -20,7 +20,7 @@ class MarkdownTestHelper
 			RecursiveRegexIterator::GET_MATCH
 		);
 
-		$dataValues = [];
+		$dataValues = array();
 
 		/** @var SplFileInfo $inputFile */
 		foreach ($regexIterator as $inputFiles) {
@@ -31,7 +31,7 @@ class MarkdownTestHelper
 					$expectedHtmlPath = substr($inputMarkdownPath, 0, -4) . 'html';
 					$xhtml = false;
 				}
-				$dataValues[] = [$inputMarkdownPath, $expectedHtmlPath, $xhtml];
+				$dataValues[] = array($inputMarkdownPath, $expectedHtmlPath, $xhtml);
 			}
 		}
 
