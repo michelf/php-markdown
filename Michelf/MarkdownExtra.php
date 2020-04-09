@@ -932,6 +932,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function _doAnchors_inline_callback($matches) {
 		$link_text		=  $this->runSpanGamut($matches[2]);
 		$url			=  $matches[3] === '' ? $matches[4] : $matches[3];
+		$title_quote		=& $matches[6];
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("a", $dummy =& $matches[8]);
 
@@ -944,7 +945,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$url = $this->encodeURLAttribute($url);
 
 		$result = "<a href=\"$url\"";
-		if (isset($title)) {
+		if (isset($title) && $title_quote) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\"";
 		}
@@ -1056,13 +1057,14 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function _doImages_inline_callback($matches) {
 		$alt_text		= $matches[2];
 		$url			= $matches[3] === '' ? $matches[4] : $matches[3];
+		$title_quote		=& $matches[6];
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("img", $dummy =& $matches[8]);
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		$url = $this->encodeURLAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
-		if (isset($title)) {
+		if (isset($title) && $title_quote) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\""; // $title already quoted
 		}
