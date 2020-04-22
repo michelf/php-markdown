@@ -345,7 +345,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * Tags that are always treated as block tags
 	 * @var string
 	 */
-	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure';
+	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure|details|summary';
 
 	/**
 	 * Tags treated as block tags only if the opening tag is alone on its line
