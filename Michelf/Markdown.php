@@ -125,6 +125,8 @@ class Markdown implements MarkdownInterface {
 	 * @var bool
 	 */
 	public $enhanced_ordered_list = false;
+	
+	public $class_attributes = null;
 
 	/**
 	 * Parser implementation
@@ -752,6 +754,7 @@ class Markdown implements MarkdownInterface {
 				$result .=  " title=\"$title\"";
 			}
 
+			$result .= $this->build_class_attributes("a");
 			$link_text = $this->runSpanGamut($link_text);
 			$result .= ">$link_text</a>";
 			$result = $this->hashPart($result);
@@ -786,6 +789,7 @@ class Markdown implements MarkdownInterface {
 			$result .=  " title=\"$title\"";
 		}
 
+		$result .= $this->build_class_attributes("a");
 		$link_text = $this->runSpanGamut($link_text);
 		$result .= ">$link_text</a>";
 
@@ -869,6 +873,7 @@ class Markdown implements MarkdownInterface {
 				$title = $this->encodeAttribute($title);
 				$result .=  " title=\"$title\"";
 			}
+			$result .= $this->build_class_attributes("img");
 			$result .= $this->empty_element_suffix;
 			$result = $this->hashPart($result);
 		} else {
@@ -897,6 +902,7 @@ class Markdown implements MarkdownInterface {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\""; // $title already quoted
 		}
+		$result .= $this->build_class_attributes("img");
 		$result .= $this->empty_element_suffix;
 
 		return $this->hashPart($result);
@@ -1905,5 +1911,26 @@ class Markdown implements MarkdownInterface {
 	 */
 	protected function _unhash_callback($matches) {
 		return $this->html_hashes[$matches[0]];
+	}
+
+	/**
+	 * Build html class attribute as preconfigured with the class_attributes field
+	 * 
+	 * @param $tag string
+	 * @return string
+	 */
+	protected function build_class_attributes($tag) {
+		if($this->class_attributes === null || !isset($this->class_attributes[$tag])) {
+			return "";
+		}
+		
+		$attributes = $this->class_attributes[$tag];
+		if(is_string($attributes)) {
+			return ' class="' . $attributes . '"';
+		} else if(is_array($attributes)) {
+			return ' class="' . implode(' ', $attributes) . '"';
+		} else {
+			return '';
+		}
 	}
 }
