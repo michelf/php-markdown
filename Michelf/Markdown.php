@@ -18,7 +18,7 @@ class Markdown implements MarkdownInterface {
 	 * Define the package version
 	 * @var string
 	 */
-	const MARKDOWNLIB_VERSION = "1.9.0";
+	const MARKDOWNLIB_VERSION = "2.0";
 
 	/**
 	 * Simple function interface - Initialize the parser and return the result
@@ -74,7 +74,7 @@ class Markdown implements MarkdownInterface {
 	 * Change to `true` to enable line breaks on \n without two trailling spaces
 	 * @var boolean
 	 */
-	public $hard_wrap = false;
+	public bool $hard_wrap = false;
 
 	/**
 	 * Predefined URLs and titles for reference links and images.

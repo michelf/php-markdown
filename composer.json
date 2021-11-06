@@ -18,12 +18,12 @@
 		}
 	],
 	"require": {
-		"php": ">=7.3"
+		"php": ">=7.4"
 	},
 	"autoload": {
  		"psr-4": { "Michelf\\": "Michelf/" }
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^9.5"
+		"phpunit/phpunit": ">= 9.5"
 	}
 }
