@@ -31,7 +31,7 @@ class Markdown implements MarkdownInterface {
 	 */
 	public static function defaultTransform($text) {
 		// Take parser class on which this function was called.
-		$parser_class = \get_called_class();
+		$parser_class = static::class;
 
 		// Try to take parser from the static parser list
 		static $parser_list;
@@ -49,25 +49,21 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * Configuration variables
 	 */
-
 	/**
 	 * Change to ">" for HTML output.
-	 * @var string
 	 */
-	public $empty_element_suffix = " />";
+	public string $empty_element_suffix = " />";
 
 	/**
 	 * The width of indentation of the output markup
-	 * @var int
 	 */
-	public $tab_width = 4;
+	public int $tab_width = 4;
 
 	/**
 	 * Change to `true` to disallow markup or entities.
-	 * @var boolean
 	 */
-	public $no_markup   = false;
-	public $no_entities = false;
+	public bool $no_markup   = false;
+	public bool $no_entities = false;
 
 
 	/**
@@ -78,10 +74,9 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Predefined URLs and titles for reference links and images.
-	 * @var array
 	 */
-	public $predef_urls   = array();
-	public $predef_titles = array();
+	public array $predef_urls   = array();
+	public array $predef_titles = array();
 
 	/**
 	 * Optional filter function for URLs
@@ -121,32 +116,27 @@ class Markdown implements MarkdownInterface {
 	 * <li>List item two</li>
 	 * <li>List item three</li>
 	 * </ol>
-	 *
-	 * @var bool
 	 */
-	public $enhanced_ordered_list = false;
+	public bool $enhanced_ordered_list = false;
 
 	/**
 	 * Parser implementation
 	 */
-
 	/**
 	 * Regex to match balanced [brackets].
 	 * Needed to insert a maximum bracked depth while converting to PHP.
-	 * @var int
 	 */
-	protected $nested_brackets_depth = 6;
+	protected int $nested_brackets_depth = 6;
 	protected $nested_brackets_re;
 
-	protected $nested_url_parenthesis_depth = 4;
+	protected int $nested_url_parenthesis_depth = 4;
 	protected $nested_url_parenthesis_re;
 
 	/**
 	 * Table of hash values for escaped characters:
-	 * @var string
 	 */
-	protected $escape_chars = '\`*_{}[]()>#+-.!';
-	protected $escape_chars_re;
+	protected string $escape_chars = '\`*_{}[]()>#+-.!';
+	protected string $escape_chars_re;
 
 	/**
 	 * Constructor function. Initialize appropriate member variables.
@@ -175,23 +165,20 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Internal hashes used during transformation.
-	 * @var array
 	 */
-	protected $urls        = array();
+	protected array $urls        = array();
 	protected $titles      = array();
-	protected $html_hashes = array();
+	protected array $html_hashes = array();
 
 	/**
 	 * Status flag to avoid invalid nesting.
-	 * @var boolean
 	 */
-	protected $in_anchor = false;
+	protected bool $in_anchor = false;
 
 	/**
 	 * Status flag to avoid invalid nesting.
-	 * @var boolean
 	 */
-	protected $in_emphasis_processing = false;
+	protected bool $in_emphasis_processing = false;
 
 	/**
 	 * Called before the transformation process starts to setup parser states.
@@ -263,9 +250,8 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Define the document gamut
-	 * @var array
 	 */
-	protected $document_gamut = array(
+	protected array $document_gamut = array(
 		// Strip link definitions, store in hashes.
 		"stripLinkDefinitions" => 20,
 		"runBasicBlockGamut"   => 30,
@@ -525,9 +511,8 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * Define the block gamut - these are all the transformations that form
 	 * block-level tags like paragraphs, headers, and list items.
-	 * @var array
 	 */
-	protected $block_gamut = array(
+	protected array $block_gamut = array(
 		"doHeaders"         => 10,
 		"doHorizontalRules" => 20,
 		"doLists"           => 40,
@@ -597,9 +582,8 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * These are all the transformations that occur *within* block-level
 	 * tags like paragraphs, headers, and list items.
-	 * @var array
 	 */
-	protected $span_gamut = array(
+	protected array $span_gamut = array(
 		// Process character escapes, code spans, and inline HTML
 		// in one shot.
 		"parseSpan"           => -30,
@@ -1105,9 +1089,8 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Nesting tracker for list levels
-	 * @var integer
 	 */
-	protected $list_level = 0;
+	protected int $list_level = 0;
 
 	/**
 	 * Process the contents of a single ordered or unordered list, splitting it
@@ -1276,9 +1259,8 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Container for prepared regular expressions
-	 * @var array
 	 */
-	protected $em_strong_prepared_relist;
+	protected ?array $em_strong_prepared_relist = null;
 
 	/**
 	 * Prepare regular expressions for searching emphasis tokens in any
@@ -1883,9 +1865,7 @@ class Markdown implements MarkdownInterface {
 			return;
 		}
 
-		$this->utf8_strlen = function($text) {
-			return preg_match_all('/[\x00-\xBF]|[\xC0-\xFF][\x80-\xBF]*/', $text, $m);
-		};
+		$this->utf8_strlen = fn($text) => preg_match_all('/[\x00-\xBF]|[\xC0-\xFF][\x80-\xBF]*/', $text, $m);
 	}
 
 	/**
