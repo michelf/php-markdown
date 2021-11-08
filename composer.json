@@ -24,6 +24,21 @@
  		"psr-4": { "Michelf\\": "Michelf/" }
 	},
 	"require-dev": {
-		"phpunit/phpunit": ">= 9.5"
+		"phpspec/prophecy": "^1.6",
+		"friendsofphp/php-cs-fixer": "^3.0",
+		"phpunit/phpunit": "^9.5",
+		"phpstan/phpstan": "^1.0",
+		"phpstan/phpstan-phpunit": "^1.0"
+	},
+
+	"scripts": {
+		"tests": "vendor/bin/phpunit test/",
+		"phpstan": [
+			"vendor/bin/phpstan analyse Michelf/ --level=5",
+			"vendor/bin/phpstan analyse -c test/phpstan.neon test/ --level=5"
+		],
+		"codestyle": "vendor/bin/php-cs-fixer fix --dry-run --verbose --show-progress=none",
+		"codestyle-fix": "vendor/bin/php-cs-fixer fix"
 	}
+
 }
