@@ -37,8 +37,8 @@
 			"vendor/bin/phpstan analyse Michelf/ --level=5",
 			"vendor/bin/phpstan analyse -c test/phpstan.neon test/ --level=5"
 		],
-		"codestyle": "vendor/bin/php-cs-fixer fix --dry-run --verbose --show-progress=none",
-		"codestyle-fix": "vendor/bin/php-cs-fixer fix"
+		"codestyle": "vendor/bin/php-cs-fixer fix Michelf --dry-run --verbose --show-progress=none",
+		"codestyle-fix": "vendor/bin/php-cs-fixer fix Michelf"
 	}
 
 }

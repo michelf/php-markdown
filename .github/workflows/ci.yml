@@ -3,7 +3,7 @@ on:
     pull_request: null
     push:
         branches:
-            - master
+            - lib
 jobs:
     tests:
         runs-on: ubuntu-latest
