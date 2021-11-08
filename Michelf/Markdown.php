@@ -765,7 +765,7 @@ class Markdown implements MarkdownInterface {
 		$url = $this->encodeURLAttribute($url);
 
 		$result = "<a href=\"$url\"";
-		if (isset($title)) {
+		if ($title) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\"";
 		}
