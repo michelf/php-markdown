@@ -1,6 +1,8 @@
 PHP Markdown
 ============
 
+![ci.yml](https://github.com/tacman/php-markdown/actions/workflows/ci.yml/badge.svg)
+
 PHP Markdown Lib 1.9.0 - 1 Dec 2019
 
 by Michel Fortin  
