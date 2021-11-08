@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-![ci.yml](https://github.com/tacman/php-markdown/actions/workflows/ci.yml/badge.svg)
+![ci.yml](https://github.com/michelf/php-markdown/actions/workflows/ci.yml/badge.svg)
 
 PHP Markdown Lib 1.9.0 - 1 Dec 2019
 
@@ -36,15 +36,14 @@ program by John Gruber.
 Requirement
 -----------
 
-This library package requires PHP 5.3 or later.
+This library package requires PHP 7.4 or later.
 
 Note: The older plugin/library hybrid package for PHP Markdown and
 PHP Markdown Extra is no longer maintained but will work with PHP 4.0.5 and
 later.
 
-Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
-in many situations. You might need to set it to higher values. Later PHP
-releases defaults to 1 000 000, which is usually fine.
+You might need to set pcre.backtrack_limit higher than 1 000 000 
+(the default), though the default is usually fine.
 
 
 Usage
