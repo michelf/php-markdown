@@ -1222,6 +1222,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$attr       = [];
 
 		// Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);

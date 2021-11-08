@@ -708,7 +708,7 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Callback method to parse referenced anchors
-	 * @param  string $matches
+	 * @param  array $matches
 	 * @return string
 	 */
 	protected function _doAnchors_reference_callback($matches) {
@@ -747,7 +747,7 @@ class Markdown implements MarkdownInterface {
 
 	/**
 	 * Callback method to parse inline anchors
-	 * @param  string $matches
+	 * @param  array $matches
 	 * @return string
 	 */
 	protected function _doAnchors_inline_callback($matches) {
@@ -1808,7 +1808,7 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * String length function for detab. `_initDetab` will create a function to
 	 * handle UTF-8 if the default function does not exist.
-	 * @var string
+	 * can be a string or function
 	 */
 	protected $utf8_strlen = 'mb_strlen';
 
