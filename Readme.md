@@ -1,7 +1,7 @@
 PHP Markdown
 ============
 
-PHP Markdown Lib 1.9.0 - 1 Dec 2019
+PHP Markdown Lib 1.9.1 - 23 Nov 2021
 
 by Michel Fortin  
 <https://michelf.ca/>
@@ -182,6 +182,17 @@ PHP Markdown, please visit [michelf.ca/donate].
 
 Version History
 ---------------
+
+PHP Markdown Lib 1.9.1 (23 Nov 2021)
+
+*	Now treating `<details>` and `<summary>` as block level so they don't
+	get wrapped in `<p>`.
+	(Thanks to Thomas Hochstein for the fix.)
+
+*	Fix for unintended blank title attribute when adding supplementary attributes
+	to a link in Markdown Extra.
+	(Thanks to Richie Black for the fix.)
+
 
 PHP Markdown Lib 1.9.0 (1 Dec 2019)
 
@@ -399,7 +410,7 @@ Copyright and License
 ---------------------
 
 PHP Markdown Lib
-Copyright (c) 2004-2019 Michel Fortin
+Copyright (c) 2004-2021 Michel Fortin
 <https://michelf.ca/>  
 All rights reserved.
 
