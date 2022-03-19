@@ -54,41 +54,41 @@ To use this library with Composer, first install it with:
 	$ composer require michelf/php-markdown
 
 Then include Composer's generated vendor/autoload.php to [enable autoloading]:
-
-	require 'vendor/autoload.php';
-
+```php
+require 'vendor/autoload.php';
+```
 Without Composer, for autoloading to work, your project needs an autoloader
 compatible with PSR-4 or PSR-0. See the included Readme.php file for a minimal
 autoloader setup. (If you cannot use autoloading, see below.)
 
 With class autoloading in place:
-
-	use Michelf\Markdown;
-	$my_html = Markdown::defaultTransform($my_text);
-
+```php
+use Michelf\Markdown;
+$my_html = Markdown::defaultTransform($my_text);
+```
 Markdown Extra syntax is also available the same way:
-
-	use Michelf\MarkdownExtra;
-	$my_html = MarkdownExtra::defaultTransform($my_text);
-
+```php
+use Michelf\MarkdownExtra;
+$my_html = MarkdownExtra::defaultTransform($my_text);
+```
 If you wish to use PHP Markdown with another text filter function
 built to parse HTML, you should filter the text *after* the `transform`
 function call. This is an example with [PHP SmartyPants]:
-
-	use Michelf\Markdown, Michelf\SmartyPants;
-	$my_html = Markdown::defaultTransform($my_text);
-	$my_html = SmartyPants::defaultTransform($my_html);
-
+```php
+use Michelf\Markdown, Michelf\SmartyPants;
+$my_html = Markdown::defaultTransform($my_text);
+$my_html = SmartyPants::defaultTransform($my_html);
+```
 All these examples are using the static `defaultTransform` static function
 found inside the parser class. If you want to customize the parser
 configuration, you can also instantiate it directly and change some
 configuration variables:
-
-	use Michelf\MarkdownExtra;
-	$parser = new MarkdownExtra;
-	$parser->fn_id_prefix = "post22-";
-	$my_html = $parser->transform($my_text);
-
+```php
+use Michelf\MarkdownExtra;
+$parser = new MarkdownExtra;
+$parser->fn_id_prefix = "post22-";
+$my_html = $parser->transform($my_text);
+```
 To learn more, see the full list of [configuration variables].
 
  [enable autoloading]: https://getcomposer.org/doc/01-basic-usage.md#autoloading
@@ -100,13 +100,13 @@ To learn more, see the full list of [configuration variables].
 
 If you cannot use class autoloading, you can still use `include` or `require`
 to access the parser. To load the `Michelf\Markdown` parser, do it this way:
-
-	require_once 'Michelf/Markdown.inc.php';
-
+```php
+require_once 'Michelf/Markdown.inc.php';
+```
 Or, if you need the `Michelf\MarkdownExtra` parser:
-
-	require_once 'Michelf/MarkdownExtra.inc.php';
-
+```php
+require_once 'Michelf/MarkdownExtra.inc.php';
+```
 While the plain `.php` files depend on autoloading to work correctly, using the
 `.inc.php` files instead will eagerly load the dependencies that would be
 loaded on demand if you were using autoloading.
