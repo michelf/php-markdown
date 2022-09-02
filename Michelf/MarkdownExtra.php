@@ -601,7 +601,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			else {
 				$parsed .= $tag;
 			}
-		} while ($depth >= 0);
+		} while ($depth >= 0); // @phpstan-ignore-line
 
 		return array($parsed, $text);
 	}
