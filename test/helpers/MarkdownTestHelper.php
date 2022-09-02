@@ -22,7 +22,6 @@ class MarkdownTestHelper
 
 		$dataValues = array();
 
-		/** @var SplFileInfo $inputFile */
 		foreach ($regexIterator as $inputFiles) {
 			foreach ($inputFiles as $inputMarkdownPath) {
 				$xhtml = true;
@@ -222,8 +221,9 @@ class MarkdownTestHelper
 			($whitespace === "\n\n" || $whitespace === "\n")) {
 			if ($element->firstChild) {
 				if ($element->firstChild->nodeType == XML_TEXT_NODE) {
-					$element->firstChild->data =
-						preg_replace('{^\s+}', "\n", $element->firstChild->data);
+					$text = preg_replace('{^\s+}', "\n", $element->firstChild->textContent);
+					$element->removeChild($element->firstChild);
+					$element->insertBefore(new DOMText($text), null);
 				}
 				else {
 					$element->insertBefore(new DOMText("\n"), $element->firstChild);
@@ -231,8 +231,9 @@ class MarkdownTestHelper
 			}
 			if ($element->lastChild) {
 				if ($element->lastChild->nodeType == XML_TEXT_NODE) {
-					$element->lastChild->data =
-						preg_replace('{\s+$}', "\n", $element->lastChild->data);
+					$text = preg_replace('{\s+$}', "\n", $element->lastChild->textContent);
+					$element->removeChild($element->lastChild);
+					$element->insertBefore(new DOMText($text), null);
 				}
 				else {
 					$element->insertBefore(new DOMText("\n"), null);
