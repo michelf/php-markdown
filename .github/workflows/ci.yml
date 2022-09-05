@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: 
+                php:
                   - '7.4'
                   - '8.0'
                   - '8.1'
@@ -26,4 +26,5 @@ jobs:
             -   run: composer install --no-progress
 #            -   run: composer codestyle
             -   run: composer phpstan
+                if:  matrix.php == '8.1'
             -   run: composer tests

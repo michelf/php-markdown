@@ -24,11 +24,10 @@
  		"psr-4": { "Michelf\\": "Michelf/" }
 	},
 	"require-dev": {
-		"phpspec/prophecy": "^1.6",
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"phpunit/phpunit": "^9.5",
-		"phpstan/phpstan": "^1.0",
-		"phpstan/phpstan-phpunit": "^1.0"
+		"phpstan/phpstan": ">=1.0",
+		"phpstan/phpstan-phpunit": ">=1.0"
 	},
 
 	"scripts": {
