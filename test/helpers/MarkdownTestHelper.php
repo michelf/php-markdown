@@ -224,7 +224,7 @@ class MarkdownTestHelper
 			if ($element->firstChild) {
 				if ($element->firstChild->nodeType == XML_TEXT_NODE) {
 					$element->firstChild->data = // @phpstan-ignore-line
-						preg_replace('{^\s+}', "\n", $element->firstChild->data ?? ''); // @phpstan-ignore-line
+						preg_replace('{^\s+}', "\n", $element->firstChild->data ?? '');
 				}
 				else {
 					$element->insertBefore(new DOMText("\n"), $element->firstChild);
@@ -233,7 +233,7 @@ class MarkdownTestHelper
 			if ($element->lastChild) {
 				if ($element->lastChild->nodeType == XML_TEXT_NODE) {
 					$element->lastChild->data = // @phpstan-ignore-line
-						preg_replace('{\s+$}', "\n", $element->lastChild->data ?? ''); // @phpstan-ignore-line
+						preg_replace('{\s+$}', "\n", $element->lastChild->data ?? '');
 				}
 				else {
 					$element->insertBefore(new DOMText("\n"), null);
