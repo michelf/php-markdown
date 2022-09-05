@@ -39,6 +39,17 @@
 		],
 		"codestyle": "vendor/bin/php-cs-fixer fix Michelf --dry-run --verbose --show-progress=none",
 		"codestyle-fix": "vendor/bin/php-cs-fixer fix Michelf"
-	}
+	},
 
+	"archive": {
+		"exclude": [
+			"/.github/",
+			"/test/",
+			"/.editorconfig",
+			"/.gitignore",
+			"/.scrutinizer.yml",
+			"/.travis.yml",
+			"/phpunit.xml.dist"
+		]
+	}
 }
