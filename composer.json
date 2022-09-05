@@ -24,6 +24,7 @@
  		"psr-4": { "Michelf\\": "Michelf/" }
 	},
 	"require-dev": {
+		"ext-dom": "*",
 		"phpspec/prophecy": "^1.6",
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"phpunit/phpunit": "^9.5",
