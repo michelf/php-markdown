@@ -17,21 +17,25 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * Configuration variables
 	 */
+
 	/**
 	 * Prefix for footnote ids.
+	 * @var string
 	 */
-	public string $fn_id_prefix = "";
+	public $fn_id_prefix = "";
 
 	/**
 	 * Optional title attribute for footnote links.
+	 * @var string
 	 */
-	public string $fn_link_title = "";
+	public $fn_link_title = "";
 
 	/**
 	 * Optional class attribute for footnote links and backlinks.
+	 * @var string
 	 */
-	public string $fn_link_class     = "footnote-ref";
-	public string $fn_backlink_class = "footnote-backref";
+	public $fn_link_class     = "footnote-ref";
+	public $fn_backlink_class = "footnote-backref";
 
 	/**
 	 * Content to be displayed within footnote backlinks. The default is '↩';
@@ -39,51 +43,59 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * from displaying the arrow character as an emoji.
 	 * Optionally use '^^' and '%%' to refer to the footnote number and
 	 * reference number respectively. {@see parseFootnotePlaceholders()}
+	 * @var string
 	 */
-	public string $fn_backlink_html = '&#8617;&#xFE0E;';
+	public $fn_backlink_html = '&#8617;&#xFE0E;';
 
 	/**
 	 * Optional title and aria-label attributes for footnote backlinks for
 	 * added accessibility (to ensure backlink uniqueness).
 	 * Use '^^' and '%%' to refer to the footnote number and reference number
 	 * respectively. {@see parseFootnotePlaceholders()}
+	 * @var string
 	 */
-	public string $fn_backlink_title = "";
-	public string $fn_backlink_label = "";
+	public $fn_backlink_title = "";
+	public $fn_backlink_label = "";
 
 	/**
 	 * Class name for table cell alignment (%% replaced left/center/right)
 	 * For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
 	 * If empty, the align attribute is used instead of a class name.
+	 * @var string
 	 */
-	public string $table_align_class_tmpl = '';
+	public $table_align_class_tmpl = '';
 
 	/**
 	 * Optional class prefix for fenced code block.
+	 * @var string
 	 */
-	public string $code_class_prefix = "";
+	public $code_class_prefix = "";
 
 	/**
 	 * Class attribute for code blocks goes on the `code` tag;
 	 * setting this to true will put attributes on the `pre` tag instead.
+	 * @var boolean
 	 */
-	public bool $code_attr_on_pre = false;
+	public $code_attr_on_pre = false;
 
 	/**
 	 * Predefined abbreviations.
+	 * @var array
 	 */
-	public array $predef_abbr = array();
+	public $predef_abbr = array();
 
 	/**
 	 * Only convert atx-style headers if there's a space between the header and #
+	 * @var boolean
 	 */
-	public bool $hashtag_protection = false;
+	public $hashtag_protection = false;
 
 	/**
 	 * Determines whether footnotes should be appended to the end of the document.
 	 * If true, footnote html can be retrieved from $this->footnotes_assembled.
+	 * @var boolean
 	 */
-	public bool $omit_footnotes = false;
+	public $omit_footnotes = false;
 
 
 	/**
@@ -95,8 +107,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * `section` that will enclose the list of footnotes so they are
 	 * reachable to accessibility tools the same way they would be with the
 	 * default HTML output.
+	 * @var null|string
 	 */
-	public ?string $footnotes_assembled = null;
+	public $footnotes_assembled = null;
 
 	/**
 	 * Parser implementation
@@ -136,23 +149,27 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 	/**
 	 * Extra variables used during extra transformations.
+	 * @var array
 	 */
-	protected array $footnotes = array();
-	protected array $footnotes_ordered = array();
-	protected array $footnotes_ref_count = array();
-	protected array $footnotes_numbers = array();
-	protected array $abbr_desciptions = array();
-	protected string $abbr_word_re = '';
+	protected $footnotes = array();
+	protected $footnotes_ordered = array();
+	protected $footnotes_ref_count = array();
+	protected $footnotes_numbers = array();
+	protected $abbr_desciptions = array();
+	/** @var string */
+	protected $abbr_word_re = '';
 
 	/**
 	 * Give the current footnote number.
+	 * @var integer
 	 */
-	protected int $footnote_counter = 1;
+	protected $footnote_counter = 1;
 
     /**
-	 * Ref attribute for links
-	 */
-	protected array $ref_attr = array();
+     * Ref attribute for links
+     * @var array
+     */
+	protected $ref_attr = array();
 
 	/**
 	 * Setting up Extra-specific variables.
@@ -198,15 +215,18 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * Extra attribute parser
 	 */
+
 	/**
 	 * Expression to use to catch attributes (includes the braces)
+	 * @var string
 	 */
-	protected string $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
+	protected $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
 
 	/**
 	 * Expression to use when parsing in a context when no capture is desired
+	 * @var string
 	 */
-	protected string $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
+	protected $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
 	/**
 	 * Parse attributes caught by the $this->id_class_attr_catch_re expression
@@ -320,31 +340,37 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * HTML block parser
 	 */
+
 	/**
 	 * Tags that are always treated as block tags
+	 * @var string
 	 */
-	protected string $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure|details|summary';
+	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure|details|summary';
 
 	/**
 	 * Tags treated as block tags only if the opening tag is alone on its line
+	 * @var string
 	 */
-	protected string $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
+	protected $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 
 	/**
 	 * Tags where markdown="1" default to span mode:
+	 * @var string
 	 */
-	protected string $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
+	protected $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
 
 	/**
 	 * Tags which must not have their contents modified, no matter where
 	 * they appear
+	 * @var string
 	 */
-	protected string $clean_tags_re = 'script|style|math|svg';
+	protected $clean_tags_re = 'script|style|math|svg';
 
 	/**
 	 * Tags that do not need to be closed.
+	 * @var string
 	 */
-	protected string $auto_close_tags_re = 'hr|img|param|source|track';
+	protected $auto_close_tags_re = 'hr|img|param|source|track';
 
 	/**
 	 * Hashify HTML Blocks and "clean tags".
@@ -1525,17 +1551,17 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * work in the middle of a word.
 	 * @var array
 	 */
-	protected array $em_relist = array(
+	protected $em_relist = array(
 		''  => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?![\.,:;]?\s)',
 		'*' => '(?<![\s*])\*(?!\*)',
 		'_' => '(?<![\s_])_(?![a-zA-Z0-9_])',
 	);
-	protected array $strong_relist = array(
+	protected $strong_relist = array(
 		''   => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?![\.,:;]?\s)',
 		'**' => '(?<![\s*])\*\*(?!\*)',
 		'__' => '(?<![\s_])__(?![a-zA-Z0-9_])',
 	);
-	protected array $em_strong_relist = array(
+	protected $em_strong_relist = array(
 		''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?![\.,:;]?\s)',
 		'***' => '(?<![\s*])\*\*\*(?!\*)',
 		'___' => '(?<![\s_])___(?![a-zA-Z0-9_])',
