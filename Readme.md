@@ -3,7 +3,7 @@ PHP Markdown
 
 ![ci.yml](https://github.com/michelf/php-markdown/actions/workflows/ci.yml/badge.svg)
 
-PHP Markdown Lib 1.9.0 - 1 Dec 2019
+PHP Markdown Lib 1.10.0 - 24 Sep 2022
 
 by Michel Fortin  
 <https://michelf.ca/>
