@@ -127,10 +127,10 @@ class Markdown implements MarkdownInterface {
 	 * Needed to insert a maximum bracked depth while converting to PHP.
 	 */
 	protected int $nested_brackets_depth = 6;
-	protected $nested_brackets_re;
+	protected string $nested_brackets_re;
 
 	protected int $nested_url_parenthesis_depth = 4;
-	protected $nested_url_parenthesis_re;
+	protected string $nested_url_parenthesis_re;
 
 	/**
 	 * Table of hash values for escaped characters:
@@ -167,7 +167,7 @@ class Markdown implements MarkdownInterface {
 	 * Internal hashes used during transformation.
 	 */
 	protected array $urls        = array();
-	protected $titles      = array();
+	protected array $titles      = array();
 	protected array $html_hashes = array();
 
 	/**
