@@ -182,7 +182,7 @@ PHP Markdown, please visit [michelf.ca/donate].
 Version History
 ---------------
 
-PHP Markdown Lib 1.10.0 (26 Sep 2022)
+PHP Markdown Lib 2.0.0 (26 Sep 2022)
 
 *	Now requiring PHP version 7.4 or later.
 
