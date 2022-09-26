@@ -182,6 +182,17 @@ PHP Markdown, please visit [michelf.ca/donate].
 Version History
 ---------------
 
+PHP Markdown Lib 1.10.0 (26 Sep 2022)
+
+*	Now requiring PHP version 7.4 or later.
+
+*	Added type annotations to configuration properties of the parser.
+	(Thanks to Tac Tacelosky.)
+
+*	Fixing a TypeError in PHP 8 caused by invalid counter variable.
+	(Thanks to Alexey Kopytko.)
+	
+
 PHP Markdown Lib 1.9.1 (23 Nov 2021)
 
 *	Now treating `<details>` and `<summary>` as block level so they don't
