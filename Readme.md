@@ -192,6 +192,9 @@ PHP Markdown Lib 2.0.0 (26 Sep 2022)
 *	Fixing a TypeError in PHP 8 caused by invalid counter variable.
 	(Thanks to Alexey Kopytko.)
 	
+*	Composer package now excludes development files.
+	(Thanks to Cédric Anne.)
+	
 
 PHP Markdown Lib 1.9.1 (23 Nov 2021)
 
