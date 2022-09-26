@@ -29,7 +29,7 @@ class Markdown implements MarkdownInterface {
 	 * @param  string $text
 	 * @return string
 	 */
-	public static function defaultTransform($text) {
+	public static function defaultTransform(string $text): string {
 		// Take parser class on which this function was called.
 		$parser_class = static::class;
 
@@ -213,7 +213,7 @@ class Markdown implements MarkdownInterface {
 	 * @param  string $text
 	 * @return string
 	 */
-	public function transform($text) {
+	public function transform(string $text): string {
 		$this->setup();
 
 		# Remove UTF-8 BOM and marker character in input, if present.

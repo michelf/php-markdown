@@ -23,7 +23,7 @@ interface MarkdownInterface {
 	 * @param  string $text
 	 * @return string
 	 */
-	public static function defaultTransform($text);
+	public static function defaultTransform(string $text): string;
 
 	/**
 	 * Main function. Performs some preprocessing on the input text
@@ -34,5 +34,5 @@ interface MarkdownInterface {
 	 * @param  string $text
 	 * @return string
 	 */
-	public function transform($text);
+	public function transform(string $text): string;
 }
