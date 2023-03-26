@@ -1,34 +1,36 @@
-<p>This is the first paragraph.<sup id="fnref:first"><a href="#fn:first" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>This is the first paragraph.<sup id="fnref:first"><a href="#fn:first" class="footnote-ref" title="This is the first note." role="doc-noteref">1</a></sup></p>
 
 <ul>
-<li>List item one.<sup id="fnref:second"><a href="#fn:second" class="footnote-ref" role="doc-noteref">2</a></sup></li>
-<li>List item two.<sup id="fnref:third"><a href="#fn:third" class="footnote-ref" role="doc-noteref">3</a></sup></li>
+<li>List item one.<sup id="fnref:second"><a href="#fn:second" class="footnote-ref" title="This is the second note." role="doc-noteref">2</a></sup></li>
+<li>List item two.<sup id="fnref:third"><a href="#fn:third" class="footnote-ref" title="This is the third note, defined out of order." role="doc-noteref">3</a></sup></li>
 </ul>
 
-<h1>Header<sup id="fnref:fourth"><a href="#fn:fourth" class="footnote-ref" role="doc-noteref">4</a></sup></h1>
+<h1>Header<sup id="fnref:fourth"><a href="#fn:fourth" class="footnote-ref" title="This is the fourth note." role="doc-noteref">4</a></sup></h1>
 
-<p>Some paragraph with a footnote<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">5</a></sup>, and another<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">6</a></sup>.</p>
+<p>Some paragraph with a footnote<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" title="Content for fifth footnote." role="doc-noteref">5</a></sup>, and another<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" title="Content for sixth footnote spanning on three lines, with some span-level markup like emphasis, a link." role="doc-noteref">6</a></sup>.</p>
 
-<p>Another paragraph with a named footnote<sup id="fnref:fn-name"><a href="#fn:fn-name" class="footnote-ref" role="doc-noteref">7</a></sup>.</p>
+<p>Another paragraph with a named footnote<sup id="fnref:fn-name"><a href="#fn:fn-name" class="footnote-ref" title="Footnote beginning on the line next to the marker." role="doc-noteref">7</a></sup>.</p>
 
 <p>This paragraph should not have a footnote marker since 
 the footnote is undefined.[^3]</p>
 
-<p>This paragraph has a second footnote marker to footnote number one.<sup id="fnref2:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">5</a></sup></p>
+<p>This paragraph has a second footnote marker to footnote number one.<sup id="fnref2:1"><a href="#fn:1" class="footnote-ref" title="Content for fifth footnote." role="doc-noteref">5</a></sup></p>
 
 <p>This paragraph links to a footnote with plenty of 
-block-level content.<sup id="fnref:block"><a href="#fn:block" class="footnote-ref" role="doc-noteref">8</a></sup></p>
+block-level content.<sup id="fnref:block"><a href="#fn:block" class="footnote-ref" title="Paragraph. * List item > Blockquote Code block" role="doc-noteref">8</a></sup></p>
 
 <p>This paragraph host the footnote reference within a 
-footnote test<sup id="fnref:reference"><a href="#fn:reference" class="footnote-ref" role="doc-noteref">9</a></sup>.</p>
+footnote test<sup id="fnref:reference"><a href="#fn:reference" class="footnote-ref" title="This footnote has a footnote of its own.Ffn:nested:" role="doc-noteref">9</a></sup>.</p>
 
 <hr />
 
-<p>Testing unusual footnote name<sup id="fnref:1$^!&quot;'"><a href="#fn:1$^!&quot;'" class="footnote-ref" role="doc-noteref">10</a></sup>.</p>
+<p>Testing unusual footnote name<sup id="fnref:1$^!&quot;'"><a href="#fn:1$^!&quot;'" class="footnote-ref" title="Haha!" role="doc-noteref">10</a></sup>.</p>
 
 <hr />
 
-<p>Footnotes mixed with images<sup id="fnref:image-mixed"><a class="footnote-ref" role="doc-noteref" href="#fn:image-mixed">11</a></sup><img alt="1800 Travel" src="images/MGR-1800-travel.jpeg" title="Travel Speeds in 1800"/><img alt="1830 Travel" src="images/MGR-1830-travel.jpeg" title="Travel Speeds in 1830"/></p>
+<p>Footnotes mixed with images<sup id="fnref:image-mixed"><a href="#fn:image-mixed" class="footnote-ref" title="Footnote Content" role="doc-noteref">11</a></sup>
+<img src="images/MGR-1800-travel.jpeg" alt="1800 Travel" title="Travel Speeds in 1800" />
+<img src="images/MGR-1830-travel.jpeg" alt="1830 Travel" title="Travel Speeds in 1830" /></p>
 
 <div class="footnotes" role="doc-endnotes">
 <hr />
@@ -55,7 +57,7 @@ footnote test<sup id="fnref:reference"><a href="#fn:reference" class="footnote-r
 </li>
 
 <li id="fn:2" role="doc-endnote">
-<p>Content for sixth footnote spaning on 
+<p>Content for sixth footnote spanning on 
 three lines, with some span-level markup like
 <em>emphasis</em>, a <a href="http://michelf.ca/">link</a>.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#8617;&#xFE0E;</a></p>
 </li>
@@ -82,7 +84,7 @@ three lines, with some span-level markup like
 </li>
 
 <li id="fn:reference" role="doc-endnote">
-<p>This footnote has a footnote of its own.<sup id="fnref:nested"><a href="#fn:nested" class="footnote-ref" role="doc-noteref">12</a></sup>&#160;<a href="#fnref:reference" class="footnote-backref" role="doc-backlink">&#8617;&#xFE0E;</a></p>
+<p>This footnote has a footnote of its own.<sup id="fnref:nested"><a href="#fn:nested" class="footnote-ref" title="This footnote should appear even though it is referenced from another footnote. But Ffn:reference: should be literal since the footnote with that name has already been used." role="doc-noteref">12</a></sup>&#160;<a href="#fnref:reference" class="footnote-backref" role="doc-backlink">&#8617;&#xFE0E;</a></p>
 </li>
 
 <li id="fn:1$^!&quot;'" role="doc-endnote">
@@ -90,12 +92,12 @@ three lines, with some span-level markup like
 </li>
 
 <li id="fn:image-mixed" role="doc-endnote">
-<p>Footnote Content&#xA0;<a class="footnote-backref" role="doc-backlink" href="#fnref:image-mixed">&#8617;&#xFE0E;</a></p>
+<p>Footnote Content&#160;<a href="#fnref:image-mixed" class="footnote-backref" role="doc-backlink">&#8617;&#xFE0E;</a></p>
 </li>
 
 <li id="fn:nested" role="doc-endnote">
 <p>This footnote should appear even though it is referenced
-from another footnote. But [^reference] should be litteral
+from another footnote. But [^reference] should be literal
 since the footnote with that name has already been used.&#160;<a href="#fnref:nested" class="footnote-backref" role="doc-backlink">&#8617;&#xFE0E;</a></p>
 </li>
 
