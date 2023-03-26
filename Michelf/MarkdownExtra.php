@@ -1653,6 +1653,88 @@ class MarkdownExtra extends \Michelf\Markdown {
 		return $text;
 	}
 
+	/**
+	* Footnote title - get plaintext representation of a footnote for use in tooltip.
+	* @param  string $footnote
+	* @return string
+	*/
+	protected function get_footnote_title( $footnote ) {
+		//	Remove newlines from the source code so they don't become visible in the tooltip
+		//	Replace with spaces so there's a suitable gap between adjacent elements
+		$footnote = str_replace("\n", " ", $footnote);
+
+		//	Turn the HTML of the footnote into a DOM
+		$doc = new \DOMDocument();
+		$doc->loadHTML( mb_convert_encoding( $footnote, 'HTML', 'UTF-8' ));
+		$xp = new \DOMXPath( $doc );
+
+		//	Replace each element with the text inside it
+		foreach ( $xp->query('//*/text()') as $node ) {
+			$p_text = $doc->createTextNode( $node->wholeText );
+			$node->parentNode->replaceChild( $p_text, $node );
+		}
+
+		//	Replace each <br> with a newline
+		foreach ( $xp->query('//br') as $node ) {
+			$br2nl = $doc->createTextNode( "\n" );
+			$node->parentNode->replaceChild( $br2nl, $node );
+		}
+
+		//	Replace each <img> with its alt text
+		foreach ( $xp->query('//img') as $node ) {
+			$alt_text = $doc->createTextNode( $node->getAttribute('alt') . " " );
+			$node->parentNode->replaceChild( $alt_text, $node );
+		}
+
+		//	Replace each <area> with its alt text
+		foreach ( $xp->query('//area') as $node ) {
+			$alt_text = $doc->createTextNode( $node->getAttribute('alt') . " " );
+			$node->parentNode->replaceChild( $alt_text, $node );
+		}
+
+		//	Get a plaintext representation
+		$title_text = trim( html_entity_decode( strip_tags( $doc->saveHTML() ) ));
+
+		//	Split by space
+		$parts = explode( " ", $title_text );
+
+		//	Remove empty elements - strlen is needed to prevent text which evaluates to false from being removed
+		$parts = array_filter($parts, "strlen");
+
+		//	Add each part to a new string until it is 200 characters long
+		$title_length = 200;
+		$title = "";
+
+		foreach ( $parts as $part) {
+			//	Always add the first part
+			if ( mb_strlen( $title ) == 0 ) {
+				$title .= $part . " ";
+				//	If the first part is a very long string, reduce it to the specified length
+				if ( mb_strlen( $title ) > $title_length ) {
+					$title = mb_substr( $title, 0, $title_length );
+					$title .= "…";
+					break;
+				}
+			} else if ( ( mb_strlen( $title ) + mb_strlen( $part ) ) < $title_length ) {
+				//	Add the next whole word which doesn't take the total length over the specified length
+				$part = str_replace("\n ", "\n", $part);
+
+				if ( $part == "\n" ) {
+					//	Don't add spaces if it ends with a newline to prevent indenting.
+					$title .= $part;
+				} else {
+					$title .= $part . " ";
+				}
+			} else {
+				//	If it has been truncated, add an ellipsis
+				$title = trim( $title );
+				$title .= "…";
+				break;
+			}
+		}
+
+		return trim($title);
+	}
 
 	/**
 	 * Generates the HTML for footnotes.  Called by appendFootnotes, even if
@@ -1760,8 +1842,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 				$class = $this->encodeAttribute($class);
 				$attr .= " class=\"$class\"";
 			}
-			if ($this->fn_link_title !== "") {
-				$title = $this->fn_link_title;
+			if ($this->fn_link_title == "") {
+				//	Decode any markdown in the footnote
+				$title = $this->get_footnote_title( $this->formParagraphs( $this->footnotes[$node_id] ) );
+				//	Format it to be suitable for a title tool-tip
 				$title = $this->encodeAttribute($title);
 				$attr .= " title=\"$title\"";
 			}
