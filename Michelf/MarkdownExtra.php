@@ -1665,7 +1665,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 		//	Turn the HTML of the footnote into a DOM
 		$doc = new \DOMDocument();
-		$doc->loadHTML( mb_convert_encoding( $footnote, 'HTML', 'UTF-8' ));
+		$doc->loadHTML( mb_convert_encoding( $footnote, 'HTML', 'UTF-8' ), LIBXML_NOERROR);
 		$xp = new \DOMXPath( $doc );
 
 		//	Replace each element with the text inside it
