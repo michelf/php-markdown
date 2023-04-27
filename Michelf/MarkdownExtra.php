@@ -1196,7 +1196,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
-		$id_class	= $matches[4];
+		$id_class	= $matches[4] ?? null;
 
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 
@@ -1226,7 +1226,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
-		$id_class	= $matches[4];
+		$id_class	= $matches[4] ?? null;
 		$attr		= [];
 
 		// Remove any tailing pipes for each line.
@@ -1256,7 +1256,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 		// Write column headers.
 		$table_attr_str = $this->doExtraAttributes('table', $id_class, null, []);
-		$text = "<table {$table_attr_str}>\n"; 
+		$text = "<table$table_attr_str>\n"; 
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header) {
