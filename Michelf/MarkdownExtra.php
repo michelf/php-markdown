@@ -1154,6 +1154,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 						[|] .* \n			# Row content.
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_doTable_leadingPipe_callback'), $text);
@@ -1178,6 +1179,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 						.* [|] .* \n		# Row content
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_DoTable_callback'), $text);
@@ -1194,10 +1196,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$id_class	= $matches[4] ?? null;
 
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 
-		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
+		return $this->_doTable_callback(array($matches[0], $head, $underline, $content, $id_class));
 	}
 
 	/**
@@ -1223,7 +1226,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
-		$attr       = [];
+		$id_class	= $matches[4] ?? null;
+		$attr		= [];
 
 		// Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);
@@ -1251,7 +1255,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr       = array_pad($attr, $col_count, '');
 
 		// Write column headers.
-		$text = "<table>\n";
+		$table_attr_str = $this->doExtraAttributes('table', $id_class, null, []);
+		$text = "<table$table_attr_str>\n"; 
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header) {
