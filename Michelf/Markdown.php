@@ -1638,7 +1638,7 @@ class Markdown implements MarkdownInterface {
 	 * @param  array $matches
 	 * @return string
 	 */
-	protected function _doAutoLinks_url_callback($matches) {
+	protected function _doAutoLinks_url_callback($matches, $text = null) {
 		$url = $this->encodeURLAttribute($matches[1], $text);
 		$link = "<a href=\"$url\">$text</a>";
 		return $this->hashPart($link);
@@ -1649,7 +1649,7 @@ class Markdown implements MarkdownInterface {
 	 * @param  array $matches
 	 * @return string
 	 */
-	protected function _doAutoLinks_email_callback($matches) {
+	protected function _doAutoLinks_email_callback($matches, $text = null) {
 		$addr = $matches[1];
 		$url = $this->encodeURLAttribute("mailto:$addr", $text);
 		$link = "<a href=\"$url\">$text</a>";
