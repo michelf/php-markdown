@@ -229,7 +229,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		}
 
 		// Split on components
-		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', $attr, $matches);
+		preg_match_all('/[#.a-z][-_:a-zA-Z0-9=]+/', (string)$attr, $matches);
 		$elements = $matches[0];
 
 		// Handle classes and IDs (only first ID taken into account)
