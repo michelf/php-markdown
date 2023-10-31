@@ -65,6 +65,11 @@ class Markdown implements MarkdownInterface {
 	public bool $no_markup   = false;
 	public bool $no_entities = false;
 
+	/**
+	 * Change to `true` to enable autolinking without the need for angle brackets
+	 * @var boolean
+	 */
+	public bool $autolinks = false;
 
 	/**
 	 * Change to `true` to enable line breaks on \n without two trailling spaces
@@ -1606,7 +1611,16 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function doAutoLinks($text) {
-		$text = preg_replace_callback('{<((https?|ftp|dict|tel):[^\'">\s]+)>}i',
+		if ($this->autolinks)
+		{
+			$regex = '{((https?|ftp|dict|tel):[^\'">\s]+)}i';
+		}
+		else
+		{
+			$regex = '{<((https?|ftp|dict|tel):[^\'">\s]+)>}i';
+		}		
+		
+		$text = preg_replace_callback($regex,
 			array($this, '_doAutoLinks_url_callback'), $text);
 
 		// Email addresses: <address@domain.foo>
