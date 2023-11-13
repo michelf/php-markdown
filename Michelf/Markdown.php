@@ -52,7 +52,7 @@ class Markdown implements MarkdownInterface {
 	/**
 	 * Change to ">" for HTML output.
 	 */
-	public string $empty_element_suffix = " />";
+	public string $empty_element_suffix = ' />';
 
 	/**
 	 * The width of indentation of the output markup
