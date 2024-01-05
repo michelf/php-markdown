@@ -1,22 +1,15 @@
 language: php
 
-sudo: false
+matrix:
+  include:
+    - php: hhvm-3.18
+      dist: trusty
+    - php: 7.4
+      dist: bionic
+    - php: 8.0
+      dist: bionic
 
-cache:
-  directories:
-    - $HOME/.composer/
-
-# Run tests against all these PHP versions
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-  - hhvm
-
-before_script:
+install:
   - composer install --prefer-dist
 
 script:

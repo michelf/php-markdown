@@ -4,7 +4,7 @@
  *
  * @package   php-markdown
  * @author    Michel Fortin <michel.fortin@michelf.com>
- * @copyright 2004-2018 Michel Fortin <https://michelf.com/projects/php-markdown/>
+ * @copyright 2004-2022 Michel Fortin <https://michelf.com/projects/php-markdown/>
  * @copyright (Original Markdown) 2004-2006 John Gruber <https://daringfireball.net/projects/markdown/>
  */
 
@@ -17,25 +17,21 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * Configuration variables
 	 */
-
 	/**
 	 * Prefix for footnote ids.
-	 * @var string
 	 */
-	public $fn_id_prefix = "";
+	public string $fn_id_prefix = "";
 
 	/**
 	 * Optional title attribute for footnote links.
-	 * @var string
 	 */
-	public $fn_link_title = "";
+	public string $fn_link_title = "";
 
 	/**
 	 * Optional class attribute for footnote links and backlinks.
-	 * @var string
 	 */
-	public $fn_link_class     = "footnote-ref";
-	public $fn_backlink_class = "footnote-backref";
+	public string $fn_link_class     = "footnote-ref";
+	public string $fn_backlink_class = "footnote-backref";
 
 	/**
 	 * Content to be displayed within footnote backlinks. The default is '↩';
@@ -43,59 +39,51 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * from displaying the arrow character as an emoji.
 	 * Optionally use '^^' and '%%' to refer to the footnote number and
 	 * reference number respectively. {@see parseFootnotePlaceholders()}
-	 * @var string
 	 */
-	public $fn_backlink_html = '&#8617;&#xFE0E;';
+	public string $fn_backlink_html = '&#8617;&#xFE0E;';
 
 	/**
 	 * Optional title and aria-label attributes for footnote backlinks for
 	 * added accessibility (to ensure backlink uniqueness).
 	 * Use '^^' and '%%' to refer to the footnote number and reference number
 	 * respectively. {@see parseFootnotePlaceholders()}
-	 * @var string
 	 */
-	public $fn_backlink_title = "";
-	public $fn_backlink_label = "";
+	public string $fn_backlink_title = "";
+	public string $fn_backlink_label = "";
 
 	/**
 	 * Class name for table cell alignment (%% replaced left/center/right)
 	 * For instance: 'go-%%' becomes 'go-left' or 'go-right' or 'go-center'
 	 * If empty, the align attribute is used instead of a class name.
-	 * @var string
 	 */
-	public $table_align_class_tmpl = '';
+	public string $table_align_class_tmpl = '';
 
 	/**
 	 * Optional class prefix for fenced code block.
-	 * @var string
 	 */
-	public $code_class_prefix = "";
+	public string $code_class_prefix = "";
 
 	/**
 	 * Class attribute for code blocks goes on the `code` tag;
 	 * setting this to true will put attributes on the `pre` tag instead.
-	 * @var boolean
 	 */
-	public $code_attr_on_pre = false;
+	public bool $code_attr_on_pre = false;
 
 	/**
 	 * Predefined abbreviations.
-	 * @var array
 	 */
-	public $predef_abbr = array();
+	public array $predef_abbr = array();
 
 	/**
 	 * Only convert atx-style headers if there's a space between the header and #
-	 * @var boolean
 	 */
-	public $hashtag_protection = false;
+	public bool $hashtag_protection = false;
 
 	/**
 	 * Determines whether footnotes should be appended to the end of the document.
 	 * If true, footnote html can be retrieved from $this->footnotes_assembled.
-	 * @var boolean
 	 */
-	public $omit_footnotes = false;
+	public bool $omit_footnotes = false;
 
 
 	/**
@@ -107,9 +95,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * `section` that will enclose the list of footnotes so they are
 	 * reachable to accessibility tools the same way they would be with the
 	 * default HTML output.
-	 * @var null|string
 	 */
-	public $footnotes_assembled = null;
+	public ?string $footnotes_assembled = null;
 
 	/**
 	 * Parser implementation
@@ -149,27 +136,23 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 	/**
 	 * Extra variables used during extra transformations.
-	 * @var array
 	 */
-	protected $footnotes = array();
-	protected $footnotes_ordered = array();
-	protected $footnotes_ref_count = array();
-	protected $footnotes_numbers = array();
-	protected $abbr_desciptions = array();
-	/** @var string */
-	protected $abbr_word_re = '';
+	protected array $footnotes = array();
+	protected array $footnotes_ordered = array();
+	protected array $footnotes_ref_count = array();
+	protected array $footnotes_numbers = array();
+	protected array $abbr_desciptions = array();
+	protected string $abbr_word_re = '';
 
 	/**
 	 * Give the current footnote number.
-	 * @var integer
 	 */
-	protected $footnote_counter = 1;
+	protected int $footnote_counter = 1;
 
     /**
-     * Ref attribute for links
-     * @var array
-     */
-	protected $ref_attr = array();
+	 * Ref attribute for links
+	 */
+	protected array $ref_attr = array();
 
 	/**
 	 * Setting up Extra-specific variables.
@@ -215,18 +198,15 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * Extra attribute parser
 	 */
-
 	/**
 	 * Expression to use to catch attributes (includes the braces)
-	 * @var string
 	 */
-	protected $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
+	protected string $id_class_attr_catch_re = '\{((?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,})[ ]*\}';
 
 	/**
 	 * Expression to use when parsing in a context when no capture is desired
-	 * @var string
 	 */
-	protected $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
+	protected string $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
 	/**
 	 * Expression to use when determining whether to make a tag with an id focusable
@@ -262,9 +242,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attributes = array();
 		$id = false;
 		foreach ($elements as $element) {
-			if ($element{0} === '.') {
+			if ($element[0] === '.') {
 				$classes[] = substr($element, 1);
-			} else if ($element{0} === '#') {
+			} else if ($element[0] === '#') {
 				if ($id === false) $id = substr($element, 1);
 			} else if (strpos($element, '=') > 0) {
 				$parts = explode('=', $element, 2);
@@ -350,37 +330,31 @@ class MarkdownExtra extends \Michelf\Markdown {
 	/**
 	 * HTML block parser
 	 */
-
 	/**
 	 * Tags that are always treated as block tags
-	 * @var string
 	 */
-	protected $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure';
+	protected string $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|figure|details|summary';
 
 	/**
 	 * Tags treated as block tags only if the opening tag is alone on its line
-	 * @var string
 	 */
-	protected $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
+	protected string $context_block_tags_re = 'script|noscript|style|ins|del|iframe|object|source|track|param|math|svg|canvas|audio|video';
 
 	/**
 	 * Tags where markdown="1" default to span mode:
-	 * @var string
 	 */
-	protected $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
+	protected string $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
 
 	/**
 	 * Tags which must not have their contents modified, no matter where
 	 * they appear
-	 * @var string
 	 */
-	protected $clean_tags_re = 'script|style|math|svg';
+	protected string $clean_tags_re = 'script|style|math|svg';
 
 	/**
 	 * Tags that do not need to be closed.
-	 * @var string
 	 */
-	protected $auto_close_tags_re = 'hr|img|param|source|track';
+	protected string $auto_close_tags_re = 'hr|img|param|source|track';
 
 	/**
 	 * Hashify HTML Blocks and "clean tags".
@@ -563,14 +537,14 @@ class MarkdownExtra extends \Michelf\Markdown {
 				}
 			}
 			// Check for: Indented code block.
-			else if ($tag{0} === "\n" || $tag{0} === " ") {
+			else if ($tag[0] === "\n" || $tag[0] === " ") {
 				// Indented code block: pass it unchanged, will be handled
 				// later.
 				$parsed .= $tag;
 			}
 			// Check for: Code span marker
 			// Note: need to check this after backtick fenced code blocks
-			else if ($tag{0} === "`") {
+			else if ($tag[0] === "`") {
 				// Find corresponding end marker.
 				$tag_re = preg_quote($tag);
 				if (preg_match('{^(?>.+?|\n(?!\n))*?(?<!`)' . $tag_re . '(?!`)}',
@@ -604,7 +578,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			// Check for: Clean tag (like script, math)
 			//            HTML Comments, processing instructions.
 			else if (preg_match('{^<(?:' . $this->clean_tags_re . ')\b}', $tag) ||
-				$tag{1} === '!' || $tag{1} === '?')
+				$tag[1] === '!' || $tag[1] === '?')
 			{
 				// Need to parse tag and following text using the HTML parser.
 				// (don't check for markdown attribute)
@@ -619,9 +593,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				preg_match('{^</?(?:' . $enclosing_tag_re . ')\b}', $tag))
 			{
 				// Increase/decrease nested tag count.
-				if ($tag{1} === '/') {
+				if ($tag[1] === '/') {
 					$depth--;
-				} else if ($tag{strlen($tag)-2} !== '/') {
+				} else if ($tag[strlen($tag)-2] !== '/') {
 					$depth++;
 				}
 
@@ -637,6 +611,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			else {
 				$parsed .= $tag;
 			}
+			// @phpstan-ignore-next-line
 		} while ($depth >= 0);
 
 		return array($parsed, $text);
@@ -718,12 +693,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 			// by the pattern.
 			$parts = preg_split($tag_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
 
-			if (count($parts) < 3) {
+			if ($parts === false || count($parts) < 3) {
 				// End of $text reached with unbalenced tag(s).
 				// In that case, we return original text unchanged and pass the
 				// first character as filtered to prevent an infinite loop in the
 				// parent function.
-				return array($original_text{0}, substr($original_text, 1));
+				return array($original_text[0], substr($original_text, 1));
 			}
 
 			$block_text .= $parts[0]; // Text before current tag.
@@ -733,7 +708,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			// Check for: Auto-close tag (like <hr/>)
 			//			 Comments and Processing Instructions.
 			if (preg_match('{^</?(?:' . $this->auto_close_tags_re . ')\b}', $tag) ||
-				$tag{1} === '!' || $tag{1} === '?')
+				$tag[1] === '!' || $tag[1] === '?')
 			{
 				// Just add the tag to the block as if it was text.
 				$block_text .= $tag;
@@ -742,9 +717,9 @@ class MarkdownExtra extends \Michelf\Markdown {
 				// Increase/decrease nested tag count. Only do so if
 				// the tag's name match base tag's.
 				if (preg_match('{^</?' . $base_tag_name_re . '\b}', $tag)) {
-					if ($tag{1} === '/') {
+					if ($tag[1] === '/') {
 						$depth--;
-					} else if ($tag{strlen($tag)-2} !== '/') {
+					} else if ($tag[strlen($tag)-2] !== '/') {
 						$depth++;
 					}
 				}
@@ -942,6 +917,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function _doAnchors_inline_callback($matches) {
 		$link_text		=  $this->runSpanGamut($matches[2]);
 		$url			=  $matches[3] === '' ? $matches[4] : $matches[3];
+		$title_quote		=& $matches[6];
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("a", $dummy =& $matches[8]);
 
@@ -954,7 +930,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$url = $this->encodeURLAttribute($url);
 
 		$result = "<a href=\"$url\"";
-		if (isset($title)) {
+		if (isset($title) && $title_quote) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\"";
 		}
@@ -1066,13 +1042,14 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function _doImages_inline_callback($matches) {
 		$alt_text		= $matches[2];
 		$url			= $matches[3] === '' ? $matches[4] : $matches[3];
+		$title_quote		=& $matches[6];
 		$title			=& $matches[7];
 		$attr  = $this->doExtraAttributes("img", $dummy =& $matches[8]);
 
 		$alt_text = $this->encodeAttribute($alt_text);
 		$url = $this->encodeURLAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
-		if (isset($title)) {
+		if (isset($title) && $title_quote) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\""; // $title already quoted
 		}
@@ -1135,7 +1112,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			return $matches[0];
 		}
 
-		$level = $matches[3]{0} === '=' ? 1 : 2;
+		$level = $matches[3][0] === '=' ? 1 : 2;
 
 		$defaultId = is_callable($this->header_id_func) ? call_user_func($this->header_id_func, $matches[1]) : null;
 
@@ -1187,6 +1164,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 						[|] .* \n			# Row content.
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_doTable_leadingPipe_callback'), $text);
@@ -1211,6 +1189,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 						.* [|] .* \n		# Row content
 					)*
 				)
+				('.$this->id_class_attr_catch_re.')?	 # $4 = id/class attributes
 				(?=\n|\Z)					# Stop at final double newline.
 			}xm',
 			array($this, '_DoTable_callback'), $text);
@@ -1227,10 +1206,11 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$id_class	= $matches[4] ?? null;
 
 		$content	= preg_replace('/^ *[|]/m', '', $content);
 
-		return $this->_doTable_callback(array($matches[0], $head, $underline, $content));
+		return $this->_doTable_callback(array($matches[0], $head, $underline, $content, $id_class));
 	}
 
 	/**
@@ -1256,6 +1236,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$head		= $matches[1];
 		$underline	= $matches[2];
 		$content	= $matches[3];
+		$id_class	= $matches[4] ?? null;
+		$attr		= [];
 
 		// Remove any tailing pipes for each line.
 		$head		= preg_replace('/[|] *$/m', '', $head);
@@ -1283,7 +1265,8 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr       = array_pad($attr, $col_count, '');
 
 		// Write column headers.
-		$text = "<table>\n";
+		$table_attr_str = $this->doExtraAttributes('table', $id_class, null, []);
+		$text = "<table$table_attr_str>\n"; 
 		$text .= "<thead>\n";
 		$text .= "<tr>\n";
 		foreach ($headers as $n => $header) {
@@ -1529,7 +1512,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 
 		$classes = array();
 		if ($classname !== "") {
-			if ($classname{0} === '.') {
+			if ($classname[0] === '.') {
 				$classname = substr($classname, 1);
 			}
 			$classes[] = $this->code_class_prefix . $classname;
@@ -1557,17 +1540,17 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * work in the middle of a word.
 	 * @var array
 	 */
-	protected $em_relist = array(
+	protected array $em_relist = array(
 		''  => '(?:(?<!\*)\*(?!\*)|(?<![a-zA-Z0-9_])_(?!_))(?![\.,:;]?\s)',
 		'*' => '(?<![\s*])\*(?!\*)',
 		'_' => '(?<![\s_])_(?![a-zA-Z0-9_])',
 	);
-	protected $strong_relist = array(
+	protected array $strong_relist = array(
 		''   => '(?:(?<!\*)\*\*(?!\*)|(?<![a-zA-Z0-9_])__(?!_))(?![\.,:;]?\s)',
 		'**' => '(?<![\s*])\*\*(?!\*)',
 		'__' => '(?<![\s_])__(?![a-zA-Z0-9_])',
 	);
-	protected $em_strong_relist = array(
+	protected array $em_strong_relist = array(
 		''    => '(?:(?<!\*)\*\*\*(?!\*)|(?<![a-zA-Z0-9_])___(?!_))(?![\.,:;]?\s)',
 		'***' => '(?<![\s*])\*\*\*(?!\*)',
 		'___' => '(?<![\s_])___(?![a-zA-Z0-9_])',
