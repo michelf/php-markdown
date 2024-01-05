@@ -209,6 +209,12 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected string $id_class_attr_nocatch_re = '\{(?>[ ]*[#.a-z][-_:a-zA-Z0-9=]+){1,}[ ]*\}';
 
 	/**
+	 * Expression to use when determining whether to make a tag with an id focusable
+	 * @var string
+	 */
+	protected $id_focusable_tags_re = '/h[1-6]/i';
+
+	/**
 	 * Parse attributes caught by the $this->id_class_attr_catch_re expression
 	 * and return the HTML-formatted list of attributes.
 	 *
@@ -254,6 +260,10 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$attr_str = "";
 		if (!empty($id)) {
 			$attr_str .= ' id="'.$this->encodeAttribute($id) .'"';
+			// make specified tags focusable for assistive technologies anchor targets
+			if ($this->id_focusable_tags_re && preg_match($this->id_focusable_tags_re, $tag_name)) {
+				$attr_str .= ' tabindex="-1"';
+			}
 		}
 		if (!empty($classes)) {
 			$attr_str .= ' class="'. implode(" ", $classes) . '"';
