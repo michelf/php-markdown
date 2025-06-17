@@ -499,7 +499,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 			$parsed .= $parts[0]; // Text before current tag.
 
 			// If end of $text has been reached. Stop loop.
-			if (count($parts) < 3) {
+			if ($parts === false || count($parts) < 3) {
 				$text = "";
 				break;
 			}
