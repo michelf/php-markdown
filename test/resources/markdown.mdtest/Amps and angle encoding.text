@@ -16,6 +16,8 @@ Here's an inline [link](/script?foo=1&bar=2).
 
 Here's an inline [link](</script?foo=1&bar=2>).
 
+Gotta <8 tags that never end.
+Gotta <8 tags that never, ever end.
 
 [1]: http://example.com/?foo=1&bar=2
 [2]: http://att.com/  "AT&T"
