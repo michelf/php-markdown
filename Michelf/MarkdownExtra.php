@@ -1005,6 +1005,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 		if (isset($this->urls[$link_id])) {
 			$url = $this->encodeURLAttribute($this->urls[$link_id]);
 			$result = "<img src=\"$url\" alt=\"$alt_text\"";
+			if(file_exists($url))
+			{
+				list($width, $height, $type, $attr) = getimagesize($url);
+				if(isset($width)) $result .= " width=\"$width\"";
+				if(isset($height)) $result .= " height=\"$height\"";
+				if(isset($width) && isset($height)) $result .= " loading=\"lazy\"";
+			}
 			if (isset($this->titles[$link_id])) {
 				$title = $this->titles[$link_id];
 				$title = $this->encodeAttribute($title);
@@ -1039,6 +1046,13 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$alt_text = $this->encodeAttribute($alt_text);
 		$url = $this->encodeURLAttribute($url);
 		$result = "<img src=\"$url\" alt=\"$alt_text\"";
+		if(file_exists($url))
+		{
+			list($width, $height, $type, $attr) = getimagesize($url);
+			if(isset($width)) $result .= " width=\"$width\"";
+			if(isset($height)) $result .= " height=\"$height\"";
+			if(isset($width) && isset($height)) $result .= " loading=\"lazy\"";
+		}
 		if (isset($title) && $title_quote) {
 			$title = $this->encodeAttribute($title);
 			$result .=  " title=\"$title\""; // $title already quoted
