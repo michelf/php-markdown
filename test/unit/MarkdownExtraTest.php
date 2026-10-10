@@ -36,6 +36,41 @@ class MarkdownExtraTest extends \PHPUnit\Framework\TestCase
 		);
 	}
 
+	public function testAbbreviationsContainingAmpersands()
+	{
+		$obj = new \Michelf\MarkdownExtra();
+		$result = $obj->transform("AB&D and AB&Ds. `AB&D`\n\n*[AB&D]: Automated Build & Distribution");
+
+		$this->assertSame(
+			'<p><abbr title="Automated Build &amp; Distribution">AB&amp;D</abbr>' .
+			' and AB&amp;Ds. <code>AB&amp;D</code></p>',
+			trim($result)
+		);
+	}
+
+	public function testPredefinedAbbreviationsContainingAmpersands()
+	{
+		$obj = new \Michelf\MarkdownExtra();
+		$obj->predef_abbr = array('AB&D' => 'Automated Build & Distribution');
+
+		$this->assertSame(
+			'<p><abbr title="Automated Build &amp; Distribution">AB&amp;D</abbr></p>',
+			trim($obj->transform('AB&D'))
+		);
+	}
+
+	public function testAbbreviationsRespectNoEntities()
+	{
+		$obj = new \Michelf\MarkdownExtra();
+		$obj->no_entities = true;
+		$obj->predef_abbr = array('AB&amp;D' => 'Build & Distribution');
+
+		$this->assertSame(
+			'<p><abbr title="Build &amp; Distribution">AB&amp;amp;D</abbr></p>',
+			trim($obj->transform('AB&amp;D'))
+		);
+	}
+
 	public function testTransformWithNoMarkup()
 	{
 		$obj = new \Michelf\MarkdownExtra();
