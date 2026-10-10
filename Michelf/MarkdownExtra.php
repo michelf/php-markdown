@@ -170,6 +170,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 		$this->footnotes_assembled = null;
 
 		foreach ($this->predef_abbr as $abbr_word => $abbr_desc) {
+			$abbr_word = $this->encodeAmpsAndAngles($abbr_word);
 			if ($this->abbr_word_re)
 				$this->abbr_word_re .= '|';
 			$this->abbr_word_re .= preg_quote($abbr_word);
@@ -1827,7 +1828,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * @return string
 	 */
 	protected function _stripAbbreviations_callback($matches) {
-		$abbr_word = $matches[1];
+		$abbr_word = $this->encodeAmpsAndAngles($matches[1]);
 		$abbr_desc = $matches[2];
 		if ($this->abbr_word_re) {
 			$this->abbr_word_re .= '|';
