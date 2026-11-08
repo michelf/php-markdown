@@ -5,7 +5,7 @@
  * @package   php-markdown
  * @author    Michel Fortin <michel.fortin@michelf.com>
  * @copyright 2004-2022 Michel Fortin <https://michelf.com/projects/php-markdown/>
- * @copyright (Original Markdown) 2004-2006 John Gruber <https://daringfireball.net/projects/markdown/>
+ * @copyright Original Markdown 2004-2006 John Gruber <https://daringfireball.net/projects/markdown/>
  */
 
 namespace Michelf;
@@ -218,7 +218,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	 * which will be used to populate the id attribute in case it was not
 	 * overridden.
 	 * @param  string $tag_name
-	 * @param  string $attr
+	 * @param  string|null $attr
 	 * @param  mixed  $defaultIdValue
 	 * @param  array  $classes
 	 * @return string
@@ -1796,7 +1796,7 @@ class MarkdownExtra extends \Michelf\Markdown {
 	protected function parseFootnotePlaceholders($label, $footnote_number, $reference_number) {
 		return str_replace(
 			array('^^', '%%'),
-			array($footnote_number, $reference_number),
+			array((string) $footnote_number, (string) $reference_number),
 			$label
 		);
 	}
