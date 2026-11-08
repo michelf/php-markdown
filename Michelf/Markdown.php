@@ -374,7 +374,7 @@ class Markdown implements MarkdownInterface {
 					  </\2\s*>	# closing nested tag
 					)
 				  |
-					<(?!/\2\s*>	# other tags with a different name
+					<(?!/?\2[\s/>])(?!/\2\s*>	# other tags (not an open/close of \2)
 				  )
 				)*',
 				$nested_tags_level);
