@@ -120,6 +120,14 @@ class Markdown implements MarkdownInterface {
 	public bool $enhanced_ordered_list = false;
 
 	/**
+	 * Maximum nesting depth of blockquotes. Deeper ">" markers are output
+	 * as text. Each level of nesting re-processes and re-indents everything
+	 * inside it, so without a limit a few kilobytes of ">" characters take
+	 * gigabytes of memory. Set to 0 for no limit.
+	 */
+	public int $max_blockquote_depth = 32;
+
+	/**
 	 * Parser implementation
 	 */
 	/**
@@ -181,6 +189,11 @@ class Markdown implements MarkdownInterface {
 	protected bool $in_emphasis_processing = false;
 
 	/**
+	 * Nesting depth of the blockquote currently being processed.
+	 */
+	protected int $blockquote_depth = 0;
+
+	/**
 	 * Called before the transformation process starts to setup parser states.
 	 * @return void
 	 */
@@ -191,6 +204,7 @@ class Markdown implements MarkdownInterface {
 		$this->html_hashes = array();
 		$this->in_anchor   = false;
 		$this->in_emphasis_processing = false;
+		$this->blockquote_depth = 0;
 	}
 
 	/**
@@ -1421,6 +1435,11 @@ class Markdown implements MarkdownInterface {
 	 * @return string
 	 */
 	protected function doBlockQuotes($text) {
+		if ($this->max_blockquote_depth > 0 &&
+			$this->blockquote_depth >= $this->max_blockquote_depth) {
+			return $text;
+		}
+
 		$text = preg_replace_callback('/
 			  (								# Wrap whole match in $1
 				(?>
@@ -1445,7 +1464,9 @@ class Markdown implements MarkdownInterface {
 		$bq = $matches[1];
 		// trim one level of quoting - trim whitespace-only lines
 		$bq = preg_replace('/^[ ]*>[ ]?|^[ ]+$/m', '', $bq);
+		$this->blockquote_depth++;
 		$bq = $this->runBlockGamut($bq); // recurse
+		$this->blockquote_depth--;
 
 		$bq = preg_replace('/^/m', "  ", $bq);
 		// These leading spaces cause problem with <pre> content,
