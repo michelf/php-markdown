@@ -5,7 +5,7 @@
  * @package   php-markdown
  * @author    Michel Fortin <michel.fortin@michelf.com>
  * @copyright 2004-2022 Michel Fortin <https://michelf.com/projects/php-markdown/>
- * @copyright Original Markdown 2004-2006 John Gruber <https://daringfireball.net/projects/markdown/>
+ * @copyright (Original Markdown) 2004-2006 John Gruber <https://daringfireball.net/projects/markdown/>
  */
 
 namespace Michelf;
@@ -1079,7 +1079,7 @@ class Markdown implements MarkdownInterface {
 			}
 		}
 
-		if ($ol_start > 1){
+		if ($ol_start > 1 && $list_type == 'ol'){
 			$result = $this->hashBlock("<$list_type start=\"$ol_start\">\n" . $result . "</$list_type>");
 		} else {
 			$result = $this->hashBlock("<$list_type>\n" . $result . "</$list_type>");
@@ -1782,7 +1782,7 @@ class Markdown implements MarkdownInterface {
 				return $this->hashPart("&#". ord($token[1]). ";");
 			case "`":
 				// Search for end marker in remaining text.
-				if (preg_match('/^(.*?[^`])'.preg_quote($token, '/').'(?!`)(.*)$/sm',
+				if (preg_match('/^(.*?[^`])'.preg_quote($token).'(?!`)(.*)$/sm',
 					$str, $matches))
 				{
 					$str = $matches[2];
